@@ -1,0 +1,7 @@
+/target
+/pkg/*.wasm
+
+/web/node_modules
+/web/dist
+
+/Cargo.lock
