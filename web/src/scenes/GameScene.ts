@@ -4,32 +4,45 @@ import init, { Rectangle } from "../../public/pkg/snake_spark";
 import { colors, sizes } from "../consts";
 
 class GameScene extends Phaser.Scene {
+  private snake!: Rectangle;
+  private snakeGraphics!: Phaser.GameObjects.Rectangle;
+  private pixelPosition: [number, number] = [210, 210];
+
   constructor() {
     super({ key: "GameScene" });
   }
 
-  private snake!: Rectangle;
-  private snakeGraphics!: Phaser.GameObjects.Rectangle;
-
   async create() {
     await init();
     this.snake = new Rectangle();
-
-    const { square, gap } = sizes;
-
     createGrid(this);
 
     this.snakeGraphics = this.add
-      .rectangle(210, 210, square - gap, square - gap, colors.snake.human)
+      .rectangle(
+        this.pixelPosition[0],
+        this.pixelPosition[1],
+        sizes.square - sizes.gap,
+        sizes.square - sizes.gap,
+        colors.snake.human
+      )
       .setOrigin(0.5);
   }
 
   update() {
-    const [gridX, gridY] = this.snake.position();
-    const direction = this.snake.direction();
-    const { square } = sizes;
+    const [dirX, dirY] = this.snake.direction();
+    const speed = 2;
 
-    this.snakeGraphics.setPosition(190, 190);
+    this.pixelPosition[0] += dirX * speed;
+    this.pixelPosition[1] += dirY * speed;
+
+    this.snakeGraphics.setPosition(
+      this.pixelPosition[0],
+      this.pixelPosition[1]
+    );
+
+    const gridX = Math.round(this.pixelPosition[0] / sizes.square);
+    const gridY = Math.round(this.pixelPosition[1] / sizes.square);
+    this.snake.update_position(gridX, gridY);
   }
 }
 
