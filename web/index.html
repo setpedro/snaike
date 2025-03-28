@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="./src/style.css" />
   </head>
   <body>
-    <script type="module" src="./src/main.ts"></script>
+    <script type="module">
+      import init from "./public/pkg/snake_spark";
+      await init();
+      import("./src/main.ts");
+    </script>
   </body>
 </html>

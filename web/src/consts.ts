@@ -1,7 +1,10 @@
+// web/src/consts.ts
+
 export const sizes = {
   width: 600,
   height: 400,
-  square: 18,
+  square: 20,
+  gap: 4,
 } as const;
 
 export const colors = {
@@ -16,3 +19,9 @@ export const colors = {
   },
   food: 0xff0011, // Neon red
 } as const;
+
+export const grid = {
+  cellSize: 20,
+  cols: 30,
+  rows: 20,
+};
