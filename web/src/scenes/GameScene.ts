@@ -49,21 +49,37 @@ class GameScene extends Phaser.Scene {
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
-        const [dirX, dirY] = this.snake.direction;
-        if (this.keys.w.isDown && dirY !== 1) this.snake.move_snake("w");
-        if (this.keys.a.isDown && dirX !== 1) this.snake.move_snake("a");
-        if (this.keys.s.isDown && dirY !== -1) this.snake.move_snake("s");
-        if (this.keys.d.isDown && dirX !== -1) this.snake.move_snake("d");
+        const [xDir, yDir] = this.snake.direction;
+        if (this.keys.w.isDown && yDir !== 1) this.snake.move_snake("w");
+        if (this.keys.a.isDown && xDir !== 1) this.snake.move_snake("a");
+        if (this.keys.s.isDown && yDir !== -1) this.snake.move_snake("s");
+        if (this.keys.d.isDown && xDir !== -1) this.snake.move_snake("d");
 
         this.snake.update(deltaTime);
 
-        const [gridX, gridY] = this.snake.position;
+        const [xGrid, gridY] = this.snake.position;
 
         this.snakeGraphics.setPosition(
-            gridX * sizes.square,
+            xGrid * sizes.square,
             gridY * sizes.square
         );
     }
+
+    onGameOver() {
+        console.log("Game Over!");
+        this.scene.restart();
+    }
+
+    shutdown() {
+        if (this.snakeGraphics) this.snakeGraphics.destroy();
+    }
 }
+
+window.onGameOver = () => {
+    const sceneManager = window.game.scene;
+    const gameScene = sceneManager.getScene("GameScene") as GameScene;
+
+    gameScene.onGameOver();
+};
 
 export default GameScene;
