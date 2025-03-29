@@ -63,7 +63,7 @@ impl Rectangle {
         let move_amount = self.speed * self.grid_size as f64 * delta_time;
         let dx = self.target_position.0 - self.visual_position.0;
         let dy = self.target_position.1 - self.visual_position.1;
-        let distance = (dx * dx + dy * dy).sqrt();
+        let distance = dx.abs().max(dy.abs());
 
         if distance <= move_amount {
             self.visual_position = self.target_position;
@@ -87,9 +87,19 @@ impl Rectangle {
 
             self.at_grid_position = false;
         } else {
-            let ratio = move_amount / distance;
-            self.visual_position.0 += dx * ratio;
-            self.visual_position.1 += dy * ratio;
+            let step_x = if dx != 0.0 {
+                dx.signum() * move_amount
+            } else {
+                0.0
+            };
+            let step_y = if dy != 0.0 {
+                dy.signum() * move_amount
+            } else {
+                0.0
+            };
+
+            self.visual_position.0 += step_x;
+            self.visual_position.1 += step_y;
         }
     }
 
