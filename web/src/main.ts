@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import GameScene from "./scenes/GameScene";
+import GameScene from "./game/scenes/GameScene";
 import { sizes } from "./consts";
 
 const config: Phaser.Types.Core.GameConfig = {

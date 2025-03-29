@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { sizes, colors } from "../consts";
+import { sizes, colors } from "../../consts";
 
 export function createGrid(scene: Phaser.Scene): void {
     const { width, height, square } = sizes;
