@@ -8,7 +8,6 @@ class GameScene extends Phaser.Scene {
     private inputHandler!: InputHandler;
     private snake!: Rectangle;
     private snakeGraphics!: Phaser.GameObjects.Rectangle;
-    private pixelPosition: [number, number] = [210, 210];
 
     constructor() {
         super({ key: "GameScene" });
@@ -19,10 +18,12 @@ class GameScene extends Phaser.Scene {
         this.snake = new Rectangle();
         createGrid(this);
 
+        const [x, y] = this.snake.position;
+
         this.snakeGraphics = this.add
             .rectangle(
-                this.pixelPosition[0],
-                this.pixelPosition[1],
+                x,
+                y,
                 sizes.square - sizes.gap,
                 sizes.square - sizes.gap,
                 colors.snake.human
@@ -40,15 +41,10 @@ class GameScene extends Phaser.Scene {
         this.lastTime = time;
 
         this.inputHandler.handleInput(this.snake);
-
         this.snake.update(deltaTime);
 
-        const [xGrid, gridY] = this.snake.position;
-
-        this.snakeGraphics.setPosition(
-            xGrid * sizes.square,
-            gridY * sizes.square
-        );
+        const [x, y] = this.snake.position;
+        this.snakeGraphics.setPosition(x, y);
     }
 
     onGameOver() {
