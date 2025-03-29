@@ -42,26 +42,27 @@ class GameScene extends Phaser.Scene {
         };
     }
 
-    update() {
-        const [dirX, dirY] = this.snake.direction();
-        const speed = 2;
+    private lastTime: number = 0;
 
+    update(time: number) {
+        if (!this.lastTime) this.lastTime = time;
+        const deltaTime = (time - this.lastTime) / 1000;
+        this.lastTime = time;
+
+        const [dirX, dirY] = this.snake.direction;
         if (this.keys.w.isDown && dirY !== 1) this.snake.move_snake("w");
         if (this.keys.a.isDown && dirX !== 1) this.snake.move_snake("a");
         if (this.keys.s.isDown && dirY !== -1) this.snake.move_snake("s");
         if (this.keys.d.isDown && dirX !== -1) this.snake.move_snake("d");
 
-        this.pixelPosition[0] += dirX * speed;
-        this.pixelPosition[1] += dirY * speed;
+        this.snake.update(deltaTime);
+
+        const [gridX, gridY] = this.snake.position;
 
         this.snakeGraphics.setPosition(
-            this.pixelPosition[0],
-            this.pixelPosition[1]
+            gridX * sizes.square,
+            gridY * sizes.square
         );
-
-        const gridX = Math.round(this.pixelPosition[0] / sizes.square);
-        const gridY = Math.round(this.pixelPosition[1] / sizes.square);
-        this.snake.update_position(gridX, gridY);
     }
 }
 
