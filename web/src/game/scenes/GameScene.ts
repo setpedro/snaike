@@ -30,7 +30,7 @@ class GameScene extends Phaser.Scene {
             )
             .setOrigin(0.5);
 
-        this.inputHandler = new InputHandler(this);
+        this.inputHandler = new InputHandler(this, this.snake);
     }
 
     private lastTime: number = 0;
@@ -40,7 +40,6 @@ class GameScene extends Phaser.Scene {
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
-        this.inputHandler.handleInput(this.snake);
         this.snake.update(deltaTime);
 
         const [x, y] = this.snake.position;

@@ -1,4 +1,7 @@
+use input::InputState;
 use wasm_bindgen::prelude::*;
+
+mod input;
 
 #[wasm_bindgen]
 pub struct Rectangle {
@@ -9,7 +12,9 @@ pub struct Rectangle {
     speed: f64,
     grid_size: i32,
     target_position: (f64, f64),
-    at_grid_position: bool,
+    input_state: InputState,
+    #[wasm_bindgen(readonly)]
+    pub at_grid_position: bool,
 }
 
 #[wasm_bindgen]
@@ -33,33 +38,47 @@ impl Rectangle {
             target_position: (pixel_x, pixel_y),
             direction: (1, 0),
             next_direction: None,
-            speed: 8.0,
+            speed: 7.5,
             grid_size,
+            input_state: InputState::new(),
             at_grid_position: true,
         }
     }
 
     #[wasm_bindgen]
-    pub fn move_snake(&mut self, input: char) {
-        let new_dir = match input.to_ascii_lowercase() {
-            'w' => (0, -1),
-            'a' => (-1, 0),
-            's' => (0, 1),
-            'd' => (1, 0),
-            _ => return,
-        };
-
-        if (new_dir.0 == -self.direction.0 && new_dir.1 == -self.direction.1)
-            || new_dir == self.direction
-        {
-            return;
-        }
-
-        self.next_direction = Some(new_dir);
+    pub fn set_key(&mut self, key: char, is_pressed: bool) {
+        self.input_state.set_key(key, is_pressed);
     }
 
     #[wasm_bindgen]
     pub fn update(&mut self, delta_time: f64) {
+        let pressed = self.input_state.pressed;
+        let new_dir = if pressed & 0b0001 != 0 {
+            (0, -1)
+        }
+        // Up
+        else if pressed & 0b1000 != 0 {
+            (1, 0)
+        }
+        // Right
+        else if pressed & 0b0100 != 0 {
+            (0, 1)
+        }
+        // Down
+        else if pressed & 0b0010 != 0 {
+            (-1, 0)
+        }
+        // Left
+        else {
+            self.direction
+        };
+
+        if new_dir != self.direction
+            && !(new_dir.0 == -self.direction.0 && new_dir.1 == -self.direction.1)
+        {
+            self.next_direction = Some(new_dir);
+        }
+
         let move_amount = self.speed * self.grid_size as f64 * delta_time;
         let dx = self.target_position.0 - self.visual_position.0;
         let dy = self.target_position.1 - self.visual_position.1;
