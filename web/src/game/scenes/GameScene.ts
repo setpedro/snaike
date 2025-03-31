@@ -1,12 +1,14 @@
 import Phaser from "phaser";
 import { createGrid } from "../systems/createGrid";
-import init, { Rectangle } from "../../../public/pkg/snake_spark";
+import init, { Rectangle, GameState } from "../../../public/pkg/snake_spark";
 import { colors, sizes } from "../../consts";
 import { InputHandler } from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
     private snake!: Rectangle;
     private snakeGraphics!: Phaser.GameObjects.Rectangle;
+
+    private gameState!: GameState;
 
     constructor() {
         super({ key: "GameScene" });
@@ -15,8 +17,31 @@ class GameScene extends Phaser.Scene {
     async create() {
         await init();
         this.snake = new Rectangle();
+        this.gameState = new GameState();
+
         createGrid(this);
 
+        this.spawnFood();
+        this.spawnSnake();
+
+        new InputHandler(this, this.snake);
+    }
+
+    spawnFood() {
+        const [foodX, foodY] = this.gameState.get_food();
+
+        this.add
+            .rectangle(
+                foodX,
+                foodY,
+                sizes.square - sizes.gap,
+                sizes.square - sizes.gap,
+                colors.food
+            )
+            .setOrigin(0.5);
+    }
+
+    spawnSnake() {
         const [x, y] = this.snake.position;
 
         this.snakeGraphics = this.add
@@ -28,8 +53,6 @@ class GameScene extends Phaser.Scene {
                 colors.snake.human
             )
             .setOrigin(0.5);
-
-        new InputHandler(this, this.snake);
     }
 
     private lastTime: number = 0;

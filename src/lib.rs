@@ -1,6 +1,7 @@
 use input::InputState;
 use wasm_bindgen::prelude::*;
 
+mod game_state;
 mod input;
 
 #[wasm_bindgen]
