@@ -1,6 +1,9 @@
+use enums::Collision;
+use game_state::GameState;
 use input::InputState;
 use wasm_bindgen::prelude::*;
 
+mod enums;
 mod game_state;
 mod input;
 
@@ -55,6 +58,8 @@ impl Rectangle {
     pub fn update(&mut self, delta_time: f64) {
         self.process_input();
         self.update_movement(delta_time);
+
+        // TODO: food collision check to start with
     }
 
     fn process_input(&mut self) {
