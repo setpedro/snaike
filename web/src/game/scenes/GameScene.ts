@@ -1,14 +1,13 @@
 import Phaser from "phaser";
 import { createGrid } from "../systems/createGrid";
-import init, { Rectangle, GameState } from "../../../public/pkg/snake_spark";
+import init, { GameState } from "../../../public/pkg/snake_spark";
 import { colors, sizes } from "../../consts";
 import { InputHandler } from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
-    private snake!: Rectangle;
-    private snakeGraphics!: Phaser.GameObjects.Rectangle;
-
     private gameState!: GameState;
+    private snakeGraphics!: Phaser.GameObjects.Rectangle;
+    private foodGraphics!: Phaser.GameObjects.Rectangle;
 
     constructor() {
         super({ key: "GameScene" });
@@ -16,14 +15,13 @@ class GameScene extends Phaser.Scene {
 
     async create() {
         await init();
-        this.snake = new Rectangle();
         this.gameState = new GameState();
-
         createGrid(this);
 
         this.spawnFood();
         this.spawnSnake();
 
+        // TODO: fix 
         new InputHandler(this, this.snake);
     }
 
