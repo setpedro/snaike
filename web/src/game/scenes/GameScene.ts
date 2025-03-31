@@ -5,7 +5,6 @@ import { colors, sizes } from "../../consts";
 import { InputHandler } from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
-    private inputHandler!: InputHandler;
     private snake!: Rectangle;
     private snakeGraphics!: Phaser.GameObjects.Rectangle;
 
@@ -30,7 +29,7 @@ class GameScene extends Phaser.Scene {
             )
             .setOrigin(0.5);
 
-        this.inputHandler = new InputHandler(this, this.snake);
+        new InputHandler(this, this.snake);
     }
 
     private lastTime: number = 0;

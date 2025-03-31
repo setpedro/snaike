@@ -1,5 +1,3 @@
-// web/src/consts.ts
-
 export const sizes = {
     width: 600,
     height: 400,
