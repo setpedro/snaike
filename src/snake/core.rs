@@ -2,22 +2,15 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct SnakeCore {
-    grid_position: Vec2,
+    grid_position: (i32, i32),
     visual_position: (f64, f64),
-    pub(crate) direction: Vec2,
-    pub next_direction: Option<Vec2>,
+    pub(crate) direction: (i32, i32),
+    pub(crate) next_direction: Option<(i32, i32)>,
     speed: f64,
     grid_size: i32,
     target_position: (f64, f64),
     #[wasm_bindgen(readonly)]
     pub at_grid_position: bool,
-}
-
-#[wasm_bindgen]
-#[derive(Clone, Copy, PartialEq)]
-pub struct Vec2 {
-    pub x: i32,
-    pub y: i32,
 }
 
 #[wasm_bindgen]
@@ -30,15 +23,15 @@ extern "C" {
 impl SnakeCore {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        let grid_pos = Vec2 { x: 10, y: 10 };
+        let grid_pos = (10, 10);
         let grid_size = 20;
-        let pixel_x = (grid_pos.x as f64 + 0.5) * grid_size as f64;
-        let pixel_y = (grid_pos.y as f64 + 0.5) * grid_size as f64;
+        let pixel_x = (grid_pos.0 as f64 + 0.5) * grid_size as f64;
+        let pixel_y = (grid_pos.1 as f64 + 0.5) * grid_size as f64;
 
         Self {
             grid_position: grid_pos,
             visual_position: (pixel_x, pixel_y),
-            direction: Vec2 { x: 1, y: 0 },
+            direction: (1, 0),
             next_direction: None,
             speed: 7.5,
             grid_size,
@@ -55,19 +48,19 @@ impl SnakeCore {
         let distance = dx.abs().max(dy.abs());
 
         if distance <= move_amount {
-            self.grid_position.x += self.direction.x;
-            self.grid_position.y += self.direction.y;
+            self.grid_position.0 += self.direction.0;
+            self.grid_position.1 += self.direction.1;
 
             self.target_position = (
-                (self.grid_position.x as f64 + 0.5) * self.grid_size as f64,
-                (self.grid_position.y as f64 + 0.5) * self.grid_size as f64,
+                (self.grid_position.0 as f64 + 0.5) * self.grid_size as f64,
+                (self.grid_position.1 as f64 + 0.5) * self.grid_size as f64,
             );
-            self.grid_position.x += self.direction.x;
-            self.grid_position.y += self.direction.y;
+            self.grid_position.0 += self.direction.0;
+            self.grid_position.1 += self.direction.1;
 
             self.target_position = (
-                (self.grid_position.x as f64 + 0.5) * self.grid_size as f64,
-                (self.grid_position.y as f64 + 0.5) * self.grid_size as f64,
+                (self.grid_position.0 as f64 + 0.5) * self.grid_size as f64,
+                (self.grid_position.1 as f64 + 0.5) * self.grid_size as f64,
             );
 
             if self.is_out_of_bounds() {
@@ -93,10 +86,10 @@ impl SnakeCore {
     }
 
     fn is_out_of_bounds(&self) -> bool {
-        self.grid_position.x < 0
-            || self.grid_position.x >= 30
-            || self.grid_position.y < 0
-            || self.grid_position.y >= 20
+        self.grid_position.0 < 0
+            || self.grid_position.0 >= 30
+            || self.grid_position.1 < 0
+            || self.grid_position.1 >= 20
     }
 
     #[wasm_bindgen(getter)]
@@ -106,6 +99,6 @@ impl SnakeCore {
 
     #[wasm_bindgen(getter)]
     pub fn direction(&self) -> Vec<i32> {
-        vec![self.direction.x, self.direction.y]
+        vec![self.direction.0, self.direction.1]
     }
 }
