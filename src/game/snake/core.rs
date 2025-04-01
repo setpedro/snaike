@@ -13,12 +13,6 @@ pub struct SnakeCore {
 }
 
 #[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_name = "onGameOver")]
-    pub fn on_game_over();
-}
-
-#[wasm_bindgen]
 impl SnakeCore {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
@@ -62,10 +56,6 @@ impl SnakeCore {
                 (self.grid_position.1 as f64 + 0.5) * self.grid_size as f64,
             );
 
-            if self.is_out_of_bounds() {
-                on_game_over();
-            }
-
             self.at_grid_position = false;
         } else {
             let step_x = if dx != 0.0 {
@@ -82,13 +72,6 @@ impl SnakeCore {
             self.visual_position.0 += step_x;
             self.visual_position.1 += step_y;
         }
-    }
-
-    fn is_out_of_bounds(&self) -> bool {
-        self.grid_position.0 < 0
-            || self.grid_position.0 >= 30
-            || self.grid_position.1 < 0
-            || self.grid_position.1 >= 20
     }
 
     #[wasm_bindgen(getter)]

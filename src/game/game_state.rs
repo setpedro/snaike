@@ -10,6 +10,12 @@ pub struct GameState {
 }
 
 #[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_name = "onGameOver")]
+    pub fn on_game_over();
+}
+
+#[wasm_bindgen]
 impl GameState {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
@@ -24,14 +30,20 @@ impl GameState {
         self.human.update(delta_time);
 
         let head_position = self.human.core.position();
+
+        // Ensures the snake's head is exactly aligned with the grid
         let at_grid_position = ((head_position[0] - 10.0) % 20.0).abs() < f64::EPSILON
             && ((head_position[1] - 10.0) % 20.0).abs() < f64::EPSILON;
 
+        // Collision checks occur only at grid nodes, at least for static entities (food, walls)
+        // TODO: Handle head-on collisions between two snakes (not limited to grid nodes)
         if at_grid_position {
+            // Uses head_at_grid_position to ensure the snake only eats food when fully aligned with a grid cell, preventing partial overlaps
             let head_at_grid_position = (head_position[0] as i32, head_position[1] as i32);
 
             let collision: Option<Collision> = match () {
                 _ if head_at_grid_position == self.food => Some(Collision::Food),
+                _ if self.is_out_of_bounds() => Some(Collision::Wall),
                 _ => None,
             };
 
@@ -41,8 +53,19 @@ impl GameState {
         }
     }
 
+    fn is_out_of_bounds(&self) -> bool {
+        // Uses grid_position to ensure the snake stops immediately when reaching a boundary, avoiding visually going through the wall
+        self.human.core.grid_position.0 < 0
+            || self.human.core.grid_position.0 >= 30
+            || self.human.core.grid_position.1 < 0
+            || self.human.core.grid_position.1 >= 20
+    }
+
     fn handle_collision(&self, collision: Collision) {
-        web_sys::console::log_1(&format!("Collision detected: {:?}", collision).into());
+        match collision {
+            Collision::Food => web_sys::console::log_1(&format!("Food eaten").into()),
+            Collision::Wall => on_game_over(),
+        }
     }
 
     #[wasm_bindgen]
