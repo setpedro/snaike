@@ -48,13 +48,13 @@ impl SnakeCore {
         let distance = dx.abs().max(dy.abs());
 
         if distance <= move_amount {
-            self.grid_position.0 += self.direction.0;
-            self.grid_position.1 += self.direction.1;
+            self.visual_position = self.target_position;
+            self.at_grid_position = true;
 
-            self.target_position = (
-                (self.grid_position.0 as f64 + 0.5) * self.grid_size as f64,
-                (self.grid_position.1 as f64 + 0.5) * self.grid_size as f64,
-            );
+            if let Some(new_dir) = self.next_direction.take() {
+                self.direction = new_dir;
+            }
+
             self.grid_position.0 += self.direction.0;
             self.grid_position.1 += self.direction.1;
 

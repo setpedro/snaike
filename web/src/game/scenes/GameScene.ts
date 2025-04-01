@@ -7,10 +7,13 @@ import { InputHandler } from "../systems/input/InputHandler";
 class GameScene extends Phaser.Scene {
     private gameState!: GameState;
     private snakeGraphics!: Phaser.GameObjects.Rectangle;
-    private foodGraphics!: Phaser.GameObjects.Rectangle;
 
     constructor() {
         super({ key: "GameScene" });
+    }
+
+    private get snakePosition(): [number, number] {
+        return this.gameState.get_snake_position() as unknown as [number, number];
     }
 
     async create() {
@@ -21,8 +24,7 @@ class GameScene extends Phaser.Scene {
         this.spawnFood();
         this.spawnSnake();
 
-        // TODO: fix 
-        new InputHandler(this, this.snake);
+        new InputHandler(this, this.gameState);
     }
 
     spawnFood() {
@@ -40,7 +42,7 @@ class GameScene extends Phaser.Scene {
     }
 
     spawnSnake() {
-        const [x, y] = this.snake.position;
+        const [x, y] = this.snakePosition;
 
         this.snakeGraphics = this.add
             .rectangle(
@@ -60,9 +62,9 @@ class GameScene extends Phaser.Scene {
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
-        this.snake.update(deltaTime);
+        this.gameState.update(deltaTime);
 
-        const [x, y] = this.snake.position;
+        const [x, y] = this.gameState.get_snake_position();
         this.snakeGraphics.setPosition(x, y);
     }
 

@@ -40,4 +40,19 @@ impl GameState {
     pub fn food(&self) -> Vec<i32> {
         vec![self.food.0, self.food.1]
     }
+
+    #[wasm_bindgen]
+    pub fn get_snake_position(&self) -> Vec<f64> {
+        self.human.core.position()
+    }
+
+    #[wasm_bindgen]
+    pub fn get_snake_direction(&self) -> Vec<i32> {
+        self.human.core.direction()
+    }
+
+    #[wasm_bindgen]
+    pub fn set_input_key(&mut self, key: char, is_pressed: bool) {
+        self.human.input_state.set_key(key, is_pressed);
+    }
 }

@@ -4,8 +4,8 @@ use crate::snake::{core::SnakeCore, human::input::InputState};
 
 #[wasm_bindgen]
 pub struct HumanSnake {
-    core: SnakeCore,
-    input_state: InputState,
+    pub(crate) core: SnakeCore,
+    pub(crate) input_state: InputState,
 }
 
 #[wasm_bindgen]
@@ -26,6 +26,7 @@ impl HumanSnake {
 
     fn process_input(&mut self) {
         let pressed = self.input_state.pressed;
+
         let new_dir = match () {
             _ if pressed & 0b0001 != 0 => (0, -1),               // Up
             _ if pressed & 0b1000 != 0 => (1, 0),                // Right
