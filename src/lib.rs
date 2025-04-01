@@ -1,3 +1,4 @@
+mod enums;
 mod game_state;
 mod snake;
 

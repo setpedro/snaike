@@ -2,15 +2,14 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub struct SnakeCore {
-    grid_position: (i32, i32),
+    pub(crate) grid_position: (i32, i32),
     visual_position: (f64, f64),
     pub(crate) direction: (i32, i32),
     pub(crate) next_direction: Option<(i32, i32)>,
     speed: f64,
     grid_size: i32,
     target_position: (f64, f64),
-    #[wasm_bindgen(readonly)]
-    pub at_grid_position: bool,
+    pub(crate) at_grid_position: bool,
 }
 
 #[wasm_bindgen]

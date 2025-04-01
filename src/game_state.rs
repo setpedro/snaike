@@ -1,11 +1,11 @@
 use rand::{thread_rng, Rng};
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::snake::human::human::HumanSnake;
+use crate::{enums::Collision, snake::human::human::HumanSnake};
 
 #[wasm_bindgen]
 pub struct GameState {
-    pub(crate) human: HumanSnake, // PROBLEM HERE, I CAN'T ACCESS IN THE JS LIKE: new InputHandler(this, this.gameState.human); "Property 'human' does not exist on type 'GameState'."
+    pub(crate) human: HumanSnake,
     food: (i32, i32),
 }
 
@@ -23,7 +23,26 @@ impl GameState {
     pub fn update(&mut self, delta_time: f64) {
         self.human.update(delta_time);
 
-        // TODO: collision / food checks...
+        let head_position = self.human.core.position();
+        let at_grid_position = ((head_position[0] - 10.0) % 20.0).abs() < f64::EPSILON
+            && ((head_position[1] - 10.0) % 20.0).abs() < f64::EPSILON;
+
+        if at_grid_position {
+            let head_at_grid_position = (head_position[0] as i32, head_position[1] as i32);
+
+            let collision: Option<Collision> = match () {
+                _ if head_at_grid_position == self.food => Some(Collision::Food),
+                _ => None,
+            };
+
+            if let Some(collision_type) = collision {
+                self.handle_collision(collision_type);
+            }
+        }
+    }
+
+    fn handle_collision(&self, collision: Collision) {
+        web_sys::console::log_1(&format!("Collision detected: {:?}", collision).into());
     }
 
     #[wasm_bindgen]
