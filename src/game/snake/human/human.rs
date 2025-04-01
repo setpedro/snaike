@@ -1,6 +1,6 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::snake::{core::SnakeCore, human::input::InputState};
+use crate::game::snake::{core::SnakeCore, human::input::InputState};
 
 #[wasm_bindgen]
 pub struct HumanSnake {

@@ -1,7 +1,7 @@
 use rand::{thread_rng, Rng};
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{enums::Collision, snake::human::human::HumanSnake};
+use crate::{game::enums::Collision, game::snake::human::human::HumanSnake};
 
 #[wasm_bindgen]
 pub struct GameState {
