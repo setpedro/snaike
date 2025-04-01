@@ -7,7 +7,15 @@ export class InputHandler {
     constructor(scene: Phaser.Scene, gameState: GameState) {
         scene.input.keyboard!.on("keydown", (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
-            if (!this.lastKeys.has(key)) {
+            if (["w", "a", "s", "d"].includes(key)) {
+                // Clear other keys
+                this.lastKeys.forEach((k) => {
+                    if (k !== key) {
+                        gameState.set_input_key(k, false);
+                    }
+                });
+                this.lastKeys.clear();
+                // Set new key
                 gameState.set_input_key(key, true);
                 this.lastKeys.add(key);
             }

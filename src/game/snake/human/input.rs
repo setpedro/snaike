@@ -27,9 +27,4 @@ impl InputState {
             self.pressed & !bit
         };
     }
-
-    #[wasm_bindgen]
-    pub fn get_key(&mut self, key: char, is_pressed: bool) {
-        self.set_key(key, is_pressed);
-    }
 }

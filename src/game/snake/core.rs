@@ -26,7 +26,7 @@ impl SnakeCore {
             visual_position: (pixel_x, pixel_y),
             direction: (1, 0),
             next_direction: None,
-            speed: 8.5,
+            speed: 7.5,
             grid_size,
             target_position: (pixel_x, pixel_y),
             at_grid_position: true,
