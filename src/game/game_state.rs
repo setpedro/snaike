@@ -61,9 +61,12 @@ impl GameState {
             || self.human.core.grid_position.1 >= 20
     }
 
-    fn handle_collision(&self, collision: Collision) {
+    fn handle_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::Food => web_sys::console::log_1(&format!("Food eaten").into()),
+            Collision::Food => {
+                self.human.core.grow();
+                self.get_food();
+            }
             Collision::Wall => on_game_over(),
         }
     }
@@ -75,6 +78,7 @@ impl GameState {
 
         self.food = (x, y);
 
+        web_sys::console::log_1(&format!("{}, {}", x, y).into());
         vec![x, y]
     }
 
@@ -91,6 +95,11 @@ impl GameState {
     #[wasm_bindgen]
     pub fn get_snake_direction(&self) -> Vec<i32> {
         self.human.core.direction()
+    }
+
+    #[wasm_bindgen]
+    pub fn get_body_positions(&self) -> Vec<f64> {
+        self.human.core.get_body_positions()
     }
 
     #[wasm_bindgen]

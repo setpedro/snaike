@@ -6,7 +6,8 @@ import { InputHandler } from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
     private gameState!: GameState;
-    private snakeGraphics!: Phaser.GameObjects.Rectangle;
+    private snakeSegments: Phaser.GameObjects.Rectangle[] = [];
+    private foodGraphics!: Phaser.GameObjects.Rectangle;
 
     constructor() {
         super({ key: "GameScene" });
@@ -43,16 +44,18 @@ class GameScene extends Phaser.Scene {
 
     spawnSnake() {
         const [x, y] = this.snakePosition;
+        this.snakeSegments = [
+            this.createSegment(x, y)
+        ];
+    }
 
-        this.snakeGraphics = this.add
-            .rectangle(
-                x,
-                y,
-                sizes.square - sizes.gap,
-                sizes.square - sizes.gap,
-                colors.snake.human
-            )
-            .setOrigin(0.5);
+
+    private createSegment(x: number, y: number) {
+        return this.add.rectangle(x, y, 
+            sizes.square - sizes.gap, 
+            sizes.square - sizes.gap,
+            colors.snake.human
+        ).setOrigin(0.5);
     }
 
     private lastTime: number = 0;
@@ -64,8 +67,22 @@ class GameScene extends Phaser.Scene {
 
         this.gameState.update(deltaTime);
 
-        const [x, y] = this.gameState.get_snake_position();
-        this.snakeGraphics.setPosition(x, y);
+        const headPos = this.gameState.get_snake_position();
+        const bodyPositions = this.gameState.get_body_positions();
+        
+        // Update head
+        this.snakeSegments[0].setPosition(headPos[0], headPos[1]);
+
+        for (let i = 0; i < bodyPositions.length / 2; i++) {
+            const x = bodyPositions[i * 2];
+            const y = bodyPositions[i * 2 + 1];
+            
+            if (!this.snakeSegments[i + 1]) {
+                this.snakeSegments.push(this.createSegment(x, y));
+            } else {
+                this.snakeSegments[i + 1].setPosition(x, y);
+            }
+        }
     }
 
     onGameOver() {
@@ -74,7 +91,21 @@ class GameScene extends Phaser.Scene {
     }
 
     shutdown() {
-        if (this.snakeGraphics) this.snakeGraphics.destroy();
+        if (this.foodGraphics) {
+            this.foodGraphics.destroy();
+        }
+
+        const [foodX, foodY] = this.gameState.get_food();
+
+        this.foodGraphics = this.add
+            .rectangle(
+                foodX,
+                foodY,
+                sizes.square - sizes.gap,
+                sizes.square - sizes.gap,
+                colors.food
+            )
+            .setOrigin(0.5);
     }
 }
 
