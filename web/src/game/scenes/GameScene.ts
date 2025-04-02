@@ -14,7 +14,10 @@ class GameScene extends Phaser.Scene {
     }
 
     private get snakePosition(): [number, number] {
-        return this.gameState.get_snake_position() as unknown as [number, number];
+        return this.gameState.get_snake_position() as unknown as [
+            number,
+            number
+        ];
     }
 
     async create() {
@@ -29,9 +32,13 @@ class GameScene extends Phaser.Scene {
     }
 
     spawnFood() {
-        const [foodX, foodY] = this.gameState.get_food();
+        if (this.foodGraphics) {
+            this.foodGraphics.destroy();
+        }
 
-        this.add
+        const [foodX, foodY] = this.gameState.food;
+
+        this.foodGraphics = this.add
             .rectangle(
                 foodX,
                 foodY,
@@ -44,18 +51,19 @@ class GameScene extends Phaser.Scene {
 
     spawnSnake() {
         const [x, y] = this.snakePosition;
-        this.snakeSegments = [
-            this.createSegment(x, y)
-        ];
+        this.snakeSegments = [this.createSegment(x, y)];
     }
 
-
     private createSegment(x: number, y: number) {
-        return this.add.rectangle(x, y, 
-            sizes.square - sizes.gap, 
-            sizes.square - sizes.gap,
-            colors.snake.human
-        ).setOrigin(0.5);
+        return this.add
+            .rectangle(
+                x,
+                y,
+                sizes.square - sizes.gap,
+                sizes.square - sizes.gap,
+                colors.snake.human
+            )
+            .setOrigin(0.5);
     }
 
     private lastTime: number = 0;
@@ -69,16 +77,20 @@ class GameScene extends Phaser.Scene {
 
         const headPos = this.gameState.get_snake_position();
         const bodyPositions = this.gameState.get_body_positions();
-        
+
         // Update head
         this.snakeSegments[0].setPosition(headPos[0], headPos[1]);
 
+        // Update body segments
         for (let i = 0; i < bodyPositions.length / 2; i++) {
             const x = bodyPositions[i * 2];
             const y = bodyPositions[i * 2 + 1];
-            
+
             if (!this.snakeSegments[i + 1]) {
                 this.snakeSegments.push(this.createSegment(x, y));
+                // If there's a new body segment, spawn food
+                // TODO: handle this better
+                this.spawnFood();
             } else {
                 this.snakeSegments[i + 1].setPosition(x, y);
             }

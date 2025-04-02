@@ -19,10 +19,14 @@ extern "C" {
 impl GameState {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        Self {
+        let mut game_state = Self {
             food: (0, 0),
             human: HumanSnake::new(),
-        }
+        };
+
+        // Initialize food using the method
+        game_state.get_food();
+        game_state
     }
 
     #[wasm_bindgen]
@@ -78,7 +82,6 @@ impl GameState {
 
         self.food = (x, y);
 
-        web_sys::console::log_1(&format!("{}, {}", x, y).into());
         vec![x, y]
     }
 
