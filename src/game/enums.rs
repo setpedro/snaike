@@ -2,4 +2,5 @@
 pub enum Collision {
     Food,
     Wall,
+    OwnBody,
 }

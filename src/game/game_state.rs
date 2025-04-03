@@ -48,6 +48,9 @@ impl GameState {
             let collision: Option<Collision> = match () {
                 _ if head_at_grid_position == self.food => Some(Collision::Food),
                 _ if self.is_out_of_bounds() => Some(Collision::Wall),
+                _ if self.human.core.body_segments.len() > 3 && self.is_self_collided() => {
+                    Some(Collision::OwnBody)
+                }
                 _ => None,
             };
 
@@ -58,11 +61,15 @@ impl GameState {
     }
 
     fn is_out_of_bounds(&self) -> bool {
-        // Uses grid_position to ensure the snake stops immediately when reaching a boundary, avoiding visually going through the wall
+        // Uses grid_position to ensure the snake stops immediately when reaching a boundary, avoiding visually going through the wall until reaching the grid node
         self.human.core.grid_position.0 < 0
             || self.human.core.grid_position.0 >= 30
             || self.human.core.grid_position.1 < 0
             || self.human.core.grid_position.1 >= 20
+    }
+
+    fn is_self_collided(&self) -> bool {
+        self.human.core.check_self_collision()
     }
 
     fn handle_collision(&mut self, collision: Collision) {
@@ -72,6 +79,7 @@ impl GameState {
                 self.get_food();
             }
             Collision::Wall => on_game_over(),
+            Collision::OwnBody => on_game_over(),
         }
     }
 

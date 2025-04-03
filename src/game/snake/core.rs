@@ -13,7 +13,7 @@ pub struct SnakeCore {
     target_position: (f64, f64),
     pub(crate) at_grid_position: bool,
     path_history: VecDeque<PathEntry>,
-    body_segments: Vec<BodySegment>,
+    pub(crate) body_segments: Vec<BodySegment>,
 }
 
 #[wasm_bindgen]
@@ -24,8 +24,8 @@ struct PathEntry {
 }
 
 #[wasm_bindgen]
-#[derive(Clone)]
-struct BodySegment {
+#[derive(Clone, Debug)]
+pub struct BodySegment {
     current_pos: (f64, f64),
     offset: usize, // Steps behind head (1 for first segment, 2 for second, etc)
     progress: f64,
@@ -141,6 +141,19 @@ impl SnakeCore {
     #[wasm_bindgen(getter)]
     pub fn position(&self) -> Vec<f64> {
         vec![self.visual_position.0, self.visual_position.1]
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn check_self_collision(&self) -> bool {
+        let head_position = self.position();
+
+        // don't need to check for first 3 body segments (impossible to collide)
+        for i in 3..self.body_segments.len() {
+            if self.body_segments[i].current_pos == (head_position[0], head_position[1]) {
+                return true;
+            }
+        }
+        false
     }
 
     #[wasm_bindgen(getter)]
