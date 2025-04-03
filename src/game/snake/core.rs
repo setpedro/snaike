@@ -95,16 +95,9 @@ impl SnakeCore {
 
             self.at_grid_position = false;
         } else {
-            let step_x = if dx != 0.0 {
-                dx.signum() * move_amount
-            } else {
-                0.0
-            };
-            let step_y = if dy != 0.0 {
-                dy.signum() * move_amount
-            } else {
-                0.0
-            };
+            // direction * if there's movement: (true -> 1.0, false -> 0.0) * move amount
+            let step_x = dx.signum() * (dx.abs() > 0.0) as i32 as f64 * move_amount;
+            let step_y = dy.signum() * (dy.abs() > 0.0) as i32 as f64 * move_amount;
 
             self.visual_position.0 += step_x;
             self.visual_position.1 += step_y;
