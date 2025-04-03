@@ -12,14 +12,14 @@ pub struct SnakeCore {
     grid_size: i32,
     target_position: (f64, f64),
     pub(crate) at_grid_position: bool,
-    path_history: VecDeque<PathEntry>,
+    pub(crate) path_history: VecDeque<PathEntry>,
     pub(crate) body_segments: Vec<BodySegment>,
 }
 
 #[wasm_bindgen]
 #[derive(Clone)]
-struct PathEntry {
-    grid_position: (i32, i32),
+pub struct PathEntry {
+    pub(crate) grid_position: (i32, i32),
     start_visual: (f64, f64),
 }
 
@@ -147,7 +147,7 @@ impl SnakeCore {
     pub fn check_self_collision(&self) -> bool {
         let head_position = self.position();
 
-        // don't need to check for first 3 body segments (impossible to collide)
+        // no need to check for first 3 body segments (impossible to collide)
         for i in 3..self.body_segments.len() {
             if self.body_segments[i].current_pos == (head_position[0], head_position[1]) {
                 return true;

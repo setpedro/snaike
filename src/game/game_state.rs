@@ -5,8 +5,9 @@ use crate::{game::enums::Collision, game::snake::human::human::HumanSnake};
 
 #[wasm_bindgen]
 pub struct GameState {
-    pub(crate) human: HumanSnake,
+    human: HumanSnake,
     food: (i32, i32),
+    occupied_grid: [[bool; 20]; 30],
 }
 
 #[wasm_bindgen]
@@ -20,12 +21,14 @@ impl GameState {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         let mut game_state = Self {
-            food: (0, 0),
             human: HumanSnake::new(),
+            food: (0, 0),
+            occupied_grid: [[false; 20]; 30],
         };
 
-        // Initialize food using the method
-        game_state.get_food();
+        // TODO: refactor this.
+        game_state.update_grid();
+        game_state.regenerate_food();
         game_state
     }
 
@@ -85,12 +88,45 @@ impl GameState {
 
     #[wasm_bindgen]
     pub fn get_food(&mut self) -> Vec<i32> {
-        let x = thread_rng().gen_range(1..30) * 20 + 10;
-        let y = thread_rng().gen_range(1..20) * 20 + 10;
+        self.regenerate_food()
+            .map(|(x, y)| vec![x, y])
+            .unwrap_or_else(|| vec![-1, -1])
+    }
 
-        self.food = (x, y);
+    fn regenerate_food(&mut self) -> Option<(i32, i32)> {
+        self.update_grid();
+        let mut rng = thread_rng();
+        let mut candidates = Vec::with_capacity(600);
 
-        vec![x, y]
+        for x in 0..30 {
+            for y in 0..20 {
+                if !self.occupied_grid[x][y] {
+                    candidates.push((x * 20 + 10, y * 20 + 10));
+                }
+            }
+        }
+
+        if candidates.is_empty() {
+            None
+        } else {
+            let choice = candidates[rng.gen_range(0..candidates.len())];
+            self.food = (choice.0 as i32, choice.1 as i32);
+            Some((choice.0 as i32, choice.1 as i32))
+        }
+    }
+
+    fn update_grid(&mut self) {
+        self.occupied_grid = [[false; 20]; 30];
+
+        // Mark snake head
+        let (hx, hy) = self.human.core.grid_position;
+        self.occupied_grid[hx as usize][hy as usize] = true;
+
+        // Mark body segments using path history
+        for entry in &self.human.core.path_history {
+            let (bx, by) = entry.grid_position;
+            self.occupied_grid[bx as usize][by as usize] = true;
+        }
     }
 
     #[wasm_bindgen(getter)]
