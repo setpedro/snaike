@@ -95,9 +95,8 @@ impl GameState {
 
     fn regenerate_food(&mut self) -> Option<(i32, i32)> {
         self.update_grid();
-        let mut rng = thread_rng();
-        let mut candidates = Vec::with_capacity(600);
 
+        let mut candidates = Vec::with_capacity(600);
         for x in 0..30 {
             for y in 0..20 {
                 if !self.occupied_grid[x][y] {
@@ -109,7 +108,7 @@ impl GameState {
         if candidates.is_empty() {
             None
         } else {
-            let choice = candidates[rng.gen_range(0..candidates.len())];
+            let choice = candidates[thread_rng().gen_range(0..candidates.len())];
             self.food = (choice.0 as i32, choice.1 as i32);
             Some((choice.0 as i32, choice.1 as i32))
         }
