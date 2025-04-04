@@ -108,8 +108,8 @@ impl GameState {
             for y in 0..(GRID_ROWS as usize) {
                 if !self.occupied_grid[x][y] {
                     candidates.push((
-                        x * (GRID_ROWS as usize) + (CELL_SIZE_PX as usize) / 2,
-                        y * (GRID_ROWS as usize) + (CELL_SIZE_PX as usize) / 2,
+                        x * (CELL_SIZE_PX as usize) + (CELL_SIZE_PX as usize) / 2,
+                        y * (CELL_SIZE_PX as usize) + (CELL_SIZE_PX as usize) / 2,
                     ));
                 }
             }
