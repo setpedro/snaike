@@ -2,6 +2,8 @@ use std::collections::VecDeque;
 
 use wasm_bindgen::prelude::*;
 
+use crate::game::constants::CELL_SIZE_PX;
+
 #[wasm_bindgen]
 pub struct SnakeCore {
     pub(crate) grid_position: (i32, i32),
@@ -35,8 +37,8 @@ pub struct BodySegment {
 impl SnakeCore {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        let grid_pos = (10, 10);
-        let grid_size = 20;
+        let grid_pos = (CELL_SIZE_PX / 2, CELL_SIZE_PX / 2);
+        let grid_size = CELL_SIZE_PX;
         let pixel_x = (grid_pos.0 as f64 + 0.5) * grid_size as f64;
         let pixel_y = (grid_pos.1 as f64 + 0.5) * grid_size as f64;
 

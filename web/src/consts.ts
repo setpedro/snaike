@@ -1,7 +1,8 @@
-export const sizes = {
-    width: 600,
-    height: 400,
-    square: 20,
+import { getGridConstants } from "../public/pkg/snake_spark";
+
+export const grid = getGridConstants();
+
+export const VISUAL = {
     gap: 4,
 } as const;
 
@@ -17,9 +18,3 @@ export const colors = {
     },
     food: 0xff0011, // Neon red
 } as const;
-
-export const grid = {
-    cellSize: 20,
-    cols: 30,
-    rows: 20,
-};

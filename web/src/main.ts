@@ -1,11 +1,11 @@
 import Phaser from "phaser";
 import GameScene from "./game/scenes/GameScene";
-import { sizes } from "./consts";
+import { grid } from "./consts";
 
 const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
-    width: sizes.width,
-    height: sizes.height,
+    width: grid.cols * grid.cellSizePx,
+    height: grid.rows * grid.cellSizePx,
     scene: [GameScene],
     scale: { mode: Phaser.Scale.FIT, autoCenter: Phaser.Scale.CENTER_BOTH },
 };

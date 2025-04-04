@@ -1,13 +1,17 @@
 use rand::{thread_rng, Rng};
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::{game::enums::Collision, game::snake::human::human::HumanSnake};
+use crate::game::{
+    constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
+    enums::Collision,
+    snake::human::human::HumanSnake,
+};
 
 #[wasm_bindgen]
 pub struct GameState {
     human: HumanSnake,
     food: (i32, i32),
-    occupied_grid: [[bool; 20]; 30],
+    occupied_grid: [[bool; GRID_ROWS as usize]; GRID_COLS as usize],
 }
 
 #[wasm_bindgen]
@@ -23,7 +27,7 @@ impl GameState {
         let mut game_state = Self {
             human: HumanSnake::new(),
             food: (0, 0),
-            occupied_grid: [[false; 20]; 30],
+            occupied_grid: [[false; GRID_ROWS as usize]; GRID_COLS as usize],
         };
 
         // TODO: refactor this.
@@ -39,8 +43,11 @@ impl GameState {
         let head_position = self.human.core.position();
 
         // Ensures the snake's head is exactly aligned with the grid
-        let at_grid_position = ((head_position[0] - 10.0) % 20.0).abs() < f64::EPSILON
-            && ((head_position[1] - 10.0) % 20.0).abs() < f64::EPSILON;
+        let at_grid_position =
+            ((head_position[0] - ((CELL_SIZE_PX / 2) as f64)) % (CELL_SIZE_PX as f64)).abs()
+                < f64::EPSILON
+                && ((head_position[1] - ((CELL_SIZE_PX / 2) as f64)) % (CELL_SIZE_PX as f64)).abs()
+                    < f64::EPSILON;
 
         // Collision checks occur only at grid nodes, at least for static entities (food, walls)
         // TODO: Handle head-on collisions between two snakes (not limited to grid nodes)
@@ -66,9 +73,9 @@ impl GameState {
     fn is_out_of_bounds(&self) -> bool {
         // Uses grid_position to ensure the snake stops immediately when reaching a boundary, avoiding visually going through the wall until reaching the grid node
         self.human.core.grid_position.0 < 0
-            || self.human.core.grid_position.0 >= 30
+            || self.human.core.grid_position.0 >= GRID_COLS
             || self.human.core.grid_position.1 < 0
-            || self.human.core.grid_position.1 >= 20
+            || self.human.core.grid_position.1 >= GRID_ROWS
     }
 
     fn is_self_collided(&self) -> bool {
@@ -96,11 +103,14 @@ impl GameState {
     fn regenerate_food(&mut self) -> Option<(i32, i32)> {
         self.update_grid();
 
-        let mut candidates = Vec::with_capacity(600);
-        for x in 0..30 {
-            for y in 0..20 {
+        let mut candidates = Vec::with_capacity((GRID_COLS * GRID_ROWS) as usize);
+        for x in 0..(GRID_COLS as usize) {
+            for y in 0..(GRID_ROWS as usize) {
                 if !self.occupied_grid[x][y] {
-                    candidates.push((x * 20 + 10, y * 20 + 10));
+                    candidates.push((
+                        x * (GRID_ROWS as usize) + (CELL_SIZE_PX as usize) / 2,
+                        y * (GRID_ROWS as usize) + (CELL_SIZE_PX as usize) / 2,
+                    ));
                 }
             }
         }
@@ -115,7 +125,7 @@ impl GameState {
     }
 
     fn update_grid(&mut self) {
-        self.occupied_grid = [[false; 20]; 30];
+        self.occupied_grid = [[false; (GRID_ROWS as usize)]; (GRID_COLS as usize)];
 
         // Mark snake head
         let (hx, hy) = self.human.core.grid_position;

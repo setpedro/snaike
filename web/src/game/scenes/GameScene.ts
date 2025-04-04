@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { createGrid } from "../systems/createGrid";
 import init, { GameState } from "../../../public/pkg/snake_spark";
-import { colors, sizes } from "../../consts";
+import { colors, grid, VISUAL } from "../../consts";
 import { InputHandler } from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
@@ -42,8 +42,8 @@ class GameScene extends Phaser.Scene {
             .rectangle(
                 foodX,
                 foodY,
-                sizes.square - sizes.gap,
-                sizes.square - sizes.gap,
+                grid.cellSizePx - VISUAL.gap,
+                grid.cellSizePx - VISUAL.gap,
                 colors.food
             )
             .setOrigin(0.5);
@@ -52,11 +52,11 @@ class GameScene extends Phaser.Scene {
     spawnSnake() {
         if (this.snakeSegments.length > 0) {
             console.log("cleaning previous snake");
-            this.snakeSegments.forEach(segment => segment.destroy());
+            this.snakeSegments.forEach((segment) => segment.destroy());
             this.snakeSegments = [];
         }
 
-        console.log(this.snakeSegments)
+        console.log(this.snakeSegments);
         const [x, y] = this.snakePosition;
         this.snakeSegments = [this.createSegment(x, y)];
     }
@@ -66,8 +66,8 @@ class GameScene extends Phaser.Scene {
             .rectangle(
                 x,
                 y,
-                sizes.square - sizes.gap,
-                sizes.square - sizes.gap,
+                grid.cellSizePx - VISUAL.gap,
+                grid.cellSizePx - VISUAL.gap,
                 colors.snake.human
             )
             .setOrigin(0.5);

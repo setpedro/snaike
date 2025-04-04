@@ -1,14 +1,15 @@
 import Phaser from "phaser";
-import { sizes, colors } from "../../consts";
+import { colors, grid } from "../../consts";
 
 export function createGrid(scene: Phaser.Scene): void {
-    const { width, height, square } = sizes;
     const gap = 1;
-    const cols = Math.floor(width / square);
-    const rows = Math.floor(height / square);
+    const width = grid.cols * grid.cellSizePx;
+    const height = grid.rows * grid.cellSizePx;
+    const cols = grid.cols;
+    const rows = grid.rows;
 
-    const playWidth = cols * square;
-    const playHeight = rows * square;
+    const playWidth = cols * grid.cellSizePx;
+    const playHeight = rows * grid.cellSizePx;
     const offsetX = (width - playWidth) / 2;
     const offsetY = (height - playHeight) / 2;
 
@@ -29,10 +30,10 @@ export function createGrid(scene: Phaser.Scene): void {
                 (x + y) % 2 ? colors.grid.darkTile1 : colors.grid.darkTile2;
             scene.add
                 .rectangle(
-                    offsetX + x * square + square / 2,
-                    offsetY + y * square + square / 2,
-                    square - gap,
-                    square - gap,
+                    offsetX + x * grid.cellSizePx + grid.cellSizePx / 2,
+                    offsetY + y * grid.cellSizePx + grid.cellSizePx / 2,
+                    grid.cellSizePx - gap,
+                    grid.cellSizePx - gap,
                     color
                 )
                 .setOrigin(0.5);
