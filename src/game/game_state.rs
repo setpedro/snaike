@@ -49,11 +49,11 @@ impl GameState {
             let head_at_grid_position = (head_position[0] as i32, head_position[1] as i32);
 
             let collision: Option<Collision> = match () {
-                _ if head_at_grid_position == self.food => Some(Collision::Food),
                 _ if self.is_out_of_bounds() => Some(Collision::Wall),
                 _ if self.human.core.body_segments.len() > 3 && self.is_self_collided() => {
                     Some(Collision::OwnBody)
                 }
+                _ if head_at_grid_position == self.food => Some(Collision::Food),
                 _ => None,
             };
 
@@ -77,12 +77,12 @@ impl GameState {
 
     fn handle_collision(&mut self, collision: Collision) {
         match collision {
+            Collision::Wall => on_game_over(),
+            Collision::OwnBody => on_game_over(),
             Collision::Food => {
                 self.human.core.grow();
                 self.get_food();
             }
-            Collision::Wall => on_game_over(),
-            Collision::OwnBody => on_game_over(),
         }
     }
 
