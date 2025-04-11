@@ -1,6 +1,6 @@
 declare global {
     interface Window {
-        game: Phaser.Game;
+        game: Phaser.Game | undefined;
         onGameOver: () => void;
     }
 }

@@ -111,8 +111,8 @@ class GameScene extends Phaser.Scene {
 }
 
 window.onGameOver = () => {
-    const sceneManager = window.game.scene;
-    const gameScene = sceneManager.getScene("GameScene") as GameScene;
+    const sceneManager = window.game?.scene;
+    const gameScene = sceneManager?.getScene("GameScene") as GameScene;
 
     gameScene.onGameOver();
 };

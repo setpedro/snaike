@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Snake Spark</title>
-    <link rel="stylesheet" href="./src/style.css" />
-  </head>
-  <body>
-    <script type="module">
-      import init from "./public/pkg/snake_spark";
-      await init();
-      import("./src/main.ts");
-    </script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Snake Spark</title>
+        <link rel="stylesheet" href="./src/style.css" />
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type="module">
+            import init from "./public/pkg/snake_spark";
+            await init();
+            import("./src/main.tsx");
+        </script>
+    </body>
 </html>
