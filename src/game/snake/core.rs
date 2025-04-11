@@ -45,7 +45,7 @@ impl SnakeCore {
         Self {
             grid_position: grid_pos,
             visual_position: (pixel_x, pixel_y),
-            direction: (1, 0),
+            direction: (0, 0),
             next_direction: None,
             speed: 7.0,
             grid_size,
