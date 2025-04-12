@@ -7,7 +7,9 @@ const GameCanvas: React.FC = () => {
     const gameContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!gameContainerRef.current) return;
+        if (!gameContainerRef.current) {
+            return;
+        }
 
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
