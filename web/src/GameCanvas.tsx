@@ -5,6 +5,12 @@ import { grid } from "./consts";
 
 const GameCanvas: React.FC = () => {
     const gameContainerRef = useRef<HTMLDivElement>(null);
+    const width = grid.cols * grid.cellSizePx;
+    const height = grid.rows * grid.cellSizePx;
+    const aspectRatio = width / height;
+
+    const displayHeight = "90vh";
+    const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
 
     useEffect(() => {
         if (!gameContainerRef.current) {
@@ -13,8 +19,8 @@ const GameCanvas: React.FC = () => {
 
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
-            width: grid.cols * grid.cellSizePx,
-            height: grid.rows * grid.cellSizePx,
+            width, // Keep base dimensions for game logic
+            height,
             parent: gameContainerRef.current,
             scene: [GameScene],
             scale: {
@@ -42,8 +48,16 @@ const GameCanvas: React.FC = () => {
     }, []);
 
     return (
-        <div className="w-screen h-screen">
-            <div ref={gameContainerRef} />
+        <div className="flex justify-center items-center min-h-screen">
+            <div
+                className="relative border-2 border-white p-2 rounded"
+                style={{
+                    height: displayHeight,
+                    width: displayWidth,
+                }}
+            >
+                <div ref={gameContainerRef} />
+            </div>
         </div>
     );
 };
