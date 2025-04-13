@@ -8,6 +8,7 @@ class GameScene extends Phaser.Scene {
     private gameState!: GameState;
     private snakeSegments: Phaser.GameObjects.Rectangle[] = [];
     private foodGraphics!: Phaser.GameObjects.Rectangle;
+    private gameOverCallback!: () => void;
 
     constructor() {
         super({ key: "GameScene" });
@@ -79,7 +80,7 @@ class GameScene extends Phaser.Scene {
         if (!this.lastTime) {
             this.lastTime = time;
         }
-        
+
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
@@ -107,17 +108,19 @@ class GameScene extends Phaser.Scene {
         }
     }
 
+    setGameOverCallback(cb: () => void) {
+        this.gameOverCallback = cb;
+    }
+
+    handleGameOverFromWasm() {
+        this.onGameOver();
+        this.gameOverCallback();
+    }
+
     onGameOver() {
         console.log("Game Over!");
         this.scene.restart();
     }
 }
-
-window.onGameOver = () => {
-    const sceneManager = window.game?.scene;
-    const gameScene = sceneManager?.getScene("GameScene") as GameScene;
-
-    gameScene.onGameOver();
-};
 
 export default GameScene;

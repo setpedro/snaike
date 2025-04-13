@@ -24,7 +24,16 @@ const GameCanvas: React.FC = () => {
         };
 
         const game = new Phaser.Game(config);
-        window.game = game;
+
+        game.events.on("ready", () => {
+            const scene = game.scene.getScene("GameScene") as GameScene;
+            scene.setGameOverCallback(() => {
+                // TODO
+            });
+
+            // Listens for game over events triggered by WASM
+            window.onGameOver = () => scene.handleGameOverFromWasm();
+        });
 
         return () => {
             game.destroy(true);
