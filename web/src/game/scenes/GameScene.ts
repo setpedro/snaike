@@ -13,13 +13,6 @@ class GameScene extends Phaser.Scene {
         super({ key: "GameScene" });
     }
 
-    private get snakePosition(): [number, number] {
-        return this.gameState.get_snake_position() as unknown as [
-            number,
-            number
-        ];
-    }
-
     async create() {
         await init();
         this.gameState = new GameState();
@@ -61,6 +54,13 @@ class GameScene extends Phaser.Scene {
         this.snakeSegments = [this.createSegment(x, y)];
     }
 
+    private get snakePosition(): [number, number] {
+        return this.gameState.get_snake_position() as unknown as [
+            number,
+            number
+        ];
+    }
+
     private createSegment(x: number, y: number) {
         return this.add
             .rectangle(
@@ -76,7 +76,10 @@ class GameScene extends Phaser.Scene {
     private lastTime: number = 0;
 
     update(time: number) {
-        if (!this.lastTime) this.lastTime = time;
+        if (!this.lastTime) {
+            this.lastTime = time;
+        }
+        
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
