@@ -1,10 +1,10 @@
 import React from "react";
-import GameCanvas from "./GameCanvas";
+import GameContainer from "./game/GameContainer";
 
 export default function App() {
     return (
         <div>
-            <GameCanvas />
+            <GameContainer />
         </div>
     );
 }

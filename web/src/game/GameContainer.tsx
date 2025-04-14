@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
-import GameScene from "./game/scenes/GameScene";
-import { grid } from "./consts";
-import GameOverModal from "./game/GameOverModal";
+import GameScene from "./scenes/GameScene";
+import { grid } from "../consts";
+import GameOverModal from "./GameOverModal";
 
-const GameCanvas: React.FC = () => {
+const GameContainer: React.FC = () => {
     const gameContainerRef = useRef<HTMLDivElement>(null);
     const width = grid.cols * grid.cellSizePx;
     const height = grid.rows * grid.cellSizePx;
@@ -77,4 +77,4 @@ const GameCanvas: React.FC = () => {
     );
 };
 
-export default GameCanvas;
+export default GameContainer;
