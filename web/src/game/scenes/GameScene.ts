@@ -9,22 +9,19 @@ class GameScene extends Phaser.Scene {
     private snakeSegments: Phaser.GameObjects.Rectangle[] = [];
     private foodGraphics!: Phaser.GameObjects.Rectangle;
     private gameOverCallback!: () => void;
-    private pendingReset!: boolean;
+    private isInRestartFrameGap = false;
 
     constructor() {
         super({ key: "GameScene" });
-        this.pendingReset = false;
     }
 
     async create() {
         // If there was a previous gameState, manually free it now
-        if (this.gameState) {
-            this.gameState.free();
-        }
+        this.gameState?.free();
 
         await init();
         this.gameState = new GameState();
-        this.pendingReset = false;
+        this.isInRestartFrameGap = false;
 
         createGrid(this);
 
@@ -84,7 +81,7 @@ class GameScene extends Phaser.Scene {
     private lastTime: number = 0;
 
     update(time: number) {
-        if (this.pendingReset) {
+        if (this.isInRestartFrameGap) {
             return;
         }
 
@@ -134,7 +131,7 @@ class GameScene extends Phaser.Scene {
 
     onReset() {
         // Just mark for reset but don't free yet
-        this.pendingReset = true;
+        this.isInRestartFrameGap = true;
         this.scene.restart();
     }
 }
