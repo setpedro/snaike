@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import GameScene from "./game/scenes/GameScene";
 import { grid } from "./consts";
+import GameOverModal from "./game/GameOverModal";
 
 const GameCanvas: React.FC = () => {
     const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -11,6 +12,8 @@ const GameCanvas: React.FC = () => {
 
     const displayHeight = "90vh";
     const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
+
+    const [isGameOver, setIsGameOver] = useState(false);
 
     useEffect(() => {
         if (!gameContainerRef.current) {
@@ -30,11 +33,12 @@ const GameCanvas: React.FC = () => {
         };
 
         const game = new Phaser.Game(config);
+        window.game = game;
 
         game.events.on("ready", () => {
             const scene = game.scene.getScene("GameScene") as GameScene;
             scene.setGameOverCallback(() => {
-                // TODO
+                setIsGameOver(true);
             });
 
             // Listens for game over events triggered by WASM
@@ -47,6 +51,16 @@ const GameCanvas: React.FC = () => {
         };
     }, []);
 
+    function handleRestart() {
+        setIsGameOver(false);
+
+        const game = window.game as Phaser.Game;
+        if (game) {
+            const scene = game.scene.getScene("GameScene") as GameScene;
+            scene.onReset();
+        }
+    }
+
     return (
         <div className="flex justify-center items-center min-h-screen">
             <div
@@ -57,6 +71,7 @@ const GameCanvas: React.FC = () => {
                 }}
             >
                 <div ref={gameContainerRef} />
+                {isGameOver && <GameOverModal onRestart={handleRestart} />}
             </div>
         </div>
     );

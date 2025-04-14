@@ -9,5 +9,16 @@ export default defineConfig({
     },
     build: {
         outDir: "dist",
+        target: "esnext",
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    phaser: ["phaser"],
+                },
+            },
+        },
+    },
+    optimizeDeps: {
+        exclude: ["@/public/pkg/snake_spark"],
     },
 });

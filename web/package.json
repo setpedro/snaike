@@ -5,7 +5,9 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "vite",
-        "build-wasm": "cargo fmt && wasm-pack build --target web --release --out-dir web/public/pkg"
+        "build": "npm run build-wasm && vite build",
+        "build-wasm": "cargo fmt && wasm-pack build --target web --release --out-dir web/public/pkg",
+        "serve-prod": "npm run build && vite preview --port 4173"
     },
     "keywords": [],
     "author": "",
