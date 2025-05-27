@@ -19,7 +19,6 @@ export function createGrid(scene: Phaser.Scene): void {
             height / 2,
             playWidth + gap * 2,
             playHeight + gap * 2,
-            colors.grid.border
         )
         .setOrigin(0.5)
         .setAlpha(0.7);
