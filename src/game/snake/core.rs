@@ -47,7 +47,7 @@ impl SnakeCore {
             visual_position: (pixel_x, pixel_y),
             direction: (0, 0),
             next_direction: None,
-            speed: 7.0,
+            speed: 7.0, // avoid: 1,2,4,5 due to visual bug
             grid_size,
             target_position: (pixel_x, pixel_y),
             at_grid_position: true,
@@ -140,29 +140,6 @@ impl SnakeCore {
         }
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn position(&self) -> Vec<f64> {
-        vec![self.visual_position.0, self.visual_position.1]
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn check_self_collision(&self) -> bool {
-        let head_position = self.position();
-
-        // no need to check for first 3 body segments (impossible to collide)
-        for i in 3..self.body_segments.len() {
-            if self.body_segments[i].current_pos == (head_position[0], head_position[1]) {
-                return true;
-            }
-        }
-        false
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn direction(&self) -> Vec<i32> {
-        vec![self.direction.0, self.direction.1]
-    }
-
     #[wasm_bindgen]
     pub fn grow(&mut self) {
         let new_offset = self.body_segments.len() + 1;
@@ -179,5 +156,28 @@ impl SnakeCore {
             .iter()
             .flat_map(|s| vec![s.current_pos.0, s.current_pos.1])
             .collect()
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn position(&self) -> Vec<f64> {
+        vec![self.visual_position.0, self.visual_position.1]
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn check_self_collision(&self) -> bool {
+        let head_grid_pos = self.grid_position;
+
+        // Check if head's grid position matches any body segment's grid position
+        for entry in &self.path_history {
+            if entry.grid_position == head_grid_pos {
+                return true;
+            }
+        }
+        false
+    }
+
+    #[wasm_bindgen(getter)]
+    pub fn direction(&self) -> Vec<i32> {
+        vec![self.direction.0, self.direction.1]
     }
 }
