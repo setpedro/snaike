@@ -13,8 +13,9 @@ const GameContainer: React.FC = () => {
     const displayHeight = "90vh";
     const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
 
-    const [isGameOver, setIsGameOver] = useState(false);
-    const [isWin, setIsWin] = useState(false);
+    const [gameState, setGameState] = useState<"playing" | "gameOver" | "win">(
+        "playing"
+    );
 
     useEffect(() => {
         if (!gameContainerRef.current) {
@@ -23,7 +24,7 @@ const GameContainer: React.FC = () => {
 
         const config: Phaser.Types.Core.GameConfig = {
             type: Phaser.AUTO,
-            width, // Keep base dimensions for game logic
+            width,
             height,
             parent: gameContainerRef.current,
             scene: [GameScene],
@@ -38,17 +39,16 @@ const GameContainer: React.FC = () => {
 
         game.events.on("ready", () => {
             const scene = game.scene.getScene("GameScene") as GameScene;
-            scene.setGameOverCallback(() => {
-                setIsGameOver(true);
-            });
+            scene.setGameEndCallback(() => {});
 
-            scene.setGameWinCallback(() => {
-                setIsWin(true);
-            });
-
-            // Listens for game over events triggered by WASM
-            window.onGameOver = () => scene.handleGameOverFromWasm();
-            window.onGameWin = () => scene.handleGameWinFromWasm();
+            window.onGameOver = () => {
+                scene.handleGameOverFromWasm();
+                setGameState("gameOver");
+            };
+            window.onGameWin = () => {
+                scene.handleGameWinFromWasm();
+                setGameState("win");
+            };
         });
 
         return () => {
@@ -58,8 +58,7 @@ const GameContainer: React.FC = () => {
     }, []);
 
     function handleRestart() {
-        setIsGameOver(false);
-        setIsWin(false);
+        setGameState("playing");
 
         const game = window.game as Phaser.Game;
         if (game) {
@@ -67,6 +66,25 @@ const GameContainer: React.FC = () => {
             scene.onReset();
         }
     }
+
+    const renderGameEndModal = () => {
+        switch (gameState) {
+            case "gameOver":
+                return (
+                    <GameOverModal onRestart={handleRestart}>
+                        Game Over! Click to Restart
+                    </GameOverModal>
+                );
+            case "win":
+                return (
+                    <GameOverModal onRestart={handleRestart}>
+                        You won! Click to restart
+                    </GameOverModal>
+                );
+            default:
+                return null;
+        }
+    };
 
     return (
         <div className="flex justify-center items-center min-h-screen">
@@ -78,10 +96,7 @@ const GameContainer: React.FC = () => {
                 }}
             >
                 <div ref={gameContainerRef} />
-                {isGameOver && <GameOverModal onRestart={handleRestart} />}
-                {isWin && (
-                    <div className="bg-amber-300 w-full">won</div>
-                )}
+                {renderGameEndModal()}
             </div>
         </div>
     );

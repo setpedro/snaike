@@ -9,8 +9,7 @@ class GameScene extends Phaser.Scene {
     private snakeSegments: Phaser.GameObjects.Rectangle[] = [];
     private snakeConnectors: Phaser.GameObjects.Rectangle[] = [];
     private foodGraphics!: Phaser.GameObjects.Rectangle | null;
-    private gameOverCallback!: () => void;
-    private gameWinCallback!: () => void;
+    private gameEndCallback!: () => void;
     private isInRestartFrameGap = false;
 
     constructor() {
@@ -33,60 +32,54 @@ class GameScene extends Phaser.Scene {
         new InputHandler(this, this.gameState);
     }
 
+    private destroyGameObjects(objects: Phaser.GameObjects.GameObject[]) {
+        objects.forEach((obj) => obj.destroy());
+        objects.length = 0;
+    }
+
     spawnFood() {
         if (this.foodGraphics) {
             this.foodGraphics.destroy();
         }
 
         const [foodX, foodY] = this.gameState.food;
-        console.log(foodX, foodY);
 
         if (foodX === -1 && foodY === -1) {
             this.foodGraphics = null; // Ensure no food is rendered
             return;
         }
 
-        this.foodGraphics = this.add
-            .rectangle(
-                foodX,
-                foodY,
-                grid.cellSizePx - VISUAL.gap,
-                grid.cellSizePx - VISUAL.gap,
-                colors.food
-            )
-            .setOrigin(0.5);
+        this.foodGraphics = this.createRectangle(foodX, foodY, colors.food);
     }
 
     spawnSnake() {
-        if (this.snakeSegments.length > 0) {
-            this.snakeSegments.forEach((segment) => segment.destroy());
-            this.snakeSegments = [];
-        }
-        if (this.snakeConnectors.length > 0) {
-            this.snakeConnectors.forEach((connector) => connector.destroy());
-            this.snakeConnectors = [];
-        }
+        this.destroyGameObjects(this.snakeSegments);
+        this.destroyGameObjects(this.snakeConnectors);
 
         const [x, y] = this.gameState.get_snake_position() as unknown as [
             number,
             number
         ];
-        this.snakeSegments = [this.createSegment(x, y)];
+        this.snakeSegments = [this.createRectangle(x, y, colors.snake.human)];
     }
 
-    private createSegment(x: number, y: number) {
+    private createRectangle(
+        x: number,
+        y: number,
+        color: number
+    ): Phaser.GameObjects.Rectangle {
         return this.add
             .rectangle(
                 x,
                 y,
                 grid.cellSizePx - VISUAL.gap,
                 grid.cellSizePx - VISUAL.gap,
-                colors.snake.human
+                color
             )
             .setOrigin(0.5);
     }
 
-    private createConnector() {
+    private createConnector(): Phaser.GameObjects.Rectangle {
         return this.add
             .rectangle(0, 0, 1, 1, colors.snake.human)
             .setOrigin(0.5)
@@ -96,18 +89,19 @@ class GameScene extends Phaser.Scene {
     private updateConnectors(positions: number[]) {
         let connectorIndex = 0;
         for (let i = 0; i < positions.length / 2 - 1; i++) {
-            const x1 = positions[i * 2];
-            const y1 = positions[i * 2 + 1];
-            const x2 = positions[(i + 1) * 2];
-            const y2 = positions[(i + 1) * 2 + 1];
+            const [x1, y1, x2, y2] = [
+                positions[i * 2],
+                positions[i * 2 + 1],
+                positions[(i + 1) * 2],
+                positions[(i + 1) * 2 + 1],
+            ];
 
             // Check if segments are adjacent
             const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
             if (distance <= grid.cellSizePx * 1.5) {
                 // Ensure enough connectors exist
                 if (connectorIndex >= this.snakeConnectors.length) {
-                    const newConnector = this.createConnector();
-                    this.snakeConnectors.push(newConnector);
+                    this.snakeConnectors.push(this.createConnector());
                 }
 
                 // Update the connector
@@ -116,14 +110,12 @@ class GameScene extends Phaser.Scene {
                 const midY = (y1 + y2) / 2;
                 const deltaX = Math.abs(x2 - x1);
                 const deltaY = Math.abs(y2 - y1);
-                let width, height;
-                if (deltaX > deltaY) {
-                    width = deltaX;
-                    height = grid.cellSizePx - VISUAL.gap;
-                } else {
-                    width = grid.cellSizePx - VISUAL.gap;
-                    height = deltaY;
-                }
+
+                const [width, height] =
+                    deltaX > deltaY
+                        ? [deltaX, grid.cellSizePx - VISUAL.gap]
+                        : [grid.cellSizePx - VISUAL.gap, deltaY];
+
                 connector.setPosition(midX, midY);
                 connector.setSize(width, height);
                 connector.setVisible(true);
@@ -165,7 +157,9 @@ class GameScene extends Phaser.Scene {
             const y = bodyPositions[i * 2 + 1];
 
             if (!this.snakeSegments[i + 1]) {
-                this.snakeSegments.push(this.createSegment(x, y));
+                this.snakeSegments.push(
+                    this.createRectangle(x, y, colors.snake.human)
+                );
                 // If there's a new body segment, spawn food
                 // TODO: handle this better
                 this.spawnFood();
@@ -178,30 +172,21 @@ class GameScene extends Phaser.Scene {
         this.updateConnectors(allPositions);
     }
 
-    setGameOverCallback(cb: () => void) {
-        this.gameOverCallback = cb;
+    setGameEndCallback(cb: () => void) {
+        this.gameEndCallback = cb;
     }
 
-    setGameWinCallback(cb: () => void) {
-        this.gameWinCallback = cb;
+    private endGame() {
+        this.scene.pause();
+        this.gameEndCallback();
     }
 
     handleGameOverFromWasm() {
-        this.onGameOver();
-        this.gameOverCallback();
+        this.endGame();
     }
 
     handleGameWinFromWasm() {
-        this.onGameWin();
-        this.gameWinCallback();
-    }
-
-    onGameWin() {
-        this.scene.pause();
-    }
-
-    onGameOver() {
-        this.scene.pause();
+        this.endGame();
     }
 
     onReset() {
