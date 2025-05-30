@@ -14,6 +14,7 @@ const GameContainer: React.FC = () => {
     const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
 
     const [isGameOver, setIsGameOver] = useState(false);
+    const [isWin, setIsWin] = useState(false);
 
     useEffect(() => {
         if (!gameContainerRef.current) {
@@ -41,8 +42,13 @@ const GameContainer: React.FC = () => {
                 setIsGameOver(true);
             });
 
+            scene.setGameWinCallback(() => {
+                setIsWin(true);
+            });
+
             // Listens for game over events triggered by WASM
             window.onGameOver = () => scene.handleGameOverFromWasm();
+            window.onGameWin = () => scene.handleGameWinFromWasm();
         });
 
         return () => {
@@ -53,6 +59,7 @@ const GameContainer: React.FC = () => {
 
     function handleRestart() {
         setIsGameOver(false);
+        setIsWin(false);
 
         const game = window.game as Phaser.Game;
         if (game) {
@@ -72,6 +79,9 @@ const GameContainer: React.FC = () => {
             >
                 <div ref={gameContainerRef} />
                 {isGameOver && <GameOverModal onRestart={handleRestart} />}
+                {isWin && (
+                    <div className="bg-amber-300 w-full">won</div>
+                )}
             </div>
         </div>
     );

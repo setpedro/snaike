@@ -8,8 +8,9 @@ class GameScene extends Phaser.Scene {
     private gameState!: GameState;
     private snakeSegments: Phaser.GameObjects.Rectangle[] = [];
     private snakeConnectors: Phaser.GameObjects.Rectangle[] = [];
-    private foodGraphics!: Phaser.GameObjects.Rectangle;
+    private foodGraphics!: Phaser.GameObjects.Rectangle | null;
     private gameOverCallback!: () => void;
+    private gameWinCallback!: () => void;
     private isInRestartFrameGap = false;
 
     constructor() {
@@ -33,12 +34,17 @@ class GameScene extends Phaser.Scene {
     }
 
     spawnFood() {
-        // Clean previous snake
         if (this.foodGraphics) {
             this.foodGraphics.destroy();
         }
 
         const [foodX, foodY] = this.gameState.food;
+        console.log(foodX, foodY);
+
+        if (foodX === -1 && foodY === -1) {
+            this.foodGraphics = null; // Ensure no food is rendered
+            return;
+        }
 
         this.foodGraphics = this.add
             .rectangle(
@@ -176,9 +182,22 @@ class GameScene extends Phaser.Scene {
         this.gameOverCallback = cb;
     }
 
+    setGameWinCallback(cb: () => void) {
+        this.gameWinCallback = cb;
+    }
+
     handleGameOverFromWasm() {
         this.onGameOver();
         this.gameOverCallback();
+    }
+
+    handleGameWinFromWasm() {
+        this.onGameWin();
+        this.gameWinCallback();
+    }
+
+    onGameWin() {
+        this.scene.pause();
     }
 
     onGameOver() {

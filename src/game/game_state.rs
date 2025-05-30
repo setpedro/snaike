@@ -18,6 +18,8 @@ pub struct GameState {
 extern "C" {
     #[wasm_bindgen(js_name = "onGameOver")]
     pub fn on_game_over();
+    #[wasm_bindgen(js_name = "onGameWin")]
+    pub fn on_game_win();
 }
 
 #[wasm_bindgen]
@@ -57,7 +59,9 @@ impl GameState {
 
             let collision: Option<Collision> = match () {
                 _ if self.is_out_of_bounds() => Some(Collision::Wall),
-                _ if self.human.core.body_segments.len() > 3 && self.is_self_collided() => {
+                _ if self.human.core.body_segments.len() > 3
+                    && self.human.core.check_self_collision() =>
+                {
                     Some(Collision::OwnBody)
                 }
                 _ if head_at_grid_position == self.food => Some(Collision::Food),
@@ -78,26 +82,15 @@ impl GameState {
             || self.human.core.grid_position.1 >= GRID_ROWS
     }
 
-    fn is_self_collided(&self) -> bool {
-        self.human.core.check_self_collision()
-    }
-
     fn handle_collision(&mut self, collision: Collision) {
         match collision {
             Collision::Wall => on_game_over(),
             Collision::OwnBody => on_game_over(),
             Collision::Food => {
                 self.human.core.grow();
-                self.get_food();
+                self.regenerate_food();
             }
         }
-    }
-
-    #[wasm_bindgen]
-    pub fn get_food(&mut self) -> Vec<i32> {
-        self.regenerate_food()
-            .map(|(x, y)| vec![x, y])
-            .unwrap_or_else(|| vec![-1, -1])
     }
 
     fn regenerate_food(&mut self) -> Option<(i32, i32)> {
@@ -116,6 +109,7 @@ impl GameState {
         }
 
         if candidates.is_empty() {
+            self.food = (-1, -1);
             None
         } else {
             let choice = candidates[thread_rng().gen_range(0..candidates.len())];
