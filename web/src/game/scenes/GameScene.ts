@@ -32,6 +32,7 @@ class GameScene extends Phaser.Scene {
     }
 
     spawnFood() {
+        // Clean previous snake
         if (this.foodGraphics) {
             this.foodGraphics.destroy();
         }
@@ -55,15 +56,11 @@ class GameScene extends Phaser.Scene {
             this.snakeSegments = [];
         }
 
-        const [x, y] = this.snakePosition;
-        this.snakeSegments = [this.createSegment(x, y)];
-    }
-
-    private get snakePosition(): [number, number] {
-        return this.gameState.get_snake_position() as unknown as [
+        const [x, y] = this.gameState.get_snake_position() as unknown as [
             number,
             number
         ];
+        this.snakeSegments = [this.createSegment(x, y)];
     }
 
     private createSegment(x: number, y: number) {
