@@ -68,6 +68,11 @@ impl GameState {
                 _ => None,
             };
 
+            if self.is_win() {
+                on_game_win();
+                return;
+            }
+
             if let Some(collision_type) = collision {
                 self.handle_collision(collision_type);
             }
@@ -80,6 +85,12 @@ impl GameState {
             || self.human.core.grid_position.0 >= GRID_COLS
             || self.human.core.grid_position.1 < 0
             || self.human.core.grid_position.1 >= GRID_ROWS
+    }
+
+    fn is_win(&self) -> bool {
+        let total_cells = (GRID_COLS * GRID_ROWS) as usize;
+        let snake_cells = (self.human.core.get_body_positions().len() / 2) + 1;
+        snake_cells >= total_cells
     }
 
     fn handle_collision(&mut self, collision: Collision) {
