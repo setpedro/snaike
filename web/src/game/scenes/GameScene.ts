@@ -6,8 +6,10 @@ import { InputHandler } from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
     private gameState!: GameState;
-    private snakeSegments: Phaser.GameObjects.Rectangle[] = [];
-    private snakeConnectors: Phaser.GameObjects.Rectangle[] = [];
+    private humanSnakeSegments: Phaser.GameObjects.Rectangle[] = [];
+    private humanSnakeConnectors: Phaser.GameObjects.Rectangle[] = [];
+    private aiSnakeSegments: Phaser.GameObjects.Rectangle[] = [];
+    private aiSnakeConnectors: Phaser.GameObjects.Rectangle[] = [];
     private foodGraphics!: Phaser.GameObjects.Rectangle | null;
     private gameEndCallback!: () => void;
     private isInRestartFrameGap = false;
@@ -28,6 +30,7 @@ class GameScene extends Phaser.Scene {
 
         this.spawnFood();
         this.spawnSnake();
+        this.spawnAISnake();
 
         new InputHandler(this, this.gameState);
     }
@@ -53,14 +56,27 @@ class GameScene extends Phaser.Scene {
     }
 
     spawnSnake() {
-        this.destroyGameObjects(this.snakeSegments);
-        this.destroyGameObjects(this.snakeConnectors);
+        this.destroyGameObjects(this.humanSnakeSegments);
+        this.destroyGameObjects(this.humanSnakeConnectors);
 
-        const [x, y] = this.gameState.get_snake_position() as unknown as [
+        const [x, y] = this.gameState.get_human_snake_position() as unknown as [
             number,
             number
         ];
-        this.snakeSegments = [this.createRectangle(x, y, colors.snake.human)];
+        this.humanSnakeSegments = [
+            this.createRectangle(x, y, colors.snake.human),
+        ];
+    }
+
+    spawnAISnake() {
+        this.destroyGameObjects(this.aiSnakeSegments);
+        this.destroyGameObjects(this.aiSnakeConnectors);
+
+        const [x, y] = this.gameState.get_ai_snake_position() as unknown as [
+            number,
+            number
+        ];
+        this.aiSnakeSegments = [this.createRectangle(x, y, colors.snake.ai)];
     }
 
     private createRectangle(
@@ -79,14 +95,18 @@ class GameScene extends Phaser.Scene {
             .setOrigin(0.5);
     }
 
-    private createConnector(): Phaser.GameObjects.Rectangle {
+    private createConnector(isAI: boolean): Phaser.GameObjects.Rectangle {
         return this.add
-            .rectangle(0, 0, 1, 1, colors.snake.human)
+            .rectangle(0, 0, 1, 1, isAI ? colors.snake.ai : colors.snake.human)
             .setOrigin(0.5)
             .setVisible(false);
     }
 
-    private updateConnectors(positions: number[]) {
+    private updateConnectors(
+        positions: number[],
+        connectors: Phaser.GameObjects.Rectangle[],
+        color: number
+    ) {
         let connectorIndex = 0;
         for (let i = 0; i < positions.length / 2 - 1; i++) {
             const [x1, y1, x2, y2] = [
@@ -99,13 +119,13 @@ class GameScene extends Phaser.Scene {
             // Check if segments are adjacent
             const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
             if (distance <= grid.cellSizePx * 1.5) {
-                // Ensure enough connectors exist
-                if (connectorIndex >= this.snakeConnectors.length) {
-                    this.snakeConnectors.push(this.createConnector());
+                if (connectorIndex >= connectors.length) {
+                    connectors.push(
+                        this.createConnector(color === colors.snake.ai)
+                    );
                 }
 
-                // Update the connector
-                const connector = this.snakeConnectors[connectorIndex];
+                const connector = connectors[connectorIndex];
                 const midX = (x1 + x2) / 2;
                 const midY = (y1 + y2) / 2;
                 const deltaX = Math.abs(x2 - x1);
@@ -123,9 +143,8 @@ class GameScene extends Phaser.Scene {
             }
         }
 
-        // Hide unused connectors. Future use case like snake shrinks
-        for (let i = connectorIndex; i < this.snakeConnectors.length; i++) {
-            this.snakeConnectors[i].setVisible(false);
+        for (let i = connectorIndex; i < connectors.length; i++) {
+            connectors[i].setVisible(false);
         }
     }
 
@@ -145,31 +164,65 @@ class GameScene extends Phaser.Scene {
 
         this.gameState.update(deltaTime);
 
-        const headPos = this.gameState.get_snake_position();
-        const bodyPositions = this.gameState.get_body_positions();
+        // Update human snake
+        const humanHeadPos = this.gameState.get_human_snake_position();
+        const humanBodyPositions =
+            this.gameState.get_human_snake_body_positions();
+        this.humanSnakeSegments[0].setPosition(
+            humanHeadPos[0],
+            humanHeadPos[1]
+        );
 
-        // Update head
-        this.snakeSegments[0].setPosition(headPos[0], headPos[1]);
+        for (let i = 0; i < humanBodyPositions.length / 2; i++) {
+            const x = humanBodyPositions[i * 2];
+            const y = humanBodyPositions[i * 2 + 1];
 
-        // Update body segments
-        for (let i = 0; i < bodyPositions.length / 2; i++) {
-            const x = bodyPositions[i * 2];
-            const y = bodyPositions[i * 2 + 1];
-
-            if (!this.snakeSegments[i + 1]) {
-                this.snakeSegments.push(
+            if (!this.humanSnakeSegments[i + 1]) {
+                this.humanSnakeSegments.push(
                     this.createRectangle(x, y, colors.snake.human)
                 );
-                // If there's a new body segment, spawn food
-                // TODO: handle this better
                 this.spawnFood();
             } else {
-                this.snakeSegments[i + 1].setPosition(x, y);
+                this.humanSnakeSegments[i + 1].setPosition(x, y);
             }
         }
 
-        const allPositions = [headPos[0], headPos[1], ...bodyPositions];
-        this.updateConnectors(allPositions);
+        const humanAllPositions = [
+            humanHeadPos[0],
+            humanHeadPos[1],
+            ...humanBodyPositions,
+        ];
+        this.updateConnectors(
+            humanAllPositions,
+            this.humanSnakeConnectors,
+            colors.snake.human
+        );
+
+        // Update AI snake
+        const aiHeadPos = this.gameState.get_ai_snake_position();
+        const aiBodyPositions = this.gameState.get_ai_snake_body_positions();
+        this.aiSnakeSegments[0].setPosition(aiHeadPos[0], aiHeadPos[1]);
+
+        for (let i = 0; i < aiBodyPositions.length / 2; i++) {
+            const x = aiBodyPositions[i * 2];
+            const y = aiBodyPositions[i * 2 + 1];
+
+            if (!this.aiSnakeSegments[i + 1]) {
+                this.aiSnakeSegments.push(
+                    this.createRectangle(x, y, colors.snake.ai)
+                );
+                this.spawnFood();
+            } else {
+                this.aiSnakeSegments[i + 1].setPosition(x, y);
+            }
+        }
+
+        const aiAllPositions = [aiHeadPos[0], aiHeadPos[1], ...aiBodyPositions];
+        this.updateConnectors(
+            aiAllPositions,
+            this.aiSnakeConnectors,
+            colors.snake.ai
+        );
     }
 
     setGameEndCallback(cb: () => void) {

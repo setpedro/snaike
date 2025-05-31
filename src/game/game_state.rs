@@ -70,7 +70,7 @@ impl GameState {
                     Some(Collision::OwnBody)
                 }
                 _ if human_grid == self.food => Some(Collision::Food),
-                _ if human_grid == ai_grid => Some(Collision::Snake),
+                _ if human_grid == ai_grid => Some(Collision::Snake), // TODO: fix this. currently only comparing heads lol
                 _ => None,
             };
 
@@ -128,7 +128,6 @@ impl GameState {
     fn handle_ai_collision(&mut self, collision: Collision) {
         match collision {
             Collision::Wall | Collision::OwnBody => {
-                self.ai = AISnake::new();
                 on_game_win(); // Human wins if AI hits wall or self
             }
             Collision::Food => {
@@ -190,34 +189,31 @@ impl GameState {
     }
 
     #[wasm_bindgen]
-    pub fn get_snake_position(&self) -> Vec<f64> {
+    pub fn get_human_snake_position(&self) -> Vec<f64> {
         self.human.core.position()
     }
 
-    // not yet in use
     pub fn get_ai_snake_position(&self) -> Vec<f64> {
         self.ai.core.position()
     }
 
     #[wasm_bindgen]
-    pub fn get_snake_direction(&self) -> Vec<i32> {
+    pub fn get_human_snake_direction(&self) -> Vec<i32> {
         self.human.core.direction()
     }
 
-    // not yet in use
     #[wasm_bindgen]
     pub fn get_ai_snake_direction(&self) -> Vec<i32> {
         self.ai.core.direction()
     }
 
     #[wasm_bindgen]
-    pub fn get_body_positions(&self) -> Vec<f64> {
+    pub fn get_human_snake_body_positions(&self) -> Vec<f64> {
         self.human.core.get_body_positions()
     }
 
-    // not yet in use
     #[wasm_bindgen]
-    pub fn get_ai_body_positions(&self) -> Vec<f64> {
+    pub fn get_ai_snake_body_positions(&self) -> Vec<f64> {
         self.ai.core.get_body_positions()
     }
 
