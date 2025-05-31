@@ -4,12 +4,13 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use crate::game::{
     constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
     enums::Collision,
-    snake::human::human::HumanSnake,
+    snake::{ai::ai::AISnake, human::human::HumanSnake},
 };
 
 #[wasm_bindgen]
 pub struct GameState {
     human: HumanSnake,
+    ai: AISnake,
     food: (i32, i32),
     occupied_grid: [[bool; GRID_ROWS as usize]; GRID_COLS as usize],
 }
@@ -28,6 +29,7 @@ impl GameState {
     pub fn new() -> Self {
         let mut game_state = Self {
             human: HumanSnake::new(),
+            ai: AISnake::new(),
             food: (0, 0),
             occupied_grid: [[false; GRID_ROWS as usize]; GRID_COLS as usize],
         };
@@ -41,6 +43,8 @@ impl GameState {
     #[wasm_bindgen]
     pub fn update(&mut self, delta_time: f64) {
         self.human.update(delta_time);
+        self.ai.update(delta_time);
+        // TODO: handle AI snake movement (same as human's)
 
         let head_position = self.human.core.position();
 
@@ -153,14 +157,31 @@ impl GameState {
         self.human.core.position()
     }
 
+    // not yet in use
+    pub fn get_ai_snake_position(&self) -> Vec<f64> {
+        self.ai.core.position()
+    }
+
     #[wasm_bindgen]
     pub fn get_snake_direction(&self) -> Vec<i32> {
         self.human.core.direction()
     }
 
+    // not yet in use
+    #[wasm_bindgen]
+    pub fn get_ai_snake_direction(&self) -> Vec<i32> {
+        self.ai.core.direction()
+    }
+
     #[wasm_bindgen]
     pub fn get_body_positions(&self) -> Vec<f64> {
         self.human.core.get_body_positions()
+    }
+
+    // not yet in use
+    #[wasm_bindgen]
+    pub fn get_ai_body_positions(&self) -> Vec<f64> {
+        self.ai.core.get_body_positions()
     }
 
     #[wasm_bindgen]
