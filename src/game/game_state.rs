@@ -1,10 +1,13 @@
 use rand::{thread_rng, Rng};
 use wasm_bindgen::prelude::wasm_bindgen;
 
-use crate::game::{
-    constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
-    enums::Collision,
-    snake::{ai::ai::AISnake, human::human::HumanSnake},
+use crate::{
+    game::{
+        constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
+        enums::Collision,
+        snake::{ai::ai::AISnake, human::human::HumanSnake},
+    },
+    SnakeCore,
 };
 
 #[wasm_bindgen]
@@ -44,31 +47,30 @@ impl GameState {
     pub fn update(&mut self, delta_time: f64) {
         self.human.update(delta_time);
         self.ai.update(delta_time);
-        // TODO: handle AI snake movement (same as human's)
 
-        let head_position = self.human.core.position();
+        let human_head_position = self.human.core.position();
+        let ai_head_position = self.ai.core.position();
+
+        let human_grid = (human_head_position[0] as i32, human_head_position[1] as i32);
+        let ai_grid = (ai_head_position[0] as i32, ai_head_position[1] as i32);
 
         // Ensures the snake's head is exactly aligned with the grid
-        let at_grid_position =
-            ((head_position[0] - ((CELL_SIZE_PX / 2) as f64)) % (CELL_SIZE_PX as f64)).abs()
-                < f64::EPSILON
-                && ((head_position[1] - ((CELL_SIZE_PX / 2) as f64)) % (CELL_SIZE_PX as f64)).abs()
-                    < f64::EPSILON;
+        let is_at_node = |head: Vec<f64>| {
+            ((head[0] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs() < f64::EPSILON
+                && ((head[1] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs()
+                    < f64::EPSILON
+        };
 
-        // Collision checks occur only at grid nodes, at least for static entities (food, walls)
-        // TODO: Handle head-on collisions between two snakes (not limited to grid nodes)
-        if at_grid_position {
-            // Uses head_at_grid_position to ensure the snake only eats food when fully aligned with a grid cell, preventing partial overlaps
-            let head_at_grid_position = (head_position[0] as i32, head_position[1] as i32);
-
+        if is_at_node(human_head_position) {
             let collision: Option<Collision> = match () {
-                _ if self.is_out_of_bounds() => Some(Collision::Wall),
+                _ if self.is_out_of_bounds(&self.human.core) => Some(Collision::Wall),
                 _ if self.human.core.body_segments.len() > 3
                     && self.human.core.check_self_collision() =>
                 {
                     Some(Collision::OwnBody)
                 }
-                _ if head_at_grid_position == self.food => Some(Collision::Food),
+                _ if human_grid == self.food => Some(Collision::Food),
+                _ if human_grid == ai_grid => Some(Collision::Snake),
                 _ => None,
             };
 
@@ -78,17 +80,33 @@ impl GameState {
             }
 
             if let Some(collision_type) = collision {
-                self.handle_collision(collision_type);
+                self.handle_human_collision(collision_type);
+            }
+        }
+
+        if is_at_node(ai_head_position) {
+            let collision: Option<Collision> = match () {
+                _ if self.is_out_of_bounds(&self.ai.core) => Some(Collision::Wall),
+                _ if self.ai.core.body_segments.len() > 3
+                    && self.ai.core.check_self_collision() =>
+                {
+                    Some(Collision::OwnBody)
+                }
+                _ if ai_grid == self.food => Some(Collision::Food),
+                _ => None,
+            };
+
+            if let Some(collision_type) = collision {
+                self.handle_ai_collision(collision_type);
             }
         }
     }
 
-    fn is_out_of_bounds(&self) -> bool {
-        // Uses grid_position to ensure the snake stops immediately when reaching a boundary, avoiding visually going through the wall until reaching the grid node
-        self.human.core.grid_position.0 < 0
-            || self.human.core.grid_position.0 >= GRID_COLS
-            || self.human.core.grid_position.1 < 0
-            || self.human.core.grid_position.1 >= GRID_ROWS
+    fn is_out_of_bounds(&self, snake: &SnakeCore) -> bool {
+        snake.grid_position.0 < 0
+            || snake.grid_position.0 >= GRID_COLS
+            || snake.grid_position.1 < 0
+            || snake.grid_position.1 >= GRID_ROWS
     }
 
     fn is_win(&self) -> bool {
@@ -97,14 +115,27 @@ impl GameState {
         snake_cells >= total_cells
     }
 
-    fn handle_collision(&mut self, collision: Collision) {
+    fn handle_human_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::Wall => on_game_over(),
-            Collision::OwnBody => on_game_over(),
+            Collision::Wall | Collision::OwnBody | Collision::Snake => on_game_over(),
             Collision::Food => {
                 self.human.core.grow();
                 self.regenerate_food();
             }
+        }
+    }
+
+    fn handle_ai_collision(&mut self, collision: Collision) {
+        match collision {
+            Collision::Wall | Collision::OwnBody => {
+                self.ai = AISnake::new();
+                on_game_win(); // Human wins if AI hits wall or self
+            }
+            Collision::Food => {
+                self.ai.core.grow();
+                self.regenerate_food();
+            }
+            Collision::Snake => {}
         }
     }
 
@@ -136,14 +167,20 @@ impl GameState {
     fn update_grid(&mut self) {
         self.occupied_grid = [[false; (GRID_ROWS as usize)]; (GRID_COLS as usize)];
 
-        // Mark snake head
-        let (hx, hy) = self.human.core.grid_position;
-        self.occupied_grid[hx as usize][hy as usize] = true;
-
-        // Mark body segments using path history
+        // Human snake
+        let (x, y) = self.human.core.grid_position;
+        self.occupied_grid[x as usize][y as usize] = true;
         for entry in &self.human.core.path_history {
-            let (bx, by) = entry.grid_position;
-            self.occupied_grid[bx as usize][by as usize] = true;
+            let (x, y) = entry.grid_position;
+            self.occupied_grid[x as usize][y as usize] = true;
+        }
+
+        // AI snake
+        let (x, y) = self.ai.core.grid_position;
+        self.occupied_grid[x as usize][y as usize] = true;
+        for entry in &self.ai.core.path_history {
+            let (x, y) = entry.grid_position;
+            self.occupied_grid[x as usize][y as usize] = true;
         }
     }
 

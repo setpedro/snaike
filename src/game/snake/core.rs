@@ -36,8 +36,9 @@ pub struct BodySegment {
 #[wasm_bindgen]
 impl SnakeCore {
     #[wasm_bindgen(constructor)]
-    pub fn new() -> Self {
-        let grid_pos = (0, 0);
+    pub fn new(pos_x: i32, pos_y: i32, dir_x: i32, dir_y: i32, speed: f64) -> Self {
+        let grid_pos = (pos_x, pos_y);
+        let direction = (dir_x, dir_y);
         let grid_size = CELL_SIZE_PX;
         let pixel_x = (grid_pos.0 as f64 + 0.5) * grid_size as f64;
         let pixel_y = (grid_pos.1 as f64 + 0.5) * grid_size as f64;
@@ -45,9 +46,9 @@ impl SnakeCore {
         Self {
             grid_position: grid_pos,
             visual_position: (pixel_x, pixel_y),
-            direction: (0, 0),
+            direction,
             next_direction: None,
-            speed: 7.0, // avoid: 1,2,4,5 due to visual bug
+            speed, // avoid: 1,2,4,5 due to visual bug
             grid_size,
             target_position: (pixel_x, pixel_y),
             at_grid_position: true,

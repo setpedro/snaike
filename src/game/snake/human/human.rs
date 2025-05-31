@@ -13,7 +13,7 @@ impl HumanSnake {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self {
-            core: SnakeCore::new(),
+            core: SnakeCore::new(5, 5, 1, 0, 7.0), // Start at (5, 5), move right (-1, 0), speed of 6.0
             input_state: InputState::new(),
         }
     }

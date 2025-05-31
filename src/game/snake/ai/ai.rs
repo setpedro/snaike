@@ -8,7 +8,7 @@ pub struct AISnake {
 impl AISnake {
     pub fn new() -> Self {
         Self {
-            core: SnakeCore::new(),
+            core: SnakeCore::new(10, 10, -1, 0, 6.0), // Start at (10,10), move left (-1, 0), speed of 5.0
             decision_state: DecisionState::new(),
         }
     }
