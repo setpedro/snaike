@@ -1,4 +1,6 @@
-use crate::game::snake::{ai::decision::DecisionState, core::SnakeCore};
+use crate::game::snake::{
+    ai::decision::DecisionState, core::SnakeCore, direction_handler::DirectionHandler,
+};
 
 pub struct AISnake {
     pub(crate) core: SnakeCore,
@@ -24,24 +26,14 @@ impl AISnake {
 
         self.core.update_movement(delta_time);
     }
+}
 
-    // TODO: reuse code of human.rs (abstract it)
-    fn process_input(&mut self, input: u8) {
-        let new_dir = match () {
-            _ if input & 0b0001 != 0 => (0, -1),                 // Up
-            _ if input & 0b1000 != 0 => (1, 0),                  // Right
-            _ if input & 0b0100 != 0 => (0, 1),                  // Down
-            _ if input & 0b0010 != 0 => (-1, 0),                 // Left
-            _ => (self.core.direction.0, self.core.direction.1), // Fallback
-        };
-
-        if self.is_valid_direction(new_dir) {
-            self.core.next_direction = Some(new_dir);
-        }
+impl DirectionHandler for AISnake {
+    fn get_core(&self) -> &SnakeCore {
+        &self.core
     }
 
-    fn is_valid_direction(&self, dir: (i32, i32)) -> bool {
-        dir != self.core.direction
-            && !(dir.0 == -self.core.direction.0 && dir.1 == -self.core.direction.1)
+    fn get_core_mut(&mut self) -> &mut SnakeCore {
+        &mut self.core
     }
 }
