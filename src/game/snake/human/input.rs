@@ -13,12 +13,12 @@ impl InputState {
     }
 
     #[wasm_bindgen]
-    pub fn set_key(&mut self, key: char, is_pressed: bool) {
-        let bit = match key.to_ascii_lowercase() {
-            'w' => 0b0001,
-            'a' => 0b0010,
-            's' => 0b0100,
-            'd' => 0b1000,
+    pub fn set_key(&mut self, key: &str, is_pressed: bool) {
+        let bit = match key.to_lowercase().as_str() {
+            "w" | "arrowup" => 0b0001,
+            "a" | "arrowleft" => 0b0010,
+            "s" | "arrowdown" => 0b0100,
+            "d" | "arrowright" => 0b1000,
             _ => return,
         };
         self.pressed = if is_pressed {

@@ -218,7 +218,7 @@ impl GameState {
     }
 
     #[wasm_bindgen]
-    pub fn set_input_key(&mut self, key: char, is_pressed: bool) {
+    pub fn set_input_key(&mut self, key: &str, is_pressed: bool) {
         self.human.input_state.set_key(key, is_pressed);
     }
 }

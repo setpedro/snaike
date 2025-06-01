@@ -5,39 +5,47 @@ export class InputHandler {
     private lastKeys = new Set<string>();
 
     constructor(scene: Phaser.Scene, gameState: GameState) {
-        const arrowKeyMap: { [key: string]: string } = {
-            arrowup: "w",
-            arrowleft: "a",
-            arrowdown: "s",
-            arrowright: "d",
-        };
-
         scene.input.keyboard!.on("keydown", (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
-            const mappedKey = arrowKeyMap[key] || key;
-
-            if (["w", "a", "s", "d"].includes(mappedKey)) {
-                // Clear other direction keys
+            if (
+                [
+                    "w",
+                    "a",
+                    "s",
+                    "d",
+                    "arrowup",
+                    "arrowleft",
+                    "arrowdown",
+                    "arrowright",
+                ].includes(key)
+            ) {
                 this.lastKeys.forEach((k) => {
-                    if (k !== mappedKey) {
+                    if (k !== key) {
                         gameState.set_input_key(k, false);
                     }
                 });
                 this.lastKeys.clear();
-
-                // Set new direction key
-                gameState.set_input_key(mappedKey, true);
-                this.lastKeys.add(mappedKey);
+                gameState.set_input_key(key, true);
+                this.lastKeys.add(key);
             }
         });
 
         scene.input.keyboard!.on("keyup", (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
-            const mappedKey = arrowKeyMap[key] || key;
-
-            if (["w", "a", "s", "d"].includes(mappedKey)) {
-                gameState.set_input_key(mappedKey, false);
-                this.lastKeys.delete(mappedKey);
+            if (
+                [
+                    "w",
+                    "a",
+                    "s",
+                    "d",
+                    "arrowup",
+                    "arrowleft",
+                    "arrowdown",
+                    "arrowright",
+                ].includes(key)
+            ) {
+                gameState.set_input_key(key, false);
+                this.lastKeys.delete(key);
             }
         });
     }
