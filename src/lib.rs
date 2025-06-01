@@ -1,3 +1,6 @@
+#[macro_use]
+mod macros;
+
 mod game;
 
 pub use game::game_state::GameState;
