@@ -70,7 +70,7 @@ impl GameState {
                     Some(Collision::OwnBody)
                 }
                 _ if human_grid == self.food => Some(Collision::Food),
-                _ if human_grid == ai_grid => Some(Collision::Snake), // TODO: fix this. currently only comparing heads lol
+                _ if self.check_human_ai_body_collision() => Some(Collision::Snake),
                 _ => None,
             };
 
@@ -93,6 +93,7 @@ impl GameState {
                     Some(Collision::OwnBody)
                 }
                 _ if ai_grid == self.food => Some(Collision::Food),
+                _ if self.check_ai_human_body_collision() => Some(Collision::Snake),
                 _ => None,
             };
 
@@ -136,6 +137,32 @@ impl GameState {
             }
             Collision::Snake => {}
         }
+    }
+
+    fn check_human_ai_body_collision(&self) -> bool {
+        let human_snake_head_position = self.human.core.grid_position;
+        let ai_body = &self.ai.core.path_history;
+
+        // check if human head collides with ai body
+        for entry in ai_body {
+            if entry.grid_position == human_snake_head_position {
+                return true;
+            }
+        }
+        false
+    }
+
+    fn check_ai_human_body_collision(&self) -> bool {
+        let ai_snake_head_position = self.ai.core.grid_position;
+        let human_body = &self.human.core.path_history;
+
+        // check if ai head collides with human body
+        for entry in human_body {
+            if entry.grid_position == ai_snake_head_position {
+                return true;
+            }
+        }
+        false
     }
 
     fn regenerate_food(&mut self) -> Option<(i32, i32)> {
