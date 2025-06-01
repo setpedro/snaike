@@ -61,6 +61,18 @@ impl GameState {
                     < f64::EPSILON
         };
 
+        // Check body collisions continuously (but using grid positions)
+        if self.check_human_ai_body_collision_grid() {
+            on_game_over(); // Human head hit AI body or head
+            return;
+        }
+
+        if self.check_ai_human_body_collision_grid() {
+            on_game_win(); // AI head hit human body or head
+            return;
+        }
+
+        // Handle "static" collisions (snake with stationary entity)
         if is_at_node(human_head_position) {
             let collision: Option<Collision> = match () {
                 _ if self.is_out_of_bounds(&self.human.core) => Some(Collision::Wall),
@@ -70,7 +82,6 @@ impl GameState {
                     Some(Collision::OwnBody)
                 }
                 _ if human_grid == self.food => Some(Collision::Food),
-                _ if self.check_human_ai_body_collision() => Some(Collision::Snake),
                 _ => None,
             };
 
@@ -93,7 +104,6 @@ impl GameState {
                     Some(Collision::OwnBody)
                 }
                 _ if ai_grid == self.food => Some(Collision::Food),
-                _ if self.check_ai_human_body_collision() => Some(Collision::Snake),
                 _ => None,
             };
 
@@ -118,33 +128,35 @@ impl GameState {
 
     fn handle_human_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::Wall | Collision::OwnBody | Collision::Snake => on_game_over(),
+            Collision::Wall | Collision::OwnBody => on_game_over(),
             Collision::Food => {
                 self.human.core.grow();
                 self.regenerate_food();
             }
+            _ => {}
         }
     }
 
     fn handle_ai_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::Wall | Collision::OwnBody => {
-                on_game_win(); // Human wins if AI hits wall or self
-            }
+            Collision::Wall | Collision::OwnBody => on_game_win(),
             Collision::Food => {
                 self.ai.core.grow();
                 self.regenerate_food();
             }
-            Collision::Snake => {}
+            _ => {}
         }
     }
 
-    fn check_human_ai_body_collision(&self) -> bool {
+    fn check_human_ai_body_collision_grid(&self) -> bool {
         let human_snake_head_position = self.human.core.grid_position;
-        let ai_body = &self.ai.core.path_history;
 
-        // check if human head collides with ai body
-        for entry in ai_body {
+        if !self.in_opposite_directions() && human_snake_head_position == self.ai.core.grid_position
+        {
+            return true;
+        }
+        // Check collision with AI body
+        for entry in self.ai.core.path_history.iter().skip(1) {
             if entry.grid_position == human_snake_head_position {
                 return true;
             }
@@ -152,17 +164,29 @@ impl GameState {
         false
     }
 
-    fn check_ai_human_body_collision(&self) -> bool {
+    fn check_ai_human_body_collision_grid(&self) -> bool {
         let ai_snake_head_position = self.ai.core.grid_position;
-        let human_body = &self.human.core.path_history;
 
-        // check if ai head collides with human body
-        for entry in human_body {
+        if !self.in_opposite_directions() && ai_snake_head_position == self.human.core.grid_position
+        {
+            return true;
+        }
+        // Check collision with human body
+        for entry in self.human.core.path_history.iter().skip(1) {
             if entry.grid_position == ai_snake_head_position {
                 return true;
             }
         }
         false
+    }
+
+    fn in_opposite_directions(&self) -> bool {
+        let human_dir = self.human.core.direction();
+        let ai_dir = self.ai.core.direction();
+
+        // Opposite directions: (1, 0) vs (-1, 0) or (0, 1) vs (0, -1)
+        (human_dir[0] == -ai_dir[0] && human_dir[1] == 0 && ai_dir[1] == 0)
+            || (human_dir[1] == -ai_dir[1] && human_dir[0] == 0 && ai_dir[0] == 0)
     }
 
     fn regenerate_food(&mut self) -> Option<(i32, i32)> {
