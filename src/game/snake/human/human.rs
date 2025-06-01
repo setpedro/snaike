@@ -1,5 +1,5 @@
 use crate::game::snake::{
-    core::SnakeCore, direction_handler::DirectionHandler, human::input::InputState,
+    core::SnakeCore, direction_handler::handle_direction, human::input::InputState,
 };
 use wasm_bindgen::prelude::wasm_bindgen;
 
@@ -24,19 +24,9 @@ impl HumanSnake {
         let pressed = self.input_state.pressed;
 
         if pressed != 0 {
-            self.process_input(pressed);
+            handle_direction(&mut self.core, pressed);
         }
 
         self.core.update_movement(delta_time);
-    }
-}
-
-impl DirectionHandler for HumanSnake {
-    fn get_core(&self) -> &SnakeCore {
-        &self.core
-    }
-
-    fn get_core_mut(&mut self) -> &mut SnakeCore {
-        &mut self.core
     }
 }

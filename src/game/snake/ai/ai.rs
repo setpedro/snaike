@@ -1,5 +1,5 @@
 use crate::game::snake::{
-    ai::decision::DecisionState, core::SnakeCore, direction_handler::DirectionHandler,
+    ai::decision::DecisionState, core::SnakeCore, direction_handler::handle_direction,
 };
 
 pub struct AISnake {
@@ -21,19 +21,9 @@ impl AISnake {
         let decided = self.decision_state.decided;
 
         if decided != 0 {
-            self.process_input(decided);
+            handle_direction(&mut self.core, decided);
         }
 
         self.core.update_movement(delta_time);
-    }
-}
-
-impl DirectionHandler for AISnake {
-    fn get_core(&self) -> &SnakeCore {
-        &self.core
-    }
-
-    fn get_core_mut(&mut self) -> &mut SnakeCore {
-        &mut self.core
     }
 }
