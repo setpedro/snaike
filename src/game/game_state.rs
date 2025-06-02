@@ -61,14 +61,19 @@ impl GameState {
                     < f64::EPSILON
         };
 
-        // Check body collisions continuously (but using grid positions)
-        if let Some(Collision::HumanHeadToAiBody) = self.check_human_ai_body_collision_grid() {
-            on_game_over();
+        if let Some(collision) = self.check_head_to_head_collision() {
+            self.handle_snake_collision(collision);
             return;
         }
 
-        if let Some(Collision::AiHeadToHumanBody) = self.check_ai_human_body_collision_grid() {
-            on_game_win();
+        // Check body collisions continuously (but using grid positions)
+        if let Some(collision) = self.check_human_ai_body_collision_grid() {
+            self.handle_snake_collision(collision);
+            return;
+        }
+
+        if let Some(collision) = self.check_ai_human_body_collision_grid() {
+            self.handle_snake_collision(collision);
             return;
         }
 
@@ -80,12 +85,14 @@ impl GameState {
                     return;
                 }
                 self.handle_human_collision(collision);
+                return;
             }
         }
 
         if is_at_node(ai_head_position) {
             if let Some(collision) = self.check_static_collision(&self.ai.core, ai_grid) {
                 self.handle_ai_collision(collision);
+                return;
             }
         }
     }
@@ -125,7 +132,6 @@ impl GameState {
         }
     }
 
-    #[allow(dead_code)]
     fn handle_snake_collision(&mut self, collision: Collision) {
         match collision {
             Collision::HumanHeadToAiHead => on_game_over(),
@@ -158,7 +164,6 @@ impl GameState {
         None
     }
 
-    #[allow(dead_code)]
     fn check_head_to_head_collision(&self) -> Option<Collision> {
         let human_head = self.human.core.head_grid_position;
         let ai_head = self.ai.core.head_grid_position;
