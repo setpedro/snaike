@@ -46,7 +46,7 @@ impl GameState {
     #[wasm_bindgen]
     pub fn update(&mut self, delta_time: f64) {
         self.human.update(delta_time);
-        self.ai.update(delta_time);
+        self.ai.update(delta_time, self.food);
 
         let human_head_position = self.human.core.position();
         let ai_head_position = self.ai.core.position();
