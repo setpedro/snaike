@@ -62,13 +62,13 @@ impl GameState {
         };
 
         // Check body collisions continuously (but using grid positions)
-        if self.check_human_ai_body_collision_grid() {
-            on_game_over(); // Human head hit AI body or head
+        if let Some(Collision::HumanHeadToAiBody) = self.check_human_ai_body_collision_grid() {
+            on_game_over();
             return;
         }
 
-        if self.check_ai_human_body_collision_grid() {
-            on_game_win(); // AI head hit human body or head
+        if let Some(Collision::AiHeadToHumanBody) = self.check_ai_human_body_collision_grid() {
+            on_game_win();
             return;
         }
 
@@ -133,7 +133,7 @@ impl GameState {
                 self.human.core.grow();
                 self.regenerate_food();
             }
-            _ => {}
+            _ => unreachable!(),
         }
     }
 
@@ -144,44 +144,57 @@ impl GameState {
                 self.ai.core.grow();
                 self.regenerate_food();
             }
-            _ => {}
+            _ => unreachable!(),
         }
     }
 
-    fn check_human_ai_body_collision_grid(&self) -> bool {
+    #[allow(dead_code)]
+    fn handle_snake_collision(&mut self, collision: Collision) {
+        match collision {
+            Collision::HumanHeadToAiHead => on_game_over(),
+            Collision::AiHeadToHumanHead => on_game_win(),
+            Collision::HumanHeadToAiBody => on_game_over(),
+            Collision::AiHeadToHumanBody => on_game_win(),
+            _ => unreachable!(),
+        }
+    }
+
+    fn check_human_ai_body_collision_grid(&self) -> Option<Collision> {
         let human_snake_head_position = self.human.core.head_grid_position;
 
-        if !self.in_opposite_directions()
-            && human_snake_head_position == self.ai.core.head_grid_position
-        {
-            return true;
-        }
-        // Check collision with AI body
         for entry in self.ai.core.path_history.iter().skip(1) {
             if entry.grid_position == human_snake_head_position {
-                return true;
+                return Some(Collision::HumanHeadToAiBody);
             }
         }
-        false
+        None
     }
 
-    fn check_ai_human_body_collision_grid(&self) -> bool {
+    fn check_ai_human_body_collision_grid(&self) -> Option<Collision> {
         let ai_snake_head_position = self.ai.core.head_grid_position;
 
-        if !self.in_opposite_directions()
-            && ai_snake_head_position == self.human.core.head_grid_position
-        {
-            return true;
-        }
-        // Check collision with human body
         for entry in self.human.core.path_history.iter().skip(1) {
             if entry.grid_position == ai_snake_head_position {
-                return true;
+                return Some(Collision::AiHeadToHumanBody);
             }
         }
-        false
+        None
     }
 
+    #[allow(dead_code)]
+    fn check_head_to_head_collision(&self) -> Option<Collision> {
+        let human_head = self.human.core.head_grid_position;
+        let ai_head = self.ai.core.head_grid_position;
+
+        if human_head == ai_head {
+            // TODO: Determine who moved into whose cell
+            todo!()
+        } else {
+            None
+        }
+    }
+
+    #[allow(dead_code)]
     fn in_opposite_directions(&self) -> bool {
         let human_dir = self.human.core.direction();
         let ai_dir = self.ai.core.direction();

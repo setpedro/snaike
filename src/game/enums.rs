@@ -3,5 +3,8 @@ pub enum Collision {
     Wall,
     OwnBody,
     Food,
-    Snake,
+    HumanHeadToAiHead, // Human moved into AI's cell
+    AiHeadToHumanHead, // AI moved into human's cell
+    HumanHeadToAiBody,
+    AiHeadToHumanBody,
 }
