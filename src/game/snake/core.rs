@@ -6,14 +6,14 @@ use crate::game::constants::CELL_SIZE_PX;
 
 #[wasm_bindgen]
 pub struct SnakeCore {
-    pub(crate) grid_position: (i32, i32),
+    pub(crate) head_grid_position: (i32, i32),
     visual_position: (f64, f64),
     pub(crate) direction: (i32, i32),
     pub(crate) next_direction: Option<(i32, i32)>,
     speed: f64,
     grid_size: i32,
     target_position: (f64, f64),
-    pub(crate) at_grid_position: bool,
+    at_grid_position: bool,
     pub(crate) path_history: VecDeque<PathEntry>,
     pub(crate) body_segments: Vec<BodySegment>,
 }
@@ -44,7 +44,7 @@ impl SnakeCore {
         let pixel_y = (grid_pos.1 as f64 + 0.5) * grid_size as f64;
 
         Self {
-            grid_position: grid_pos,
+            head_grid_position: grid_pos,
             visual_position: (pixel_x, pixel_y),
             direction,
             next_direction: None,
@@ -70,7 +70,7 @@ impl SnakeCore {
 
             // Record path history when entering new cell
             self.path_history.push_back(PathEntry {
-                grid_position: self.grid_position,
+                grid_position: self.head_grid_position,
                 start_visual: self.visual_position,
             });
 
@@ -89,11 +89,11 @@ impl SnakeCore {
                 self.direction = new_dir;
             }
 
-            self.grid_position.0 += self.direction.0;
-            self.grid_position.1 += self.direction.1;
+            self.head_grid_position.0 += self.direction.0;
+            self.head_grid_position.1 += self.direction.1;
             self.target_position = (
-                (self.grid_position.0 as f64 + 0.5) * self.grid_size as f64,
-                (self.grid_position.1 as f64 + 0.5) * self.grid_size as f64,
+                (self.head_grid_position.0 as f64 + 0.5) * self.grid_size as f64,
+                (self.head_grid_position.1 as f64 + 0.5) * self.grid_size as f64,
             );
 
             self.at_grid_position = false;
@@ -166,7 +166,7 @@ impl SnakeCore {
 
     #[wasm_bindgen(getter)]
     pub fn check_self_collision(&self) -> bool {
-        let head_grid_pos = self.grid_position;
+        let head_grid_pos = self.head_grid_position;
 
         // Check if head's grid position matches any body segment's grid position
         for entry in &self.path_history {

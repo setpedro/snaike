@@ -114,10 +114,10 @@ impl GameState {
     }
 
     fn is_out_of_bounds(&self, snake: &SnakeCore) -> bool {
-        snake.grid_position.0 < 0
-            || snake.grid_position.0 >= GRID_COLS
-            || snake.grid_position.1 < 0
-            || snake.grid_position.1 >= GRID_ROWS
+        snake.head_grid_position.0 < 0
+            || snake.head_grid_position.0 >= GRID_COLS
+            || snake.head_grid_position.1 < 0
+            || snake.head_grid_position.1 >= GRID_ROWS
     }
 
     fn is_win(&self) -> bool {
@@ -149,9 +149,10 @@ impl GameState {
     }
 
     fn check_human_ai_body_collision_grid(&self) -> bool {
-        let human_snake_head_position = self.human.core.grid_position;
+        let human_snake_head_position = self.human.core.head_grid_position;
 
-        if !self.in_opposite_directions() && human_snake_head_position == self.ai.core.grid_position
+        if !self.in_opposite_directions()
+            && human_snake_head_position == self.ai.core.head_grid_position
         {
             return true;
         }
@@ -165,9 +166,10 @@ impl GameState {
     }
 
     fn check_ai_human_body_collision_grid(&self) -> bool {
-        let ai_snake_head_position = self.ai.core.grid_position;
+        let ai_snake_head_position = self.ai.core.head_grid_position;
 
-        if !self.in_opposite_directions() && ai_snake_head_position == self.human.core.grid_position
+        if !self.in_opposite_directions()
+            && ai_snake_head_position == self.human.core.head_grid_position
         {
             return true;
         }
@@ -218,7 +220,7 @@ impl GameState {
         self.occupied_grid = [[false; (GRID_ROWS as usize)]; (GRID_COLS as usize)];
 
         // Human snake
-        let (x, y) = self.human.core.grid_position;
+        let (x, y) = self.human.core.head_grid_position;
         self.occupied_grid[x as usize][y as usize] = true;
         for entry in &self.human.core.path_history {
             let (x, y) = entry.grid_position;
@@ -226,7 +228,7 @@ impl GameState {
         }
 
         // AI snake
-        let (x, y) = self.ai.core.grid_position;
+        let (x, y) = self.ai.core.head_grid_position;
         self.occupied_grid[x as usize][y as usize] = true;
         for entry in &self.ai.core.path_history {
             let (x, y) = entry.grid_position;

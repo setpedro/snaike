@@ -33,7 +33,7 @@ impl AISnake {
 
         if is_at_node {
             self.decision_state
-                .set_decision(food, self.core.grid_position, &self.core);
+                .set_decision(food, self.core.head_grid_position, &self.core);
 
             let decided = self.decision_state.decided;
             if decided != 0 {
