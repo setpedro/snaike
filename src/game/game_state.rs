@@ -74,41 +74,18 @@ impl GameState {
 
         // Handle "static" collisions (snake with stationary entity)
         if is_at_node(human_head_position) {
-            let collision: Option<Collision> = match () {
-                _ if self.is_out_of_bounds(&self.human.core) => Some(Collision::Wall),
-                _ if self.human.core.body_segments.len() > 3
-                    && self.human.core.check_self_collision() =>
-                {
-                    Some(Collision::OwnBody)
+            if let Some(collision) = self.check_static_collision(&self.human.core, human_grid) {
+                if self.is_win() {
+                    on_game_win();
+                    return;
                 }
-                _ if human_grid == self.food => Some(Collision::Food),
-                _ => None,
-            };
-
-            if self.is_win() {
-                on_game_win();
-                return;
-            }
-
-            if let Some(collision_type) = collision {
-                self.handle_human_collision(collision_type);
+                self.handle_human_collision(collision);
             }
         }
 
         if is_at_node(ai_head_position) {
-            let collision: Option<Collision> = match () {
-                _ if self.is_out_of_bounds(&self.ai.core) => Some(Collision::Wall),
-                _ if self.ai.core.body_segments.len() > 3
-                    && self.ai.core.check_self_collision() =>
-                {
-                    Some(Collision::OwnBody)
-                }
-                _ if ai_grid == self.food => Some(Collision::Food),
-                _ => None,
-            };
-
-            if let Some(collision_type) = collision {
-                self.handle_ai_collision(collision_type);
+            if let Some(collision) = self.check_static_collision(&self.ai.core, ai_grid) {
+                self.handle_ai_collision(collision);
             }
         }
     }
@@ -191,6 +168,21 @@ impl GameState {
             todo!()
         } else {
             None
+        }
+    }
+
+    fn check_static_collision(
+        &self,
+        snake: &SnakeCore,
+        snake_grid: (i32, i32),
+    ) -> Option<Collision> {
+        match () {
+            _ if self.is_out_of_bounds(snake) => Some(Collision::Wall),
+            _ if snake.body_segments.len() > 3 && snake.check_self_collision() => {
+                Some(Collision::OwnBody)
+            }
+            _ if snake_grid == self.food => Some(Collision::Food),
+            _ => None,
         }
     }
 
