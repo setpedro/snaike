@@ -1,3 +1,9 @@
+const X_START: i32 = 10;
+const Y_START: i32 = 10;
+const DX_START: i32 = -1;
+const DY_START: i32 = 0;
+const SPEED: f64 = 6.0;
+
 use crate::game::snake::{
     ai::decision::DecisionState, core::SnakeCore, direction_handler::handle_direction,
 };
@@ -10,7 +16,7 @@ pub struct AISnake {
 impl AISnake {
     pub fn new() -> Self {
         Self {
-            core: SnakeCore::new(10, 10, -1, 0, 6.0), // Start at (10,10), move left (-1, 0), speed of 5.0
+            core: SnakeCore::new(X_START, Y_START, DX_START, DY_START, SPEED),
             decision_state: DecisionState::new(),
         }
     }

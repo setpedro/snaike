@@ -1,8 +1,10 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
+use crate::game::constants::{DOWN, LEFT, RIGHT, UP};
+
 #[wasm_bindgen]
 pub struct InputState {
-    pub pressed: u8, // Bitmask: 0b0001=Up, 0b0010=Left, 0b0100=Down, 0b1000=Right
+    pub pressed: u8,
 }
 
 #[wasm_bindgen]
@@ -15,10 +17,10 @@ impl InputState {
     #[wasm_bindgen]
     pub fn set_key(&mut self, key: &str, is_pressed: bool) {
         let bit = match key.to_lowercase().as_str() {
-            "w" | "arrowup" => 0b0001,
-            "a" | "arrowleft" => 0b0010,
-            "s" | "arrowdown" => 0b0100,
-            "d" | "arrowright" => 0b1000,
+            "w" | "arrowup" => UP,
+            "a" | "arrowleft" => LEFT,
+            "s" | "arrowdown" => DOWN,
+            "d" | "arrowright" => RIGHT,
             _ => return,
         };
         self.pressed = if is_pressed {

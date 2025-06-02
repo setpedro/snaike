@@ -1,3 +1,9 @@
+const X_START: i32 = 5;
+const Y_START: i32 = 5;
+const DX_START: i32 = 1;
+const DY_START: i32 = 0;
+const SPEED: f64 = 7.0;
+
 use crate::game::snake::{
     core::SnakeCore, direction_handler::handle_direction, human::input::InputState,
 };
@@ -14,7 +20,7 @@ impl HumanSnake {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self {
-            core: SnakeCore::new(5, 5, 1, 0, 7.0), // Start at (5, 5), move right (-1, 0), speed of 6.0
+            core: SnakeCore::new(X_START, Y_START, DX_START, DY_START, SPEED),
             input_state: InputState::new(),
         }
     }

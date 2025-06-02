@@ -1,12 +1,13 @@
+use crate::game::constants::{DOWN, LEFT, RIGHT, UP};
 use crate::game::snake::core::SnakeCore;
 
 pub fn handle_direction(core: &mut SnakeCore, input: u8) {
     let new_dir = match () {
-        _ if input & 0b0001 != 0 => (0, -1),       // Up
-        _ if input & 0b1000 != 0 => (1, 0),        // Right
-        _ if input & 0b0100 != 0 => (0, 1),        // Down
-        _ if input & 0b0010 != 0 => (-1, 0),       // Left
-        _ => (core.direction.0, core.direction.1), // Fallback
+        _ if input & UP != 0 => (0, -1),
+        _ if input & RIGHT != 0 => (1, 0),
+        _ if input & DOWN != 0 => (0, 1),
+        _ if input & LEFT != 0 => (-1, 0),
+        _ => (core.direction.0, core.direction.1),
     };
 
     if is_valid_direction(new_dir, core.direction) {
