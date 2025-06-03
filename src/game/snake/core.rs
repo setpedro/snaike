@@ -159,12 +159,10 @@ impl SnakeCore {
             .collect()
     }
 
-    #[wasm_bindgen(getter)]
-    pub fn position(&self) -> Vec<f64> {
+    pub fn get_head_pixel_position(&self) -> Vec<f64> {
         vec![self.visual_position.0, self.visual_position.1]
     }
 
-    #[wasm_bindgen(getter)]
     pub fn check_self_collision(&self) -> bool {
         let head_grid_pos = self.head_grid_position;
 

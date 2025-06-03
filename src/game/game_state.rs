@@ -1,11 +1,15 @@
 use rand::{thread_rng, Rng};
 use wasm_bindgen::prelude::wasm_bindgen;
+use web_sys::js_sys::Math;
 
 use crate::{
     game::{
         constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
         enums::Collision,
-        snake::{ai::ai::AISnake, human::human::HumanSnake},
+        snake::{
+            ai::ai::AISnake,
+            human::{self, human::HumanSnake},
+        },
     },
     SnakeCore,
 };
@@ -48,13 +52,16 @@ impl GameState {
         self.human.update(delta_time);
         self.ai.update(delta_time, self.food);
 
-        let human_head_position = self.human.core.position();
-        let ai_head_position = self.ai.core.position();
+        let human_head_position = self.human.core.get_head_pixel_position();
+        let ai_head_position = self.ai.core.get_head_pixel_position();
 
-        let human_grid = (human_head_position[0] as i32, human_head_position[1] as i32);
-        let ai_grid = (ai_head_position[0] as i32, ai_head_position[1] as i32);
+        let human_head_pixel_position =
+            (human_head_position[0] as i32, human_head_position[1] as i32);
+        let ai_head_pixel_position = (ai_head_position[0] as i32, ai_head_position[1] as i32);
 
-        if let Some(collision) = self.check_head_to_head_collision() {
+        if let Some(collision) =
+            self.check_head_to_head_collision(human_head_pixel_position, ai_head_pixel_position)
+        {
             self.handle_snake_collision(collision);
             return;
         }
@@ -72,7 +79,9 @@ impl GameState {
 
         // Handle "static" collisions (snake with stationary entity)
         if self.is_at_node(human_head_position) {
-            if let Some(collision) = self.check_static_collision(&self.human.core, human_grid) {
+            if let Some(collision) =
+                self.check_static_collision(&self.human.core, human_head_pixel_position)
+            {
                 if self.is_win() {
                     on_game_win();
                     return;
@@ -83,7 +92,9 @@ impl GameState {
         }
 
         if self.is_at_node(ai_head_position) {
-            if let Some(collision) = self.check_static_collision(&self.ai.core, ai_grid) {
+            if let Some(collision) =
+                self.check_static_collision(&self.ai.core, ai_head_pixel_position)
+            {
                 self.handle_ai_collision(collision);
                 return;
             }
@@ -162,15 +173,42 @@ impl GameState {
         None
     }
 
-    fn check_head_to_head_collision(&self) -> Option<Collision> {
-        let human_head = self.human.core.head_grid_position;
-        let ai_head = self.ai.core.head_grid_position;
+    fn check_head_to_head_collision(
+        &self,
+        human_head_pixel_position: (i32, i32),
+        ai_head_pixel_position: (i32, i32),
+    ) -> Option<Collision> {
+        let human_head_grid_position = self.human.core.head_grid_position;
+        let ai_head_grid_position = self.ai.core.head_grid_position;
 
-        if human_head == ai_head {
-            // TODO: Determine who moved into whose cell
+        if human_head_grid_position != ai_head_grid_position {
+            return None;
+        }
+
+        // There's a bug wiht specific head-on collisions that are not being detected
+
+        // TODO: grid to pixel util
+        let x_cell_center =
+            ((human_head_grid_position.0 as f64 + 0.5) * CELL_SIZE_PX as f64) as i32;
+        let y_cell_center =
+            ((human_head_grid_position.1 as f64 + 0.5) * CELL_SIZE_PX as f64) as i32;
+
+        let human_cell_center_proximity = (((human_head_pixel_position.0 - x_cell_center).pow(2)
+            + (human_head_pixel_position.1 - y_cell_center).pow(2))
+            as f64)
+            .sqrt();
+
+        let ai_cell_center_proximity = (((ai_head_pixel_position.0 - x_cell_center).pow(2)
+            + (ai_head_pixel_position.1 - y_cell_center).pow(2))
+            as f64)
+            .sqrt();
+
+        if human_cell_center_proximity == ai_cell_center_proximity {
             todo!()
+        } else if human_cell_center_proximity < ai_cell_center_proximity {
+            Some(Collision::AiHeadToHumanHead)
         } else {
-            None
+            Some(Collision::HumanHeadToAiHead)
         }
     }
 
@@ -251,21 +289,11 @@ impl GameState {
 
     #[wasm_bindgen]
     pub fn get_human_snake_position(&self) -> Vec<f64> {
-        self.human.core.position()
+        self.human.core.get_head_pixel_position()
     }
 
     pub fn get_ai_snake_position(&self) -> Vec<f64> {
-        self.ai.core.position()
-    }
-
-    #[wasm_bindgen]
-    pub fn get_human_snake_direction(&self) -> Vec<i32> {
-        self.human.core.direction()
-    }
-
-    #[wasm_bindgen]
-    pub fn get_ai_snake_direction(&self) -> Vec<i32> {
-        self.ai.core.direction()
+        self.ai.core.get_head_pixel_position()
     }
 
     #[wasm_bindgen]

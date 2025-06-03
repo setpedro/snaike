@@ -23,7 +23,7 @@ impl AISnake {
     }
 
     pub fn update(&mut self, delta_time: f64, food: (i32, i32)) {
-        let head_position = self.core.position();
+        let head_position = self.core.get_head_pixel_position();
 
         let is_at_node = ((head_position[0] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64)
             .abs()
