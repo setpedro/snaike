@@ -54,13 +54,6 @@ impl GameState {
         let human_grid = (human_head_position[0] as i32, human_head_position[1] as i32);
         let ai_grid = (ai_head_position[0] as i32, ai_head_position[1] as i32);
 
-        // Ensures the snake's head is exactly aligned with the grid
-        let is_at_node = |head: Vec<f64>| {
-            ((head[0] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs() < f64::EPSILON
-                && ((head[1] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs()
-                    < f64::EPSILON
-        };
-
         if let Some(collision) = self.check_head_to_head_collision() {
             self.handle_snake_collision(collision);
             return;
@@ -78,7 +71,7 @@ impl GameState {
         }
 
         // Handle "static" collisions (snake with stationary entity)
-        if is_at_node(human_head_position) {
+        if self.is_at_node(human_head_position) {
             if let Some(collision) = self.check_static_collision(&self.human.core, human_grid) {
                 if self.is_win() {
                     on_game_win();
@@ -89,12 +82,17 @@ impl GameState {
             }
         }
 
-        if is_at_node(ai_head_position) {
+        if self.is_at_node(ai_head_position) {
             if let Some(collision) = self.check_static_collision(&self.ai.core, ai_grid) {
                 self.handle_ai_collision(collision);
                 return;
             }
         }
+    }
+
+    fn is_at_node(&self, head: Vec<f64>) -> bool {
+        ((head[0] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs() < f64::EPSILON
+            && ((head[1] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs() < f64::EPSILON
     }
 
     fn is_out_of_bounds(&self, snake: &SnakeCore) -> bool {
