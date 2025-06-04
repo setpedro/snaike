@@ -29,14 +29,10 @@ impl DecisionState {
 
     pub fn set_decision(&mut self, food: (i32, i32), position: (i32, i32), snake_core: &SnakeCore) {
         // Convert food to grid coordinates
-        let food_grid = if food.0 > 50 || food.1 > 50 {
-            (
-                food.0 / crate::game::constants::CELL_SIZE_PX,
-                food.1 / crate::game::constants::CELL_SIZE_PX,
-            )
-        } else {
-            food
-        };
+        let food_grid = (
+            food.0 / crate::game::constants::CELL_SIZE_PX,
+            food.1 / crate::game::constants::CELL_SIZE_PX,
+        );
 
         let ai_pos = position;
         let current_dir = snake_core.direction();

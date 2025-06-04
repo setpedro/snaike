@@ -13,7 +13,7 @@ const GameContainer: React.FC = () => {
     const displayHeight = "90vh";
     const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
 
-    const [gameState, setGameState] = useState<"playing" | "gameOver" | "win">(
+    const [gameState, setGameState] = useState<"playing" | "gameOver" | "win" | "draw">(
         "playing"
     );
 
@@ -42,13 +42,17 @@ const GameContainer: React.FC = () => {
             scene.setGameEndCallback(() => {});
 
             window.onGameOver = () => {
-                scene.handleGameOverFromWasm();
+                scene.handleEndGameFromWasm();
                 setGameState("gameOver");
             };
             window.onGameWin = () => {
-                scene.handleGameWinFromWasm();
+                scene.handleEndGameFromWasm();
                 setGameState("win");
             };
+            window.onGameDraw = () => {
+                scene.handleEndGameFromWasm();
+                setGameState("draw")
+            }
         });
 
         return () => {
@@ -81,6 +85,12 @@ const GameContainer: React.FC = () => {
                         You won! Click to restart
                     </GameOverModal>
                 );
+            case "draw": 
+                return (
+                    <GameOverModal onRestart={handleRestart}>
+                        It's a tie! Click to restart
+                    </GameOverModal>
+                )
             default:
                 return null;
         }

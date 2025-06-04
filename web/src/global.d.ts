@@ -3,6 +3,7 @@ declare global {
         game: Phaser.Game | undefined;
         onGameOver: () => void;
         onGameWin: () => void;
+        onGameDraw: () => void;
     }
 }
 

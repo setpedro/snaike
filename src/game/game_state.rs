@@ -24,6 +24,8 @@ extern "C" {
     pub fn on_game_over();
     #[wasm_bindgen(js_name = "onGameWin")]
     pub fn on_game_win();
+    #[wasm_bindgen(js_name = "onGameDraw")]
+    pub fn on_game_draw();
 }
 
 #[wasm_bindgen]
@@ -143,6 +145,7 @@ impl GameState {
             Collision::AiHeadToHumanHead => on_game_win(),
             Collision::HumanHeadToAiBody => on_game_over(),
             Collision::AiHeadToHumanBody => on_game_win(),
+            Collision::HeadSwap => on_game_draw(),
             _ => unreachable!(),
         }
     }
@@ -169,7 +172,6 @@ impl GameState {
         None
     }
 
-    // TODO: reproduce and fix recursive borrowing panic when both snakes simultaneously move onto the same cell (e.g., eating the apple).
     fn check_head_to_head_collision(
         &self,
         human_head_pixel_position: (i32, i32),

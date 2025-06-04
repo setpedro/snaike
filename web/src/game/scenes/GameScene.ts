@@ -229,17 +229,9 @@ class GameScene extends Phaser.Scene {
         this.gameEndCallback = cb;
     }
 
-    private endGame() {
+    handleEndGameFromWasm() {
         this.scene.pause();
         this.gameEndCallback();
-    }
-
-    handleGameOverFromWasm() {
-        this.endGame();
-    }
-
-    handleGameWinFromWasm() {
-        this.endGame();
     }
 
     onReset() {
