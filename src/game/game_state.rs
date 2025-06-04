@@ -1,15 +1,11 @@
 use rand::{thread_rng, Rng};
 use wasm_bindgen::prelude::wasm_bindgen;
-use web_sys::js_sys::Math;
 
 use crate::{
     game::{
         constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
         enums::Collision,
-        snake::{
-            ai::ai::AISnake,
-            human::{self, human::HumanSnake},
-        },
+        snake::{ai::ai::AISnake, human::human::HumanSnake},
     },
     SnakeCore,
 };
@@ -173,6 +169,7 @@ impl GameState {
         None
     }
 
+    // TODO: reproduce and fix recursive borrowing panic when both snakes simultaneously move onto the same cell (e.g., eating the apple).
     fn check_head_to_head_collision(
         &self,
         human_head_pixel_position: (i32, i32),
@@ -181,11 +178,24 @@ impl GameState {
         let human_head_grid_position = self.human.core.head_grid_position;
         let ai_head_grid_position = self.ai.core.head_grid_position;
 
+        let human_prev = (
+            human_head_grid_position.0 - self.human.core.direction.0,
+            human_head_grid_position.1 - self.human.core.direction.1,
+        );
+        let ai_prev = (
+            ai_head_grid_position.0 - self.ai.core.direction.0,
+            ai_head_grid_position.1 - self.ai.core.direction.1,
+        );
+
+        // Swapped head positions
+        if human_head_grid_position == ai_prev && ai_head_grid_position == human_prev {
+            return Some(Collision::HeadSwap);
+        }
+
+        // No collision
         if human_head_grid_position != ai_head_grid_position {
             return None;
         }
-
-        // There's a bug wiht specific head-on collisions that are not being detected
 
         // TODO: grid to pixel util
         let x_cell_center =
@@ -204,7 +214,7 @@ impl GameState {
             .sqrt();
 
         if human_cell_center_proximity == ai_cell_center_proximity {
-            todo!()
+            Some(Collision::HeadSwap)
         } else if human_cell_center_proximity < ai_cell_center_proximity {
             Some(Collision::AiHeadToHumanHead)
         } else {
@@ -225,16 +235,6 @@ impl GameState {
             _ if snake_grid == self.food => Some(Collision::Food),
             _ => None,
         }
-    }
-
-    #[allow(dead_code)]
-    fn in_opposite_directions(&self) -> bool {
-        let human_dir = self.human.core.direction();
-        let ai_dir = self.ai.core.direction();
-
-        // Opposite directions: (1, 0) vs (-1, 0) or (0, 1) vs (0, -1)
-        (human_dir[0] == -ai_dir[0] && human_dir[1] == 0 && ai_dir[1] == 0)
-            || (human_dir[1] == -ai_dir[1] && human_dir[0] == 0 && ai_dir[0] == 0)
     }
 
     fn regenerate_food(&mut self) -> Option<(i32, i32)> {
