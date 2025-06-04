@@ -41,6 +41,8 @@ impl GameState {
 
         // TODO: refactor this.
         game_state.update_grid();
+        game_state.human.core.grow_counter = 3;
+        game_state.ai.core.grow_counter = 3;
         game_state.regenerate_food();
         game_state
     }
@@ -75,8 +77,13 @@ impl GameState {
             return;
         }
 
-        // Handle "static" collisions (snake with stationary entity)
         if self.is_at_node(human_head_position) {
+            // Grow 3 segments when the game starts
+            if self.human.core.grow_counter > 0 && self.human.core.direction != (0, 0) {
+                self.human.core.grow();
+                self.human.core.grow_counter -= 1;
+            }
+
             if let Some(collision) =
                 self.check_static_collision(&self.human.core, human_head_pixel_position)
             {
@@ -90,6 +97,12 @@ impl GameState {
         }
 
         if self.is_at_node(ai_head_position) {
+            // Grow 3 segments when the game starts
+            if self.ai.core.grow_counter > 0 && self.ai.core.direction != (0, 0) {
+                self.ai.core.grow();
+                self.ai.core.grow_counter -= 1;
+            }
+
             if let Some(collision) =
                 self.check_static_collision(&self.ai.core, ai_head_pixel_position)
             {
@@ -153,7 +166,7 @@ impl GameState {
     fn check_human_ai_body_collision_grid(&self) -> Option<Collision> {
         let human_snake_head_position = self.human.core.head_grid_position;
 
-        for entry in self.ai.core.path_history.iter().skip(1) {
+        for entry in &self.ai.core.path_history {
             if entry.grid_position == human_snake_head_position {
                 return Some(Collision::HumanHeadToAiBody);
             }
@@ -164,7 +177,7 @@ impl GameState {
     fn check_ai_human_body_collision_grid(&self) -> Option<Collision> {
         let ai_snake_head_position = self.ai.core.head_grid_position;
 
-        for entry in self.human.core.path_history.iter().skip(1) {
+        for entry in &self.human.core.path_history {
             if entry.grid_position == ai_snake_head_position {
                 return Some(Collision::AiHeadToHumanBody);
             }

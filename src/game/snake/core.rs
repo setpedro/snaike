@@ -16,6 +16,7 @@ pub struct SnakeCore {
     at_grid_position: bool,
     pub(crate) path_history: VecDeque<PathEntry>,
     pub(crate) body_segments: Vec<BodySegment>,
+    pub grow_counter: usize,
 }
 
 #[wasm_bindgen]
@@ -54,6 +55,7 @@ impl SnakeCore {
             at_grid_position: true,
             path_history: VecDeque::new(),
             body_segments: Vec::new(),
+            grow_counter: 0,
         }
     }
 
