@@ -2,7 +2,7 @@ use std::collections::VecDeque;
 
 use wasm_bindgen::prelude::*;
 
-use crate::game::constants::CELL_SIZE_PX;
+use crate::{game::constants::CELL_SIZE_PX, grid_to_pixel_position};
 
 #[wasm_bindgen]
 pub struct SnakeCore {
@@ -16,7 +16,7 @@ pub struct SnakeCore {
     at_grid_position: bool,
     pub(crate) path_history: VecDeque<PathEntry>,
     pub(crate) body_segments: Vec<BodySegment>,
-    pub grow_counter: usize,
+    pub grow_counter: u8,
 }
 
 #[wasm_bindgen]
@@ -41,8 +41,7 @@ impl SnakeCore {
         let grid_pos = (pos_x, pos_y);
         let direction = (dir_x, dir_y);
         let grid_size = CELL_SIZE_PX;
-        let pixel_x = (grid_pos.0 as f64 + 0.5) * grid_size as f64;
-        let pixel_y = (grid_pos.1 as f64 + 0.5) * grid_size as f64;
+        let (pixel_x, pixel_y) = grid_to_pixel_position!(grid_pos, f64);
 
         Self {
             head_grid_position: grid_pos,
@@ -93,10 +92,7 @@ impl SnakeCore {
 
             self.head_grid_position.0 += self.direction.0;
             self.head_grid_position.1 += self.direction.1;
-            self.target_position = (
-                (self.head_grid_position.0 as f64 + 0.5) * self.grid_size as f64,
-                (self.head_grid_position.1 as f64 + 0.5) * self.grid_size as f64,
-            );
+            self.target_position = grid_to_pixel_position!(self.head_grid_position, f64);
 
             self.at_grid_position = false;
         } else {
@@ -129,10 +125,8 @@ impl SnakeCore {
             segment.progress += step;
 
             if segment.progress >= 1.0 {
-                segment.current_pos = (
-                    (target_entry.grid_position.0 as f64 + 0.5) * self.grid_size as f64,
-                    (target_entry.grid_position.1 as f64 + 0.5) * self.grid_size as f64,
-                );
+                segment.current_pos = grid_to_pixel_position!(target_entry.grid_position, f64);
+                self.target_position = grid_to_pixel_position!(self.head_grid_position, f64);
                 segment.progress = 0.0;
             } else {
                 segment.current_pos.0 = target_entry.start_visual.0

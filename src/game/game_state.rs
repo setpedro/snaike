@@ -7,7 +7,7 @@ use crate::{
         enums::Collision,
         snake::{ai::ai::AISnake, human::human::HumanSnake},
     },
-    SnakeCore,
+    grid_to_pixel_position, SnakeCore,
 };
 
 #[wasm_bindgen]
@@ -212,11 +212,8 @@ impl GameState {
             return None;
         }
 
-        // TODO: grid to pixel util
-        let x_cell_center =
-            ((human_head_grid_position.0 as f64 + 0.5) * CELL_SIZE_PX as f64) as i32;
-        let y_cell_center =
-            ((human_head_grid_position.1 as f64 + 0.5) * CELL_SIZE_PX as f64) as i32;
+        let (x_cell_center, y_cell_center): (i32, i32) =
+            grid_to_pixel_position!(human_head_grid_position, i32);
 
         let human_cell_center_proximity = (((human_head_pixel_position.0 - x_cell_center).pow(2)
             + (human_head_pixel_position.1 - y_cell_center).pow(2))
