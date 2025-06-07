@@ -6,7 +6,9 @@ const SPEED: f64 = 3.0;
 
 use crate::game::{
     constants::CELL_SIZE_PX,
-    snake::{ai::decision::DecisionState, core::SnakeCore, direction_handler::handle_direction},
+    snake::{
+        ai::decision::decision::DecisionState, core::SnakeCore, direction_handler::handle_direction,
+    },
 };
 
 pub struct AISnake {
