@@ -5,7 +5,7 @@ type Props = {
     onRestart: () => void;
 };
 
-export default function GameOverModal({ children, onRestart }: Props) {
+export default function GameEndModal({ children, onRestart }: Props) {
     return (
         <div
             className="absolute top-0 left-0 w-full h-full bg-black/70 text-white flex justify-center items-center cursor-pointer"

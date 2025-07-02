@@ -1,11 +1,8 @@
 import Phaser from "phaser";
-import { createGrid } from "../systems/createGrid";
+import { createGrid } from "../rendering/createGrid";
 import init, { GameState } from "../../../public/pkg/snake_spark";
 import { colors, grid, VISUAL } from "../../consts";
-import {
-    InputHandlerFactory,
-    IInputHandler,
-} from "../systems/input/InputHandler";
+import { InputHandlerFactory, IInputHandler } from "../input/InputHandler";
 
 class GameScene extends Phaser.Scene {
     private gameState!: GameState;

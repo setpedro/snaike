@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
-import GameScene from "./scenes/GameScene";
-import { grid } from "../consts";
-import GameOverModal from "./GameOverModal";
+import GameScene from "../scenes/GameScene";
+import { grid } from "../../consts";
+import GameEndModal from "./GameEndModal";
 
 const GameContainer: React.FC = () => {
     const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -13,9 +13,9 @@ const GameContainer: React.FC = () => {
     const displayHeight = "90vh";
     const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
 
-    const [gameState, setGameState] = useState<"playing" | "gameOver" | "win" | "draw">(
-        "playing"
-    );
+    const [gameState, setGameState] = useState<
+        "playing" | "gameOver" | "win" | "draw"
+    >("playing");
 
     useEffect(() => {
         if (!gameContainerRef.current) {
@@ -51,8 +51,8 @@ const GameContainer: React.FC = () => {
             };
             window.onGameDraw = () => {
                 scene.handleEndGameFromWasm();
-                setGameState("draw")
-            }
+                setGameState("draw");
+            };
         });
 
         return () => {
@@ -75,22 +75,22 @@ const GameContainer: React.FC = () => {
         switch (gameState) {
             case "gameOver":
                 return (
-                    <GameOverModal onRestart={handleRestart}>
+                    <GameEndModal onRestart={handleRestart}>
                         Game Over! Click to Restart
-                    </GameOverModal>
+                    </GameEndModal>
                 );
             case "win":
                 return (
-                    <GameOverModal onRestart={handleRestart}>
+                    <GameEndModal onRestart={handleRestart}>
                         You won! Click to restart
-                    </GameOverModal>
+                    </GameEndModal>
                 );
-            case "draw": 
+            case "draw":
                 return (
-                    <GameOverModal onRestart={handleRestart}>
+                    <GameEndModal onRestart={handleRestart}>
                         It's a tie! Click to restart
-                    </GameOverModal>
-                )
+                    </GameEndModal>
+                );
             default:
                 return null;
         }

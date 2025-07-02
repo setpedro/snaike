@@ -1,8 +1,26 @@
 import Phaser from "phaser";
-import { GameState } from "../../../../public/pkg/snake_spark";
+import { GameState } from "../../../public/pkg/snake_spark";
 
 export interface IInputHandler {
     destroy(): void;
+}
+
+export class InputHandlerFactory {
+    static create(scene: Phaser.Scene, gameState: GameState): IInputHandler {
+        if (this.isMobile()) {
+            return new SwipeInputHandler(scene, gameState);
+        } else {
+            return new KeyboardInputHandler(scene, gameState);
+        }
+    }
+
+    private static isMobile(): boolean {
+        return (
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+                navigator.userAgent
+            ) || "ontouchstart" in window
+        );
+    }
 }
 
 export class KeyboardInputHandler implements IInputHandler {
@@ -148,23 +166,5 @@ export class SwipeInputHandler implements IInputHandler {
         this.scene.input.off("pointerdown");
         this.scene.input.off("pointermove");
         this.scene.input.off("pointerup");
-    }
-}
-
-export class InputHandlerFactory {
-    static create(scene: Phaser.Scene, gameState: GameState): IInputHandler {
-        if (this.isMobile()) {
-            return new SwipeInputHandler(scene, gameState);
-        } else {
-            return new KeyboardInputHandler(scene, gameState);
-        }
-    }
-
-    private static isMobile(): boolean {
-        return (
-            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-                navigator.userAgent
-            ) || "ontouchstart" in window
-        );
     }
 }
