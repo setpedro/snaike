@@ -1,11 +1,11 @@
 import Phaser from "phaser";
-import { createGrid } from "../rendering/createGrid";
-import init, { GameState } from "../../../public/pkg/snake_spark";
+import init, { VersusGameState } from "../../../public/pkg/snake_spark";
 import { colors, grid, VISUAL } from "../../consts";
 import { InputHandlerFactory, IInputHandler } from "../input/InputHandler";
+import { createGrid } from "../rendering/createGrid";
 
-class GameScene extends Phaser.Scene {
-    private gameState!: GameState;
+class GameSceneVersus extends Phaser.Scene {
+    private gameState!: VersusGameState;
     private inputHandler!: IInputHandler;
     private humanSnakeSegments: Phaser.GameObjects.Rectangle[] = [];
     private humanSnakeConnectors: Phaser.GameObjects.Rectangle[] = [];
@@ -16,7 +16,7 @@ class GameScene extends Phaser.Scene {
     private isInRestartFrameGap = false;
 
     constructor() {
-        super({ key: "GameScene" });
+        super({ key: "GameSceneVersus" });
     }
 
     async create() {
@@ -27,14 +27,15 @@ class GameScene extends Phaser.Scene {
         this.gameState?.free();
 
         await init();
-        this.gameState = new GameState();
+        this.gameState = new VersusGameState();
         this.isInRestartFrameGap = false;
 
         createGrid(this);
 
-        this.spawnFood();
+        // Create both snakes
         this.spawnSnake();
         this.spawnAISnake();
+        this.spawnFood();
 
         this.inputHandler = InputHandlerFactory.create(this, this.gameState);
     }
@@ -245,4 +246,4 @@ class GameScene extends Phaser.Scene {
     }
 }
 
-export default GameScene;
+export default GameSceneVersus;

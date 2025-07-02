@@ -1,21 +1,19 @@
-use rand::{thread_rng, Rng};
-use wasm_bindgen::prelude::wasm_bindgen;
-
 use crate::{
     game::{
         constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
         enums::Collision,
-        snake::{ai::ai::AISnake, human::human::HumanSnake},
+        snake::ai::ai::AISnake,
     },
     grid_to_pixel_position, SnakeCore,
 };
 
+use super::common::GameStateCommon;
+use wasm_bindgen::prelude::*;
+
 #[wasm_bindgen]
-pub struct GameState {
-    human: HumanSnake,
+pub struct VersusGameState {
+    common: GameStateCommon,
     ai: AISnake,
-    food: (i32, i32),
-    occupied_grid: [[bool; GRID_ROWS as usize]; GRID_COLS as usize],
 }
 
 #[wasm_bindgen]
@@ -29,30 +27,23 @@ extern "C" {
 }
 
 #[wasm_bindgen]
-impl GameState {
+impl VersusGameState {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
-        let mut game_state = Self {
-            human: HumanSnake::new(),
-            ai: AISnake::new(),
-            food: (0, 0),
-            occupied_grid: [[false; GRID_ROWS as usize]; GRID_COLS as usize],
-        };
+        let mut common = GameStateCommon::new();
+        let mut ai = AISnake::new();
+        ai.core.grow_counter = 3;
 
-        // TODO: refactor this.
-        game_state.update_grid();
-        game_state.human.core.grow_counter = 3;
-        game_state.ai.core.grow_counter = 3;
-        game_state.regenerate_food();
-        game_state
+        common.regenerate_food(Some(&ai));
+        Self { common, ai }
     }
 
     #[wasm_bindgen]
     pub fn update(&mut self, delta_time: f64) {
-        self.human.update(delta_time);
-        self.ai.update(delta_time, self.food);
+        self.common.human.update(delta_time);
+        self.ai.update(delta_time, self.common.food);
 
-        let human_head_position = self.human.core.get_head_pixel_position();
+        let human_head_position = self.common.human.core.get_head_pixel_position();
         let ai_head_position = self.ai.core.get_head_pixel_position();
 
         let human_head_pixel_position =
@@ -79,13 +70,14 @@ impl GameState {
 
         if self.is_at_node(human_head_position) {
             // Grow 3 segments when the game starts
-            if self.human.core.grow_counter > 0 && self.human.core.direction != (0, 0) {
-                self.human.core.grow();
-                self.human.core.grow_counter -= 1;
+            if self.common.human.core.grow_counter > 0 && self.common.human.core.direction != (0, 0)
+            {
+                self.common.human.core.grow();
+                self.common.human.core.grow_counter -= 1;
             }
 
             if let Some(collision) =
-                self.check_static_collision(&self.human.core, human_head_pixel_position)
+                self.check_static_collision(&self.common.human.core, human_head_pixel_position)
             {
                 if self.is_win() {
                     on_game_win();
@@ -126,7 +118,7 @@ impl GameState {
 
     fn is_win(&self) -> bool {
         let total_cells = (GRID_COLS * GRID_ROWS) as usize;
-        let snake_cells = (self.human.core.get_body_positions().len() / 2) + 1;
+        let snake_cells = (self.common.human.core.get_body_positions().len() / 2) + 1;
         snake_cells >= total_cells
     }
 
@@ -134,8 +126,8 @@ impl GameState {
         match collision {
             Collision::Wall | Collision::OwnBody => on_game_over(),
             Collision::Food => {
-                self.human.core.grow();
-                self.regenerate_food();
+                self.common.human.core.grow();
+                self.common.regenerate_food(Some(&self.ai));
             }
             _ => unreachable!(),
         }
@@ -146,7 +138,7 @@ impl GameState {
             Collision::Wall | Collision::OwnBody => on_game_win(),
             Collision::Food => {
                 self.ai.core.grow();
-                self.regenerate_food();
+                self.common.regenerate_food(Some(&self.ai));
             }
             _ => unreachable!(),
         }
@@ -164,7 +156,7 @@ impl GameState {
     }
 
     fn check_human_ai_body_collision_grid(&self) -> Option<Collision> {
-        let human_snake_head_position = self.human.core.head_grid_position;
+        let human_snake_head_position = self.common.human.core.head_grid_position;
 
         for entry in &self.ai.core.path_history {
             if entry.grid_position == human_snake_head_position {
@@ -177,7 +169,7 @@ impl GameState {
     fn check_ai_human_body_collision_grid(&self) -> Option<Collision> {
         let ai_snake_head_position = self.ai.core.head_grid_position;
 
-        for entry in &self.human.core.path_history {
+        for entry in &self.common.human.core.path_history {
             if entry.grid_position == ai_snake_head_position {
                 return Some(Collision::AiHeadToHumanBody);
             }
@@ -190,12 +182,12 @@ impl GameState {
         human_head_pixel_position: (i32, i32),
         ai_head_pixel_position: (i32, i32),
     ) -> Option<Collision> {
-        let human_head_grid_position = self.human.core.head_grid_position;
+        let human_head_grid_position = self.common.human.core.head_grid_position;
         let ai_head_grid_position = self.ai.core.head_grid_position;
 
         let human_prev = (
-            human_head_grid_position.0 - self.human.core.direction.0,
-            human_head_grid_position.1 - self.human.core.direction.1,
+            human_head_grid_position.0 - self.common.human.core.direction.0,
+            human_head_grid_position.1 - self.common.human.core.direction.1,
         );
         let ai_prev = (
             ai_head_grid_position.0 - self.ai.core.direction.0,
@@ -244,64 +236,19 @@ impl GameState {
             _ if snake.body_segments.len() > 3 && snake.check_self_collision() => {
                 Some(Collision::OwnBody)
             }
-            _ if snake_grid == self.food => Some(Collision::Food),
+            _ if snake_grid == self.common.food => Some(Collision::Food),
             _ => None,
-        }
-    }
-
-    fn regenerate_food(&mut self) -> Option<(i32, i32)> {
-        self.update_grid();
-
-        let mut candidates = Vec::with_capacity((GRID_COLS * GRID_ROWS) as usize);
-        for x in 0..(GRID_COLS as usize) {
-            for y in 0..(GRID_ROWS as usize) {
-                if !self.occupied_grid[x][y] {
-                    candidates.push((
-                        x * (CELL_SIZE_PX as usize) + (CELL_SIZE_PX as usize) / 2,
-                        y * (CELL_SIZE_PX as usize) + (CELL_SIZE_PX as usize) / 2,
-                    ));
-                }
-            }
-        }
-
-        if candidates.is_empty() {
-            self.food = (-1, -1);
-            None
-        } else {
-            let choice = candidates[thread_rng().gen_range(0..candidates.len())];
-            self.food = (choice.0 as i32, choice.1 as i32);
-            Some((choice.0 as i32, choice.1 as i32))
-        }
-    }
-
-    fn update_grid(&mut self) {
-        self.occupied_grid = [[false; (GRID_ROWS as usize)]; (GRID_COLS as usize)];
-
-        // Human snake
-        let (x, y) = self.human.core.head_grid_position;
-        self.occupied_grid[x as usize][y as usize] = true;
-        for entry in &self.human.core.path_history {
-            let (x, y) = entry.grid_position;
-            self.occupied_grid[x as usize][y as usize] = true;
-        }
-
-        // AI snake
-        let (x, y) = self.ai.core.head_grid_position;
-        self.occupied_grid[x as usize][y as usize] = true;
-        for entry in &self.ai.core.path_history {
-            let (x, y) = entry.grid_position;
-            self.occupied_grid[x as usize][y as usize] = true;
         }
     }
 
     #[wasm_bindgen(getter)]
     pub fn food(&self) -> Vec<i32> {
-        vec![self.food.0, self.food.1]
+        vec![self.common.food.0, self.common.food.1]
     }
 
     #[wasm_bindgen]
     pub fn get_human_snake_position(&self) -> Vec<f64> {
-        self.human.core.get_head_pixel_position()
+        self.common.human.core.get_head_pixel_position()
     }
 
     pub fn get_ai_snake_position(&self) -> Vec<f64> {
@@ -310,7 +257,7 @@ impl GameState {
 
     #[wasm_bindgen]
     pub fn get_human_snake_body_positions(&self) -> Vec<f64> {
-        self.human.core.get_body_positions()
+        self.common.human.core.get_body_positions()
     }
 
     #[wasm_bindgen]
@@ -320,6 +267,6 @@ impl GameState {
 
     #[wasm_bindgen]
     pub fn set_input_key(&mut self, key: &str, is_pressed: bool) {
-        self.human.input_state.set_key(key, is_pressed);
+        self.common.human.input_state.set_key(key, is_pressed);
     }
 }

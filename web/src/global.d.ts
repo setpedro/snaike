@@ -4,6 +4,7 @@ declare global {
         onGameOver: () => void;
         onGameWin: () => void;
         onGameDraw: () => void;
+        onScoreUpdate?: (score: number) => void;
     }
 }
 

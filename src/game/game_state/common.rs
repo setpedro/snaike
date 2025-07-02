@@ -1,0 +1,91 @@
+use crate::{
+    game::{
+        constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
+        enums::Collision,
+        game_state::utils::is_out_of_bounds,
+        snake::ai::ai::AISnake,
+    },
+    HumanSnake, SnakeCore,
+};
+use rand::{thread_rng, Rng};
+
+pub struct GameStateCommon {
+    pub human: HumanSnake,
+    pub food: (i32, i32),
+    pub occupied_grid: [[bool; GRID_ROWS as usize]; GRID_COLS as usize],
+}
+
+impl GameStateCommon {
+    pub fn new() -> Self {
+        let mut human = HumanSnake::new();
+        human.core.grow_counter = 3;
+
+        Self {
+            human,
+            food: (0, 0),
+            occupied_grid: [[false; GRID_ROWS as usize]; GRID_COLS as usize],
+        }
+    }
+
+    pub fn update_grid(&mut self, ai: Option<&AISnake>) {
+        self.occupied_grid = [[false; GRID_ROWS as usize]; GRID_COLS as usize];
+
+        // Human snake
+        let (x, y) = self.human.core.head_grid_position;
+        self.occupied_grid[x as usize][y as usize] = true;
+        for entry in &self.human.core.path_history {
+            let (x, y) = entry.grid_position;
+            self.occupied_grid[x as usize][y as usize] = true;
+        }
+
+        // AI snake if provided
+        if let Some(ai) = ai {
+            let (x, y) = ai.core.head_grid_position;
+            self.occupied_grid[x as usize][y as usize] = true;
+            for entry in &ai.core.path_history {
+                let (x, y) = entry.grid_position;
+                self.occupied_grid[x as usize][y as usize] = true;
+            }
+        }
+    }
+
+    pub fn check_static_collision(
+        &self,
+        snake: &SnakeCore,
+        snake_grid: (i32, i32),
+    ) -> Option<Collision> {
+        match () {
+            _ if is_out_of_bounds(snake) => Some(Collision::Wall),
+            _ if snake.body_segments.len() > 3 && snake.check_self_collision() => {
+                Some(Collision::OwnBody)
+            }
+            _ if snake_grid == self.food => Some(Collision::Food),
+            _ => None,
+        }
+    }
+
+    pub fn regenerate_food(&mut self, ai: Option<&AISnake>) -> Option<(i32, i32)> {
+        self.update_grid(ai);
+
+        let mut candidates = Vec::with_capacity((GRID_COLS * GRID_ROWS) as usize);
+        for x in 0..(GRID_COLS as usize) {
+            for y in 0..(GRID_ROWS as usize) {
+                if !self.occupied_grid[x][y] {
+                    candidates.push((
+                        x * (CELL_SIZE_PX as usize) + (CELL_SIZE_PX as usize) / 2,
+                        y * (CELL_SIZE_PX as usize) + (CELL_SIZE_PX as usize) / 2,
+                    ));
+                }
+            }
+        }
+
+        if candidates.is_empty() {
+            self.food = (-1, -1);
+            None
+        } else {
+            let choice = candidates[thread_rng().gen_range(0..candidates.len())];
+            self.food = (choice.0 as i32, choice.1 as i32);
+            Some((choice.0 as i32, choice.1 as i32))
+        }
+    }
+}
