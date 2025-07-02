@@ -2,10 +2,14 @@ import Phaser from "phaser";
 import { createGrid } from "../systems/createGrid";
 import init, { GameState } from "../../../public/pkg/snake_spark";
 import { colors, grid, VISUAL } from "../../consts";
-import { InputHandler } from "../systems/input/InputHandler";
+import {
+    InputHandlerFactory,
+    IInputHandler,
+} from "../systems/input/InputHandler";
 
 class GameScene extends Phaser.Scene {
     private gameState!: GameState;
+    private inputHandler!: IInputHandler;
     private humanSnakeSegments: Phaser.GameObjects.Rectangle[] = [];
     private humanSnakeConnectors: Phaser.GameObjects.Rectangle[] = [];
     private aiSnakeSegments: Phaser.GameObjects.Rectangle[] = [];
@@ -19,6 +23,9 @@ class GameScene extends Phaser.Scene {
     }
 
     async create() {
+        // Clean up previous input handler
+        this.inputHandler?.destroy();
+
         // If there was a previous gameState, manually free it now
         this.gameState?.free();
 
@@ -32,7 +39,7 @@ class GameScene extends Phaser.Scene {
         this.spawnSnake();
         this.spawnAISnake();
 
-        new InputHandler(this, this.gameState);
+        this.inputHandler = InputHandlerFactory.create(this, this.gameState);
     }
 
     private destroyGameObjects(objects: Phaser.GameObjects.GameObject[]) {
