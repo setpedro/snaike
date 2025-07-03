@@ -1,6 +1,4 @@
-use crate::game::game_state::{callbacks::on_game_win, utils::is_at_node};
-
-use super::common::GameStateCommon;
+use crate::game::game_state::{callbacks::on_game_win, common::GameStateCommon, utils::is_at_node};
 
 use wasm_bindgen::prelude::*;
 
@@ -9,14 +7,18 @@ pub struct SoloGameState {
     common: GameStateCommon,
 }
 
+impl_game_state_api!(SoloGameState);
+
 #[wasm_bindgen]
 impl SoloGameState {
+    #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         let mut common = GameStateCommon::new();
         common.regenerate_food(None);
         Self { common }
     }
 
+    #[wasm_bindgen]
     pub fn update(&mut self, delta_time: f64) {
         self.common.human.update(delta_time);
 
@@ -44,25 +46,5 @@ impl SoloGameState {
                 return;
             }
         }
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn food(&self) -> Vec<i32> {
-        vec![self.common.food.0, self.common.food.1]
-    }
-
-    #[wasm_bindgen]
-    pub fn get_human_snake_position(&self) -> Vec<f64> {
-        self.common.human.core.get_head_pixel_position()
-    }
-
-    #[wasm_bindgen]
-    pub fn get_human_snake_body_positions(&self) -> Vec<f64> {
-        self.common.human.core.get_body_positions()
-    }
-
-    #[wasm_bindgen]
-    pub fn set_input_key(&mut self, key: &str, is_pressed: bool) {
-        self.common.human.input_state.set_key(key, is_pressed);
     }
 }

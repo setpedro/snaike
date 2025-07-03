@@ -5,6 +5,14 @@ export class BodySegment {
   private constructor();
   free(): void;
 }
+export class GameStateCommon {
+  free(): void;
+  constructor();
+  food(): Int32Array;
+  get_human_snake_position(): Float64Array;
+  get_human_snake_body_positions(): Float64Array;
+  set_input_key(key: string, is_pressed: boolean): void;
+}
 export class GridConstants {
   private constructor();
   free(): void;
@@ -40,22 +48,22 @@ export class SnakeCore {
 }
 export class SoloGameState {
   free(): void;
-  constructor();
-  update(delta_time: number): void;
   get_human_snake_position(): Float64Array;
   get_human_snake_body_positions(): Float64Array;
   set_input_key(key: string, is_pressed: boolean): void;
+  constructor();
+  update(delta_time: number): void;
   readonly food: Int32Array;
 }
 export class VersusGameState {
   free(): void;
+  get_human_snake_position(): Float64Array;
+  get_human_snake_body_positions(): Float64Array;
+  set_input_key(key: string, is_pressed: boolean): void;
   constructor();
   update(delta_time: number): void;
-  get_human_snake_position(): Float64Array;
   get_ai_snake_position(): Float64Array;
-  get_human_snake_body_positions(): Float64Array;
   get_ai_snake_body_positions(): Float64Array;
-  set_input_key(key: string, is_pressed: boolean): void;
   readonly food: Int32Array;
 }
 
@@ -63,23 +71,17 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_humansnake_free: (a: number, b: number) => void;
-  readonly humansnake_new: () => number;
-  readonly humansnake_update: (a: number, b: number) => void;
+  readonly __wbg_gamestatecommon_free: (a: number, b: number) => void;
+  readonly gamestatecommon_new: () => number;
+  readonly gamestatecommon_food: (a: number) => [number, number];
+  readonly gamestatecommon_get_human_snake_position: (a: number) => [number, number];
+  readonly gamestatecommon_get_human_snake_body_positions: (a: number) => [number, number];
+  readonly gamestatecommon_set_input_key: (a: number, b: number, c: number, d: number) => void;
   readonly __wbg_inputstate_free: (a: number, b: number) => void;
   readonly __wbg_get_inputstate_pressed: (a: number) => number;
   readonly __wbg_set_inputstate_pressed: (a: number, b: number) => void;
   readonly inputstate_new: () => number;
   readonly inputstate_set_key: (a: number, b: number, c: number, d: number) => void;
-  readonly __wbg_versusgamestate_free: (a: number, b: number) => void;
-  readonly versusgamestate_new: () => number;
-  readonly versusgamestate_update: (a: number, b: number) => void;
-  readonly versusgamestate_food: (a: number) => [number, number];
-  readonly versusgamestate_get_human_snake_position: (a: number) => [number, number];
-  readonly versusgamestate_get_ai_snake_position: (a: number) => [number, number];
-  readonly versusgamestate_get_human_snake_body_positions: (a: number) => [number, number];
-  readonly versusgamestate_get_ai_snake_body_positions: (a: number) => [number, number];
-  readonly versusgamestate_set_input_key: (a: number, b: number, c: number, d: number) => void;
   readonly __wbg_snakecore_free: (a: number, b: number) => void;
   readonly __wbg_get_snakecore_grow_counter: (a: number) => number;
   readonly __wbg_set_snakecore_grow_counter: (a: number, b: number) => void;
@@ -92,24 +94,36 @@ export interface InitOutput {
   readonly snakecore_get_head_pixel_position: (a: number) => [number, number];
   readonly snakecore_check_self_collision: (a: number) => number;
   readonly snakecore_direction: (a: number) => [number, number];
+  readonly __wbg_humansnake_free: (a: number, b: number) => void;
+  readonly humansnake_new: () => number;
+  readonly humansnake_update: (a: number, b: number) => void;
+  readonly __wbg_sologamestate_free: (a: number, b: number) => void;
+  readonly sologamestate_food: (a: number) => [number, number];
+  readonly sologamestate_get_human_snake_position: (a: number) => [number, number];
+  readonly sologamestate_get_human_snake_body_positions: (a: number) => [number, number];
+  readonly sologamestate_set_input_key: (a: number, b: number, c: number, d: number) => void;
+  readonly sologamestate_new: () => number;
+  readonly sologamestate_update: (a: number, b: number) => void;
   readonly __wbg_gridconstants_free: (a: number, b: number) => void;
   readonly __wbg_get_gridconstants_cols: (a: number) => number;
   readonly __wbg_get_gridconstants_rows: (a: number) => number;
   readonly __wbg_get_gridconstants_cellSizePx: (a: number) => number;
   readonly getGridConstants: () => number;
-  readonly __wbg_sologamestate_free: (a: number, b: number) => void;
-  readonly sologamestate_new: () => number;
-  readonly sologamestate_update: (a: number, b: number) => void;
-  readonly sologamestate_food: (a: number) => [number, number];
-  readonly sologamestate_get_human_snake_position: (a: number) => [number, number];
-  readonly sologamestate_get_human_snake_body_positions: (a: number) => [number, number];
-  readonly sologamestate_set_input_key: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbg_versusgamestate_free: (a: number, b: number) => void;
+  readonly versusgamestate_food: (a: number) => [number, number];
+  readonly versusgamestate_get_human_snake_position: (a: number) => [number, number];
+  readonly versusgamestate_get_human_snake_body_positions: (a: number) => [number, number];
+  readonly versusgamestate_set_input_key: (a: number, b: number, c: number, d: number) => void;
+  readonly versusgamestate_new: () => number;
+  readonly versusgamestate_update: (a: number, b: number) => void;
+  readonly versusgamestate_get_ai_snake_position: (a: number) => [number, number];
+  readonly versusgamestate_get_ai_snake_body_positions: (a: number) => [number, number];
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
 

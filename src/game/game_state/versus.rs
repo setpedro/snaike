@@ -4,14 +4,14 @@ use crate::{
         enums::Collision,
         game_state::{
             callbacks::{on_game_draw, on_game_over, on_game_win},
-            utils::{is_at_node, is_out_of_bounds},
+            common::GameStateCommon,
+            utils::is_at_node,
         },
         snake::ai::ai::AISnake,
     },
-    grid_to_pixel_position, SnakeCore,
+    grid_to_pixel_position,
 };
 
-use super::common::GameStateCommon;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -19,6 +19,8 @@ pub struct VersusGameState {
     common: GameStateCommon,
     ai: AISnake,
 }
+
+impl_game_state_api!(VersusGameState);
 
 #[wasm_bindgen]
 impl VersusGameState {
@@ -70,8 +72,9 @@ impl VersusGameState {
                 self.common.human.core.grow_counter -= 1;
             }
 
-            if let Some(collision) =
-                self.check_static_collision(&self.common.human.core, human_head_pixel_position)
+            if let Some(collision) = self
+                .common
+                .check_static_collision(&self.common.human.core, human_head_pixel_position)
             {
                 if self.common.is_win(Some(&self.ai)) {
                     on_game_win();
@@ -89,8 +92,9 @@ impl VersusGameState {
                 self.ai.core.grow_counter -= 1;
             }
 
-            if let Some(collision) =
-                self.check_static_collision(&self.ai.core, ai_head_pixel_position)
+            if let Some(collision) = self
+                .common
+                .check_static_collision(&self.ai.core, ai_head_pixel_position)
             {
                 self.handle_ai_collision(collision);
                 return;
@@ -191,47 +195,11 @@ impl VersusGameState {
         }
     }
 
-    fn check_static_collision(
-        &self,
-        snake: &SnakeCore,
-        snake_grid: (i32, i32),
-    ) -> Option<Collision> {
-        match () {
-            _ if is_out_of_bounds(snake) => Some(Collision::Wall),
-            _ if snake.body_segments.len() > 3 && snake.check_self_collision() => {
-                Some(Collision::OwnBody)
-            }
-            _ if snake_grid == self.common.food => Some(Collision::Food),
-            _ => None,
-        }
-    }
-
-    #[wasm_bindgen(getter)]
-    pub fn food(&self) -> Vec<i32> {
-        vec![self.common.food.0, self.common.food.1]
-    }
-
-    #[wasm_bindgen]
-    pub fn get_human_snake_position(&self) -> Vec<f64> {
-        self.common.human.core.get_head_pixel_position()
-    }
-
     pub fn get_ai_snake_position(&self) -> Vec<f64> {
         self.ai.core.get_head_pixel_position()
     }
 
-    #[wasm_bindgen]
-    pub fn get_human_snake_body_positions(&self) -> Vec<f64> {
-        self.common.human.core.get_body_positions()
-    }
-
-    #[wasm_bindgen]
     pub fn get_ai_snake_body_positions(&self) -> Vec<f64> {
         self.ai.core.get_body_positions()
-    }
-
-    #[wasm_bindgen]
-    pub fn set_input_key(&mut self, key: &str, is_pressed: bool) {
-        self.common.human.input_state.set_key(key, is_pressed);
     }
 }

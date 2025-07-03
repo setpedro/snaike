@@ -37,6 +37,34 @@ function isLikeNone(x) {
     return x === undefined || x === null;
 }
 
+let cachedInt32ArrayMemory0 = null;
+
+function getInt32ArrayMemory0() {
+    if (cachedInt32ArrayMemory0 === null || cachedInt32ArrayMemory0.byteLength === 0) {
+        cachedInt32ArrayMemory0 = new Int32Array(wasm.memory.buffer);
+    }
+    return cachedInt32ArrayMemory0;
+}
+
+function getArrayI32FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getInt32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
+}
+
+let cachedFloat64ArrayMemory0 = null;
+
+function getFloat64ArrayMemory0() {
+    if (cachedFloat64ArrayMemory0 === null || cachedFloat64ArrayMemory0.byteLength === 0) {
+        cachedFloat64ArrayMemory0 = new Float64Array(wasm.memory.buffer);
+    }
+    return cachedFloat64ArrayMemory0;
+}
+
+function getArrayF64FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getFloat64ArrayMemory0().subarray(ptr / 8, ptr / 8 + len);
+}
+
 let WASM_VECTOR_LEN = 0;
 
 const cachedTextEncoder = (typeof TextEncoder !== 'undefined' ? new TextEncoder('utf-8') : { encode: () => { throw Error('TextEncoder not available') } } );
@@ -92,34 +120,6 @@ function passStringToWasm0(arg, malloc, realloc) {
     WASM_VECTOR_LEN = offset;
     return ptr;
 }
-
-let cachedInt32ArrayMemory0 = null;
-
-function getInt32ArrayMemory0() {
-    if (cachedInt32ArrayMemory0 === null || cachedInt32ArrayMemory0.byteLength === 0) {
-        cachedInt32ArrayMemory0 = new Int32Array(wasm.memory.buffer);
-    }
-    return cachedInt32ArrayMemory0;
-}
-
-function getArrayI32FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getInt32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
-}
-
-let cachedFloat64ArrayMemory0 = null;
-
-function getFloat64ArrayMemory0() {
-    if (cachedFloat64ArrayMemory0 === null || cachedFloat64ArrayMemory0.byteLength === 0) {
-        cachedFloat64ArrayMemory0 = new Float64Array(wasm.memory.buffer);
-    }
-    return cachedFloat64ArrayMemory0;
-}
-
-function getArrayF64FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getFloat64ArrayMemory0().subarray(ptr / 8, ptr / 8 + len);
-}
 /**
  * @returns {GridConstants}
  */
@@ -144,6 +144,67 @@ export class BodySegment {
     free() {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_bodysegment_free(ptr, 0);
+    }
+}
+
+const GameStateCommonFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_gamestatecommon_free(ptr >>> 0, 1));
+
+export class GameStateCommon {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        GameStateCommonFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_gamestatecommon_free(ptr, 0);
+    }
+    constructor() {
+        const ret = wasm.gamestatecommon_new();
+        this.__wbg_ptr = ret >>> 0;
+        GameStateCommonFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    /**
+     * @returns {Int32Array}
+     */
+    food() {
+        const ret = wasm.gamestatecommon_food(this.__wbg_ptr);
+        var v1 = getArrayI32FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 4, 4);
+        return v1;
+    }
+    /**
+     * @returns {Float64Array}
+     */
+    get_human_snake_position() {
+        const ret = wasm.gamestatecommon_get_human_snake_position(this.__wbg_ptr);
+        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+        return v1;
+    }
+    /**
+     * @returns {Float64Array}
+     */
+    get_human_snake_body_positions() {
+        const ret = wasm.gamestatecommon_get_human_snake_body_positions(this.__wbg_ptr);
+        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+        return v1;
+    }
+    /**
+     * @param {string} key
+     * @param {boolean} is_pressed
+     */
+    set_input_key(key, is_pressed) {
+        const ptr0 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
+        const len0 = WASM_VECTOR_LEN;
+        wasm.gamestatecommon_set_input_key(this.__wbg_ptr, ptr0, len0, is_pressed);
     }
 }
 
@@ -397,18 +458,6 @@ export class SoloGameState {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_sologamestate_free(ptr, 0);
     }
-    constructor() {
-        const ret = wasm.sologamestate_new();
-        this.__wbg_ptr = ret >>> 0;
-        SoloGameStateFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    /**
-     * @param {number} delta_time
-     */
-    update(delta_time) {
-        wasm.sologamestate_update(this.__wbg_ptr, delta_time);
-    }
     /**
      * @returns {Int32Array}
      */
@@ -445,6 +494,18 @@ export class SoloGameState {
         const len0 = WASM_VECTOR_LEN;
         wasm.sologamestate_set_input_key(this.__wbg_ptr, ptr0, len0, is_pressed);
     }
+    constructor() {
+        const ret = wasm.sologamestate_new();
+        this.__wbg_ptr = ret >>> 0;
+        SoloGameStateFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    /**
+     * @param {number} delta_time
+     */
+    update(delta_time) {
+        wasm.sologamestate_update(this.__wbg_ptr, delta_time);
+    }
 }
 
 const VersusGameStateFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -463,18 +524,6 @@ export class VersusGameState {
     free() {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_versusgamestate_free(ptr, 0);
-    }
-    constructor() {
-        const ret = wasm.versusgamestate_new();
-        this.__wbg_ptr = ret >>> 0;
-        VersusGameStateFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    /**
-     * @param {number} delta_time
-     */
-    update(delta_time) {
-        wasm.versusgamestate_update(this.__wbg_ptr, delta_time);
     }
     /**
      * @returns {Int32Array}
@@ -497,26 +546,8 @@ export class VersusGameState {
     /**
      * @returns {Float64Array}
      */
-    get_ai_snake_position() {
-        const ret = wasm.versusgamestate_get_ai_snake_position(this.__wbg_ptr);
-        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
-        return v1;
-    }
-    /**
-     * @returns {Float64Array}
-     */
     get_human_snake_body_positions() {
         const ret = wasm.versusgamestate_get_human_snake_body_positions(this.__wbg_ptr);
-        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
-        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
-        return v1;
-    }
-    /**
-     * @returns {Float64Array}
-     */
-    get_ai_snake_body_positions() {
-        const ret = wasm.versusgamestate_get_ai_snake_body_positions(this.__wbg_ptr);
         var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
         wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
         return v1;
@@ -529,6 +560,36 @@ export class VersusGameState {
         const ptr0 = passStringToWasm0(key, wasm.__wbindgen_malloc, wasm.__wbindgen_realloc);
         const len0 = WASM_VECTOR_LEN;
         wasm.versusgamestate_set_input_key(this.__wbg_ptr, ptr0, len0, is_pressed);
+    }
+    constructor() {
+        const ret = wasm.versusgamestate_new();
+        this.__wbg_ptr = ret >>> 0;
+        VersusGameStateFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    /**
+     * @param {number} delta_time
+     */
+    update(delta_time) {
+        wasm.versusgamestate_update(this.__wbg_ptr, delta_time);
+    }
+    /**
+     * @returns {Float64Array}
+     */
+    get_ai_snake_position() {
+        const ret = wasm.versusgamestate_get_ai_snake_position(this.__wbg_ptr);
+        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+        return v1;
+    }
+    /**
+     * @returns {Float64Array}
+     */
+    get_ai_snake_body_positions() {
+        const ret = wasm.versusgamestate_get_ai_snake_body_positions(this.__wbg_ptr);
+        var v1 = getArrayF64FromWasm0(ret[0], ret[1]).slice();
+        wasm.__wbindgen_free(ret[0], ret[1] * 8, 8);
+        return v1;
     }
 }
 
