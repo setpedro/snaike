@@ -2,7 +2,7 @@ use crate::{
     game::{
         constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
         enums::Collision,
-        game_state::utils::is_out_of_bounds,
+        game_state::{callbacks::on_game_over, utils::is_out_of_bounds},
         snake::ai::ai::AISnake,
     },
     HumanSnake, SnakeCore,
@@ -49,6 +49,17 @@ impl GameStateCommon {
         }
     }
 
+    pub fn handle_human_collision(&mut self, collision: Collision) {
+        match collision {
+            Collision::Wall | Collision::OwnBody => on_game_over(),
+            Collision::Food => {
+                self.human.core.grow();
+                self.regenerate_food(None);
+            }
+            _ => unreachable!(),
+        }
+    }
+
     pub fn check_static_collision(
         &self,
         snake: &SnakeCore,
@@ -87,5 +98,20 @@ impl GameStateCommon {
             self.food = (choice.0 as i32, choice.1 as i32);
             Some((choice.0 as i32, choice.1 as i32))
         }
+    }
+
+    pub fn is_win(&self, ai: Option<&AISnake>) -> bool {
+        let total_cells = (GRID_COLS * GRID_ROWS) as usize;
+        let human_snake_cells = (self.human.core.get_body_positions().len() / 2) + 1;
+
+        let ai_snake_cells = if let Some(ai) = ai {
+            (ai.core.get_body_positions().len() / 2) + 1
+        } else {
+            0
+        };
+
+        let snake_cells = human_snake_cells + ai_snake_cells;
+
+        snake_cells >= total_cells
     }
 }

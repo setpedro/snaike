@@ -1,7 +1,11 @@
 use crate::{
     game::{
-        constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
+        constants::CELL_SIZE_PX,
         enums::Collision,
+        game_state::{
+            callbacks::{on_game_draw, on_game_over, on_game_win},
+            utils::{is_at_node, is_out_of_bounds},
+        },
         snake::ai::ai::AISnake,
     },
     grid_to_pixel_position, SnakeCore,
@@ -14,16 +18,6 @@ use wasm_bindgen::prelude::*;
 pub struct VersusGameState {
     common: GameStateCommon,
     ai: AISnake,
-}
-
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_name = "onGameOver")]
-    pub fn on_game_over();
-    #[wasm_bindgen(js_name = "onGameWin")]
-    pub fn on_game_win();
-    #[wasm_bindgen(js_name = "onGameDraw")]
-    pub fn on_game_draw();
 }
 
 #[wasm_bindgen]
@@ -68,7 +62,7 @@ impl VersusGameState {
             return;
         }
 
-        if self.is_at_node(human_head_position) {
+        if is_at_node(&human_head_position) {
             // Grow 3 segments when the game starts
             if self.common.human.core.grow_counter > 0 && self.common.human.core.direction != (0, 0)
             {
@@ -79,16 +73,16 @@ impl VersusGameState {
             if let Some(collision) =
                 self.check_static_collision(&self.common.human.core, human_head_pixel_position)
             {
-                if self.is_win() {
+                if self.common.is_win(Some(&self.ai)) {
                     on_game_win();
                     return;
                 }
-                self.handle_human_collision(collision);
+                self.common.handle_human_collision(collision);
                 return;
             }
         }
 
-        if self.is_at_node(ai_head_position) {
+        if is_at_node(&ai_head_position) {
             // Grow 3 segments when the game starts
             if self.ai.core.grow_counter > 0 && self.ai.core.direction != (0, 0) {
                 self.ai.core.grow();
@@ -101,35 +95,6 @@ impl VersusGameState {
                 self.handle_ai_collision(collision);
                 return;
             }
-        }
-    }
-
-    fn is_at_node(&self, head: Vec<f64>) -> bool {
-        ((head[0] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs() < f64::EPSILON
-            && ((head[1] - (CELL_SIZE_PX / 2) as f64) % CELL_SIZE_PX as f64).abs() < f64::EPSILON
-    }
-
-    fn is_out_of_bounds(&self, snake: &SnakeCore) -> bool {
-        snake.head_grid_position.0 < 0
-            || snake.head_grid_position.0 >= GRID_COLS
-            || snake.head_grid_position.1 < 0
-            || snake.head_grid_position.1 >= GRID_ROWS
-    }
-
-    fn is_win(&self) -> bool {
-        let total_cells = (GRID_COLS * GRID_ROWS) as usize;
-        let snake_cells = (self.common.human.core.get_body_positions().len() / 2) + 1;
-        snake_cells >= total_cells
-    }
-
-    fn handle_human_collision(&mut self, collision: Collision) {
-        match collision {
-            Collision::Wall | Collision::OwnBody => on_game_over(),
-            Collision::Food => {
-                self.common.human.core.grow();
-                self.common.regenerate_food(Some(&self.ai));
-            }
-            _ => unreachable!(),
         }
     }
 
@@ -232,7 +197,7 @@ impl VersusGameState {
         snake_grid: (i32, i32),
     ) -> Option<Collision> {
         match () {
-            _ if self.is_out_of_bounds(snake) => Some(Collision::Wall),
+            _ if is_out_of_bounds(snake) => Some(Collision::Wall),
             _ if snake.body_segments.len() > 3 && snake.check_self_collision() => {
                 Some(Collision::OwnBody)
             }
