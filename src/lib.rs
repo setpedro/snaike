@@ -1,3 +1,5 @@
+#![allow(wasm_c_abi, future_incompatible)]
+
 #[macro_use]
 mod macros;
 
