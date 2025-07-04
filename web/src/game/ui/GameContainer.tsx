@@ -11,7 +11,7 @@ const GameContainer: React.FC = () => {
     const height = grid.rows * grid.cellSizePx;
     const aspectRatio = width / height;
 
-    const displayHeight = "80vh";
+    const displayHeight = "70vh";
     const displayWidth = `calc(${displayHeight} * ${aspectRatio})`;
 
     const [gameMode, setGameMode] = useState<"menu" | "solo" | "versus">(
@@ -20,9 +20,13 @@ const GameContainer: React.FC = () => {
     const [gameState, setGameState] = useState<
         "playing" | "gameOver" | "win" | "draw"
     >("playing");
+    const [score, setScore] = useState(0);
+    const [record, setRecord] = useState(() => {
+        return parseInt(localStorage.getItem("snake-record") || "0");
+    });
 
     useEffect(() => {
-        if (!gameContainerRef.current) {
+        if (!gameContainerRef.current || gameMode === "menu") {
             return;
         }
 
@@ -44,6 +48,10 @@ const GameContainer: React.FC = () => {
         game.events.on("ready", () => {
             const scene = getActiveScene(game, gameMode);
             scene.setGameEndCallback(() => {});
+
+            window.onScoreUpdate = (newScore: number) => {
+                setScore(newScore);
+            };
 
             window.onGameOver = () => {
                 scene.handleEndGameFromWasm();
@@ -70,32 +78,61 @@ const GameContainer: React.FC = () => {
         return game.scene.getScene(sceneKey) as GameSceneSolo | GameSceneVersus;
     };
 
+    const updateRecord = (currentScore: number) => {
+        if (currentScore > record) {
+            setRecord(currentScore);
+            localStorage.setItem("snake-record", currentScore.toString());
+        }
+    };
+
+    useEffect(() => {
+        updateRecord(score);
+    }, [score, record]);
+
     const renderMenu = () => (
-        <div className="absolute inset-0 flex flex-col justify-center items-center bg-black bg-opacity-70 z-10">
-            <button
-                className="bg-green-500 text-white px-6 py-3 rounded mb-4 text-xl"
-                onClick={() => setGameMode("solo")}
-            >
-                Solo Play
-            </button>
-            <button
-                className="bg-blue-500 text-white px-6 py-3 rounded text-xl disabled:opacity-50"
-                onClick={() => setGameMode("versus")}
-                disabled={true}
-                title="Coming soon..."
-            >
-                Versus AI (Coming Soon)
-            </button>
+        <div className="absolute inset-0 flex flex-col justify-center items-center bg-black/70 backdrop-blur-sm z-10 rounded-2xl">
+            <div className="flex flex-col gap-4 p-8 bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 shadow-2xl">
+                <h2 className="text-3xl font-bold text-white text-center mb-4 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text">
+                    🐍 Snake Game
+                </h2>
+                <button
+                    className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-8 py-4 rounded-2xl text-xl font-bold shadow-lg transition-all duration-200 transform hover:scale-105 border border-emerald-400/20"
+                    onClick={() => setGameMode("solo")}
+                >
+                    🎮 Solo Play
+                </button>
+                <button
+                    className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 rounded-2xl text-xl font-bold shadow-lg transition-all duration-200 transform hover:scale-105 border border-blue-400/20 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    onClick={() => setGameMode("versus")}
+                    disabled={false}
+                    title="Coming soon..."
+                >
+                    🤖 Versus AI (Coming Soon)
+                </button>
+            </div>
         </div>
     );
 
     function handleRestart() {
         setGameState("playing");
+        setScore(0);
 
         const game = window.game as Phaser.Game;
         if (game) {
             const scene = getActiveScene(game, gameMode);
             scene.onReset();
+        }
+    }
+
+    function handleBackToMenu() {
+        setGameMode("menu");
+        setGameState("playing");
+        setScore(0);
+
+        const game = window.game as Phaser.Game;
+        if (game) {
+            game.destroy(true);
+            window.game = undefined;
         }
     }
 
@@ -110,13 +147,13 @@ const GameContainer: React.FC = () => {
             case "win":
                 return (
                     <GameEndModal onRestart={handleRestart}>
-                        You won! Click to restart
+                        Victory! Click to restart
                     </GameEndModal>
                 );
             case "draw":
                 return (
                     <GameEndModal onRestart={handleRestart}>
-                        It's a tie! Click to restart
+                        Draw! Click to restart
                     </GameEndModal>
                 );
             default:
@@ -125,26 +162,70 @@ const GameContainer: React.FC = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen">
-            <div className="flex flex-col items-center p-4 bg-blue-300 border border-rose-600">
-                <div className="w-full flex justify-between p-4 border border-fuchsia-600">
-                    <div className="align-middle">
-                        {"APPLES"} <span>🍎</span>
+        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+            <div className="flex flex-col items-center gap-4 p-6 bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 shadow-2xl">
+                <div className="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl border border-white/10 backdrop-blur-sm">
+                    {gameMode !== "menu" && (
+                        <button
+                            onClick={handleBackToMenu}
+                            className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200 font-medium"
+                        >
+                            <span className="text-lg">←</span>
+                            <span>Menu</span>
+                        </button>
+                    )}
+
+                    {gameMode === "menu" && (
+                        <div className="flex items-center gap-3 text-white font-bold text-lg">
+                            <span className="text-2xl">🐍</span>
+                            <span className="text-emerald-400">Snake Game</span>
+                        </div>
+                    )}
+
+                    {gameMode !== "menu" && (
+                        <div className="flex items-center gap-3 text-white font-bold text-lg">
+                            <span className="text-2xl">🍎</span>
+                            <span className="text-emerald-400">{score}</span>
+                        </div>
+                    )}
+
+                    <div className="flex items-center gap-3 text-white font-bold text-lg">
+                        <span className="text-2xl">🏆</span>
+                        <span className="text-yellow-400">{record}</span>
                     </div>
-                    <div>{"record"} 🏆</div>
                 </div>
 
                 <div
-                    className="relative border-2 border-white rounded"
+                    className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl bg-black/20"
                     style={{
                         height: displayHeight,
                         width: displayWidth,
                     }}
                 >
-                    <div ref={gameContainerRef} />
+                    <div
+                        ref={gameContainerRef}
+                        className="rounded-2xl overflow-hidden"
+                    />
                     {gameMode === "menu" && renderMenu()}
                     {renderGameEndModal()}
                 </div>
+
+                {gameMode !== "menu" && (
+                    <div className="text-center text-white/70 text-sm max-w-md">
+                        <p className="mb-2">
+                            Use{" "}
+                            <kbd className="px-2 py-1 bg-white/10 rounded text-xs">
+                                WASD
+                            </kbd>{" "}
+                            or{" "}
+                            <kbd className="px-2 py-1 bg-white/10 rounded text-xs">
+                                Arrow Keys
+                            </kbd>{" "}
+                            to move
+                        </p>
+                        <p>Swipe on mobile 📱</p>
+                    </div>
+                )}
             </div>
         </div>
     );
