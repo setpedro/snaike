@@ -137,23 +137,40 @@ const GameContainer: React.FC = () => {
     }
 
     const renderGameEndModal = () => {
+        const isNewRecord = score > 0 && score === record;
+
         switch (gameState) {
             case "gameOver":
                 return (
-                    <GameEndModal onRestart={handleRestart}>
-                        Game Over! Click to Restart
+                    <GameEndModal
+                        onRestart={handleRestart}
+                        score={score}
+                        record={record}
+                        isNewRecord={isNewRecord}
+                    >
+                        Game Over!
                     </GameEndModal>
                 );
             case "win":
                 return (
-                    <GameEndModal onRestart={handleRestart}>
-                        Victory! Click to restart
+                    <GameEndModal
+                        onRestart={handleRestart}
+                        score={score}
+                        record={record}
+                        isNewRecord={isNewRecord}
+                    >
+                        Victory!
                     </GameEndModal>
                 );
             case "draw":
                 return (
-                    <GameEndModal onRestart={handleRestart}>
-                        Draw! Click to restart
+                    <GameEndModal
+                        onRestart={handleRestart}
+                        score={score}
+                        record={record}
+                        isNewRecord={isNewRecord}
+                    >
+                        Draw!
                     </GameEndModal>
                 );
             default:
