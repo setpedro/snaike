@@ -2,7 +2,10 @@ use crate::{
     game::{
         constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
         enums::Collision,
-        game_state::{callbacks::on_game_over, utils::is_out_of_bounds},
+        game_state::{
+            callbacks::{on_game_over, on_score_update},
+            utils::is_out_of_bounds,
+        },
         snake::ai::ai::AISnake,
     },
     HumanSnake, SnakeCore,
@@ -59,6 +62,7 @@ impl GameStateCommon {
             Collision::Food => {
                 self.human.core.grow();
                 self.regenerate_food(None);
+                on_score_update((self.human.core.body_segments.len() as i32) - 3)
             }
             _ => unreachable!(),
         }

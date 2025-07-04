@@ -8,4 +8,6 @@ extern "C" {
     pub fn on_game_win();
     #[wasm_bindgen(js_name = "onGameDraw")]
     pub fn on_game_draw();
+    #[wasm_bindgen(js_name = "onScoreUpdate")]
+    pub fn on_score_update(new_score: i32);
 }

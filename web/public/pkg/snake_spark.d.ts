@@ -71,12 +71,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_gamestatecommon_free: (a: number, b: number) => void;
-  readonly gamestatecommon_new: () => number;
-  readonly gamestatecommon_food: (a: number) => [number, number];
-  readonly gamestatecommon_get_human_snake_position: (a: number) => [number, number];
-  readonly gamestatecommon_get_human_snake_body_positions: (a: number) => [number, number];
-  readonly gamestatecommon_set_input_key: (a: number, b: number, c: number, d: number) => void;
   readonly __wbg_inputstate_free: (a: number, b: number) => void;
   readonly __wbg_get_inputstate_pressed: (a: number) => number;
   readonly __wbg_set_inputstate_pressed: (a: number, b: number) => void;
@@ -118,12 +112,18 @@ export interface InitOutput {
   readonly versusgamestate_update: (a: number, b: number) => void;
   readonly versusgamestate_get_ai_snake_position: (a: number) => [number, number];
   readonly versusgamestate_get_ai_snake_body_positions: (a: number) => [number, number];
+  readonly __wbg_gamestatecommon_free: (a: number, b: number) => void;
+  readonly gamestatecommon_new: () => number;
+  readonly gamestatecommon_food: (a: number) => [number, number];
+  readonly gamestatecommon_get_human_snake_position: (a: number) => [number, number];
+  readonly gamestatecommon_get_human_snake_body_positions: (a: number) => [number, number];
+  readonly gamestatecommon_set_input_key: (a: number, b: number, c: number, d: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
-  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_realloc: (a: number, b: number, c: number, d: number) => number;
+  readonly __wbindgen_free: (a: number, b: number, c: number) => void;
   readonly __wbindgen_start: () => void;
 }
 
