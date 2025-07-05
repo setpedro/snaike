@@ -8,13 +8,13 @@ type Props = {
     isNewRecord?: boolean;
 };
 
-export default function GameEndModal({
+const GameEndModal = ({
     children,
     onRestart,
     score,
     record,
     isNewRecord = false,
-}: Props) {
+}: Props) => {
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-black/70 backdrop-blur-sm text-white flex justify-center items-center z-20">
             <div className="bg-black/80 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl p-8 max-w-md w-full mx-4 text-center">
@@ -77,4 +77,5 @@ export default function GameEndModal({
             </div>
         </div>
     );
-}
+};
+export default GameEndModal;

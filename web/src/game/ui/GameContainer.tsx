@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import { grid } from "../../consts";
-import GameEndModal from "./GameEndModal";
+import GameEndModal from "../components/GameContainer/GameEndModal";
 import GameSceneSolo from "../scenes/GameSceneSolo";
 import GameSceneVersus from "../scenes/GameSceneVersus";
 
