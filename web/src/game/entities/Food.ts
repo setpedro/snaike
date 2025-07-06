@@ -15,6 +15,7 @@ export class Food {
         }
 
         this.graphics = createRectangle(this.scene, x, y, colors.food);
+        this.graphics.setDepth(0);
     }
 
     destroy() {

@@ -14,6 +14,7 @@ export class Snake {
     spawn(x: number, y: number) {
         this.destroy();
         this.segments = [createRectangle(this.scene, x, y, this.color)];
+        this.segments[0].setDepth(1); // Snake head above food to simulate eating effect visually
     }
 
     update(headPosition: Float64Array, bodyPositions: Float64Array) {
