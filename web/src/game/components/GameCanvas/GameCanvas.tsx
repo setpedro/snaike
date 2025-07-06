@@ -47,7 +47,7 @@ export default function GameCanvas({ gameContainerRef, onSelectMode }: Props) {
                 {gameMode === "menu" && (
                     <MainMenu onSelectMode={onSelectMode} />
                 )}
-                <GameEndModal />
+                {/* <GameEndModal /> */}
             </div>
         </div>
     );
