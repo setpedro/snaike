@@ -1,0 +1,104 @@
+import { useEffect, useRef } from "react";
+import Phaser from "phaser";
+import { grid } from "../../consts";
+import GameSceneSolo from "../scenes/GameSceneSolo";
+import GameSceneVersus from "../scenes/GameSceneVersus";
+import { GameMode, GameState } from "../types";
+
+type Props = {
+    gameMode: GameMode;
+    setGameMode: (mode: GameMode) => void;
+    setGameState: (state: GameState) => void;
+    setScore: (score: number) => void;
+    resetGame: () => void;
+};
+
+export function usePhaserGame({
+    gameMode,
+    setGameMode,
+    setGameState,
+    setScore,
+    resetGame,
+}: Props) {
+    const gameContainerRef = useRef<HTMLDivElement>(null);
+    const width = grid.cols * grid.cellSizePx;
+    const height = grid.rows * grid.cellSizePx;
+
+    useEffect(() => {
+        if (!gameContainerRef.current || gameMode === "menu") {
+            return;
+        }
+
+        const config: Phaser.Types.Core.GameConfig = {
+            type: Phaser.AUTO,
+            width,
+            height,
+            parent: gameContainerRef.current,
+            scene: gameMode === "solo" ? [GameSceneSolo] : [GameSceneVersus],
+            scale: {
+                mode: Phaser.Scale.FIT,
+                autoCenter: Phaser.Scale.CENTER_BOTH,
+            },
+        };
+
+        const game = new Phaser.Game(config);
+        window.game = game;
+
+        game.events.on("ready", () => {
+            const scene = getActiveScene(game, gameMode);
+            scene.setGameEndCallback(() => {});
+
+            window.onScoreUpdate = (newScore: number) => {
+                setScore(newScore);
+            };
+
+            window.onGameOver = () => {
+                scene.handleEndGameFromWasm();
+                setGameState("gameOver");
+            };
+            window.onGameWin = () => {
+                scene.handleEndGameFromWasm();
+                setGameState("win");
+            };
+            window.onGameDraw = () => {
+                scene.handleEndGameFromWasm();
+                setGameState("draw");
+            };
+        });
+
+        return () => {
+            game.destroy(true);
+            window.game = undefined;
+        };
+    }, [gameMode]);
+
+    const getActiveScene = (game: Phaser.Game, mode: string) => {
+        const sceneKey = mode === "solo" ? "GameSceneSolo" : "GameSceneVersus";
+        return game.scene.getScene(sceneKey) as GameSceneSolo | GameSceneVersus;
+    };
+
+    const handleRestart = () => {
+        resetGame();
+        const game = window.game as Phaser.Game;
+        if (game) {
+            const scene = getActiveScene(game, gameMode);
+            scene.onReset();
+        }
+    };
+
+    const handleBackToMenu = () => {
+        resetGame();
+        setGameMode("menu");
+        const game = window.game as Phaser.Game;
+        if (game) {
+            game.destroy(true);
+            window.game = undefined;
+        }
+    };
+
+    return {
+        gameContainerRef,
+        handleRestart,
+        handleBackToMenu,
+    };
+}

@@ -1,26 +1,32 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import { useGameContext } from "../context/useGameContext";
 
-type Props = {
-    children: ReactNode;
-    onRestart: () => void;
-    score: number;
-    record: number;
-    isNewRecord?: boolean;
-};
+export default function GameEndModal() {
+    const { gameState, score, record, onRestart } = useGameContext();
 
-export default function GameEndModal({
-    children,
-    onRestart,
-    score,
-    record,
-    isNewRecord = false,
-}: Props) {
+    if (gameState === "playing") return null;
+    
+    const isNewRecord = score > record;
+
+    const getTitle = () => {
+        switch (gameState) {
+            case "gameOver":
+                return "Game Over!";
+            case "win":
+                return "Victory!";
+            case "draw":
+                return "Draw!";
+            default:
+                return "";
+        }
+    };
+
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-black/70 backdrop-blur-sm text-white flex justify-center items-center z-20">
             <div className="bg-black/80 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl p-8 max-w-md w-full mx-4 text-center">
                 <div className="mb-6">
                     <h2 className="text-3xl font-bold mb-2 bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                        {children}
+                        {getTitle()}
                     </h2>
                 </div>
 
