@@ -1,7 +1,7 @@
-import init, { VersusGameState } from "../../../public/pkg/snake_spark";
+import init, { VersusGameState } from "../../../../public/pkg/snake_spark";
 import { BaseGameScene } from "./BaseGameScene";
 import { Snake } from "../entities/Snake";
-import { colors } from "../../consts";
+import { colors } from "../../../consts";
 
 export default class GameSceneVersus extends BaseGameScene {
     private gameState!: VersusGameState;
@@ -35,7 +35,10 @@ export default class GameSceneVersus extends BaseGameScene {
     }
 
     protected getFoodPosition(): [number, number] {
-        return this.gameState.food as unknown as [unknown, unknown] as [number, number];
+        return this.gameState.food as unknown as [unknown, unknown] as [
+            number,
+            number
+        ];
     }
 
     protected createAdditionalEntities(): void {

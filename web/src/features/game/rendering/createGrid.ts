@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { colors, grid } from "../../consts";
+import { colors, grid } from "../../../consts";
 
 export function createGrid(scene: Phaser.Scene): void {
     const gap = 1;
@@ -18,7 +18,7 @@ export function createGrid(scene: Phaser.Scene): void {
             width / 2,
             height / 2,
             playWidth + gap * 2,
-            playHeight + gap * 2,
+            playHeight + gap * 2
         )
         .setOrigin(0.5)
         .setAlpha(0.7);

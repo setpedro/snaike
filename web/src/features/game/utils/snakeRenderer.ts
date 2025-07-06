@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { grid, VISUAL } from "../../consts";
+import { grid, VISUAL } from "../../../consts";
 
 export const updateConnectors = (
     scene: Phaser.Scene,

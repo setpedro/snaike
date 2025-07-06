@@ -1,5 +1,5 @@
 import React from "react";
-import GameContainer from "./game/components/GameContainer";
+import GameContainer from "./features/game/components/GameContainer";
 
 export default function App() {
     return (

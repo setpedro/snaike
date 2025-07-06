@@ -3,7 +3,7 @@ import { InputHandlerFactory, IInputHandler } from "../input/InputHandler";
 import { createGrid } from "../rendering/createGrid";
 import { Snake } from "../entities/Snake";
 import { Food } from "../entities/Food";
-import { colors } from "../../consts";
+import { colors } from "../../../consts";
 
 export abstract class BaseGameScene extends Phaser.Scene {
     protected inputHandler!: IInputHandler;

@@ -1,4 +1,4 @@
-import init, { SoloGameState } from "../../../public/pkg/snake_spark";
+import init, { SoloGameState } from "../../../../public/pkg/snake_spark";
 import { BaseGameScene } from "./BaseGameScene";
 
 export default class GameSceneSolo extends BaseGameScene {

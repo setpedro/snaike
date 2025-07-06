@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { grid } from "../../../consts";
+import { grid } from "../../../../consts";
 import { useGameContext } from "../../context/useGameContext";
 import { GameMode } from "../../types";
 import GameEndModal from "../GameEndModal";

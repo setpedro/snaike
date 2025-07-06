@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-import { grid } from "../../consts";
+import { grid } from "../../../consts";
 import GameSceneSolo from "../scenes/GameSceneSolo";
 import GameSceneVersus from "../scenes/GameSceneVersus";
 import { GameMode, GameState } from "../types";
