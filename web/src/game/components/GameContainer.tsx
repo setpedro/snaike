@@ -2,7 +2,7 @@ import React from "react";
 import { useGameState } from "../hooks/useGameState";
 import { usePhaserGame } from "../hooks/usePhaserGame";
 import GameHeader from "./GameHeader";
-import GameCanvas from "./GameCanvas";
+import GameCanvas from "./GameCanvas/GameCanvas";
 import GameControls from "./GameControls";
 import { GameProvider } from "../context/GameProvider";
 
@@ -53,7 +53,7 @@ export default function GameContainer() {
                         onSelectMode={setGameMode}
                     />
                 </GameProvider>
-                
+
                 <GameControls />
             </div>
         </div>

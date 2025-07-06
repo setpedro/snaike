@@ -1,9 +1,9 @@
 import React from "react";
-import { grid } from "../../consts";
+import { grid } from "../../../consts";
+import { useGameContext } from "../../context/useGameContext";
+import { GameMode } from "../../types";
+import GameEndModal from "../GameEndModal";
 import MainMenu from "./MainMenu";
-import GameEndModal from "./GameEndModal";
-import { useGameContext } from "../context/useGameContext";
-import { GameMode } from "../types";
 
 type Props = {
     gameContainerRef: React.RefObject<HTMLDivElement | null>;

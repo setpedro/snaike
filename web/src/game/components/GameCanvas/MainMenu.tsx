@@ -1,5 +1,5 @@
 import React from "react";
-import { GameMode } from "../types";
+import { GameMode } from "../../types";
 
 type Props = {
     onSelectMode: (mode: GameMode) => void;

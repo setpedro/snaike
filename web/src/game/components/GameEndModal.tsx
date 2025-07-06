@@ -5,8 +5,9 @@ export default function GameEndModal() {
     const { gameState, score, record, onRestart } = useGameContext();
 
     if (gameState === "playing") return null;
-    
-    const isNewRecord = score > record;
+
+    const isNewRecord = score > 0 && score === record;
+    console.log("isNewRecord", isNewRecord);
 
     const getTitle = () => {
         switch (gameState) {
