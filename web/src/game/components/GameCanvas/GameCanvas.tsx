@@ -3,7 +3,7 @@ import { grid } from "../../../consts";
 import { useGameContext } from "../../context/useGameContext";
 import { GameMode } from "../../types";
 import GameEndModal from "../GameEndModal";
-import MainMenu from "./MainMenu";
+import MainMenu from "./GameMenu";
 
 type Props = {
     gameContainerRef: React.RefObject<HTMLDivElement | null>;
