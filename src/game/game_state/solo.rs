@@ -1,4 +1,8 @@
-use crate::game::game_state::{callbacks::on_game_win, common::GameStateCommon, utils::is_at_node};
+use crate::game::constants::CELL_SIZE_PX;
+use crate::{
+    game::game_state::{callbacks::on_game_win, common::GameStateCommon, utils::is_at_node},
+    grid_to_pixel_position,
+};
 
 use wasm_bindgen::prelude::*;
 
@@ -14,7 +18,7 @@ impl SoloGameState {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         let mut common = GameStateCommon::new();
-        common.regenerate_food(None);
+        common.food = grid_to_pixel_position!((10, 5), i32);
         Self { common }
     }
 

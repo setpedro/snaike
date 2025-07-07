@@ -1,6 +1,6 @@
-const X_START: i32 = 5;
+const X_START: i32 = 2;
 const Y_START: i32 = 5;
-const DX_START: i32 = 1;
+const DX_START: i32 = 0;
 const DY_START: i32 = 0;
 const SPEED: f64 = 7.0;
 

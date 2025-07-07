@@ -35,7 +35,7 @@ export default function GameEndModal() {
                         icon="🍎"
                         label="Score:"
                         value={score}
-                        gradient="bg-gradient-to-r from-emerald-500/20 to-blue-500/20"
+                        gradient="bg-gradient-to-r from-emerald-500/40 to-blue-500/40"
                         valueColor="text-emerald-400"
                     />
 
@@ -50,7 +50,7 @@ export default function GameEndModal() {
                                 </span>
                             )
                         }
-                        gradient="bg-gradient-to-r from-yellow-500/20 to-orange-500/20"
+                        gradient="bg-gradient-to-r from-yellow-500/40 to-orange-500/40"
                         valueColor="text-yellow-400"
                     />
                 </div>
