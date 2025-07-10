@@ -54,7 +54,7 @@ export function usePhaserGame({
 
             window.onGameOver = () => {
                 scene.handleEndGameFromWasm();
-                setGameState("gameOver");
+                setGameState("over");
             };
             window.onGameWin = () => {
                 scene.handleEndGameFromWasm();

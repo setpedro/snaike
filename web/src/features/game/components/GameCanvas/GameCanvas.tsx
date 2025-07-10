@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { grid } from "../../../../consts";
-import { useGameContext } from "../../context/useGameContext";
+import { useGameContext } from "../../context/GameProvider";
 import { GameMode } from "../../types";
 import GameEndModal from "../GameEndModal";
 import MainMenu from "./GameMenu";

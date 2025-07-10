@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../../../../shared/components/Button";
 import { LabelBox } from "./LabelBox";
-import { useGameContext } from "../../context/useGameContext";
+import { useGameContext } from "../../context/GameProvider";
 
 export default function GameEndModal() {
     const { gameState, score, record, onRestart } = useGameContext();
@@ -12,7 +12,7 @@ export default function GameEndModal() {
 
     const getTitle = () => {
         switch (gameState) {
-            case "gameOver":
+            case "over":
                 return "Game Over!";
             case "win":
                 return "Victory!";
