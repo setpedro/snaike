@@ -8,7 +8,7 @@ type Props = {
     onBackToMenu: () => void;
 };
 
-export default function GameHeader({
+export function GameHeader({
     gameMode,
     score,
     record,

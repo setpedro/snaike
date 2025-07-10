@@ -1,12 +1,12 @@
 import React from "react";
 import { useGameState } from "../hooks/useGameState";
 import { usePhaserGame } from "../hooks/usePhaserGame";
-import GameHeader from "./GameHeader";
-import GameCanvas from "./GameCanvas/GameCanvas";
-import GameControls from "./GameControls";
+import { GameHeader } from "./GameHeader";
+import { GameCanvas } from "./GameCanvas";
+import { GameControls } from "./GameControls";
 import { GameProvider } from "../context/GameProvider";
 
-export default function GameContainer() {
+export function GameContainer() {
     const {
         gameMode,
         gameState,

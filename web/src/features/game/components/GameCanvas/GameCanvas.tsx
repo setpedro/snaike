@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { GRID } from "../../../../shared/consts";
 import { useGameContext } from "../../context/GameProvider";
 import { GameMode } from "../../types";
-import GameEndModal from "../GameEndModal";
-import MainMenu from "./GameMenu";
+import { GameEndModal } from "../GameEndModal";
+import { MainMenu } from "./GameMenu";
 
 type Props = {
     gameContainerRef: React.RefObject<HTMLDivElement | null>;
     onSelectMode: (mode: GameMode) => void;
 };
 
-export default function GameCanvas({ gameContainerRef, onSelectMode }: Props) {
+export function GameCanvas({ gameContainerRef, onSelectMode }: Props) {
     const { gameMode } = useGameContext();
     const [width, setWidth] = useState(0);
     const aspectRatio =

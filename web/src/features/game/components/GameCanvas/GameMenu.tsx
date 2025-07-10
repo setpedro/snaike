@@ -6,7 +6,7 @@ type Props = {
     onSelectMode: (mode: GameMode) => void;
 };
 
-export default function MainMenu({ onSelectMode }: Props) {
+export function MainMenu({ onSelectMode }: Props) {
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-black/70 backdrop-blur-sm text-white flex justify-center items-center z-10 p-4">
             <div className="flex flex-col items-center w-full max-w-sm sm:max-w-md gap-2 p-2 sm:p-6 md:p-8 bg-black/50 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl">

@@ -1,10 +1,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import GameContainer from "./features/game/components/GameContainer";
+import { GameContainer } from "./features/game/components/GameContainer";
 import { Login } from "./features/auth/Login";
 import { useAuthContext } from "./features/auth/context/AuthProvider";
 
-export default function App() {
+export function App() {
     const { session, isLoading } = useAuthContext();
 
     if (isLoading) {

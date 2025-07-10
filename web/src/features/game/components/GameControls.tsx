@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function GameControls() {
+export function GameControls() {
     return (
         <div className="text-center text-white/70 text-sm max-w-md">
             <p className="mb-2">
