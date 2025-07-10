@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { GRID } from "../../../../shared/consts";
 import { useGameContext } from "../../context/GameProvider";
-import { GameMode } from "../../types";
 import { GameEndModal } from "../GameEndModal";
 import { MainMenu } from "./GameMenu";
 
-type Props = {
-    gameContainerRef: React.RefObject<HTMLDivElement | null>;
-    onSelectMode: (mode: GameMode) => void;
-};
-
-export function GameCanvas({ gameContainerRef, onSelectMode }: Props) {
-    const { gameMode } = useGameContext();
+export function GameCanvas() {
+    const { gameMode, gameContainerRef, setGameMode } = useGameContext();
     const [width, setWidth] = useState(0);
     const aspectRatio =
         (GRID.cols * GRID.cellSizePx) / (GRID.rows * GRID.cellSizePx);
@@ -44,9 +38,7 @@ export function GameCanvas({ gameContainerRef, onSelectMode }: Props) {
                     ref={gameContainerRef}
                     className="absolute inset-0 rounded-2xl overflow-hidden"
                 />
-                {gameMode === "menu" && (
-                    <MainMenu onSelectMode={onSelectMode} />
-                )}
+                {gameMode === "menu" && <MainMenu onSelectMode={setGameMode} />}
                 <GameEndModal />
             </div>
         </div>

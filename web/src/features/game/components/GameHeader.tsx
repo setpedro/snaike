@@ -1,19 +1,9 @@
 import React from "react";
-import { GameMode } from "../types";
+import { useGameContext } from "../context/GameProvider";
 
-type Props = {
-    gameMode: GameMode;
-    score: number;
-    record: number;
-    onBackToMenu: () => void;
-};
+export function GameHeader() {
+    const { gameMode, score, record, onBackToMenu } = useGameContext();
 
-export function GameHeader({
-    gameMode,
-    score,
-    record,
-    onBackToMenu,
-}: Props) {
     return (
         <div className="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl border border-white/10 backdrop-blur-sm">
             {gameMode !== "menu" && (
