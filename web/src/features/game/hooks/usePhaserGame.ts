@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import Phaser from "phaser";
-import { grid } from "../../../consts";
+import { GRID } from "../../../shared/consts";
 import GameSceneSolo from "../scenes/GameSceneSolo";
 import GameSceneVersus from "../scenes/GameSceneVersus";
 import { GameMode, GameState } from "../types";
@@ -21,8 +21,8 @@ export function usePhaserGame({
     resetGame,
 }: Props) {
     const gameContainerRef = useRef<HTMLDivElement>(null);
-    const width = grid.cols * grid.cellSizePx;
-    const height = grid.rows * grid.cellSizePx;
+    const width = GRID.cols * GRID.cellSizePx;
+    const height = GRID.rows * GRID.cellSizePx;
 
     useEffect(() => {
         if (!gameContainerRef.current || gameMode === "menu") {

@@ -1,7 +1,7 @@
 import init, { VersusGameState } from "../../../../public/pkg/snake_spark";
 import { BaseGameScene } from "./BaseGameScene";
 import { Snake } from "../entities/Snake";
-import { colors } from "../../../consts";
+import { COLORS } from "../../../shared/consts";
 
 export default class GameSceneVersus extends BaseGameScene {
     private gameState!: VersusGameState;
@@ -42,7 +42,7 @@ export default class GameSceneVersus extends BaseGameScene {
     }
 
     protected createAdditionalEntities(): void {
-        this.aiSnake = new Snake(this, colors.snake.ai, () =>
+        this.aiSnake = new Snake(this, COLORS.snake.ai, () =>
             this.food.spawn(...this.getFoodPosition())
         );
     }

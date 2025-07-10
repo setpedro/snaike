@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { grid } from "../../../../consts";
+import { GRID } from "../../../../shared/consts";
 import { useGameContext } from "../../context/GameProvider";
 import { GameMode } from "../../types";
 import GameEndModal from "../GameEndModal";
@@ -14,7 +14,7 @@ export default function GameCanvas({ gameContainerRef, onSelectMode }: Props) {
     const { gameMode } = useGameContext();
     const [width, setWidth] = useState(0);
     const aspectRatio =
-        (grid.cols * grid.cellSizePx) / (grid.rows * grid.cellSizePx);
+        (GRID.cols * GRID.cellSizePx) / (GRID.rows * GRID.cellSizePx);
 
     useEffect(() => {
         function updateWidth() {

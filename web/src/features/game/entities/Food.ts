@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { colors } from "../../../consts";
+import { COLORS } from "../../../shared/consts";
 import { createRectangle } from "../utils/snakeRenderer";
 
 export class Food {
@@ -14,7 +14,7 @@ export class Food {
             return; // Ensure no food is rendered
         }
 
-        this.graphics = createRectangle(this.scene, x, y, colors.food);
+        this.graphics = createRectangle(this.scene, x, y, COLORS.food);
         this.graphics.setDepth(0);
     }
 

@@ -1,12 +1,12 @@
-import { getGridConstants } from "../public/pkg/snake_spark";
+import { getGridConstants } from "../../public/pkg/snake_spark";
 
-export const grid = getGridConstants();
+export const GRID = getGridConstants();
 
 export const VISUAL = {
     gap: 4,
 } as const;
 
-export const colors = {
+export const COLORS = {
     grid: {
         darkTile1: 0x121212, // Very dark charcoal gray
         darkTile2: 0x1c1c1c, // Almost black

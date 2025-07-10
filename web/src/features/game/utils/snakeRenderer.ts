@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { grid, VISUAL } from "../../../consts";
+import { GRID, VISUAL } from "../../../shared/consts";
 
 export const updateConnectors = (
     scene: Phaser.Scene,
@@ -19,7 +19,7 @@ export const updateConnectors = (
 
         // Check if segments are adjacent
         const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
-        if (distance <= grid.cellSizePx * 1.5) {
+        if (distance <= GRID.cellSizePx * 1.5) {
             if (connectorIndex >= connectors.length) {
                 connectors.push(createConnector(scene, color));
             }
@@ -32,8 +32,8 @@ export const updateConnectors = (
 
             const [width, height] =
                 deltaX > deltaY
-                    ? [deltaX, grid.cellSizePx - VISUAL.gap]
-                    : [grid.cellSizePx - VISUAL.gap, deltaY];
+                    ? [deltaX, GRID.cellSizePx - VISUAL.gap]
+                    : [GRID.cellSizePx - VISUAL.gap, deltaY];
 
             connector
                 .setPosition(midX, midY)
@@ -68,8 +68,8 @@ export const createRectangle = (
         .rectangle(
             x,
             y,
-            grid.cellSizePx - VISUAL.gap,
-            grid.cellSizePx - VISUAL.gap,
+            GRID.cellSizePx - VISUAL.gap,
+            GRID.cellSizePx - VISUAL.gap,
             color
         )
         .setOrigin(0.5);
