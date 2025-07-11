@@ -5,15 +5,19 @@ import React, {
     useState,
     PropsWithChildren,
 } from "react";
-import type { GameMode, GameState } from "../types";
+import type { GameViewMode, GameState } from "../types";
 import { usePhaserGame } from "../hooks/usePhaserGame";
+import { useAuthContext } from "../../auth/context/AuthProvider";
+import { saveGame } from "../services/saveGame";
+import { getRecord } from "../services/getRecord";
+import { saveRecord } from "../services/saveRecord";
 
 type GameContextType = {
-    gameMode: GameMode;
+    gameMode: GameViewMode;
     gameState: GameState;
     score: number;
     record: number;
-    setGameMode: (mode: GameMode) => void;
+    setGameMode: (mode: GameViewMode) => void;
     setGameState: (state: GameState) => void;
     setScore: (score: number) => void;
     resetGame: () => void;
@@ -25,19 +29,43 @@ type GameContextType = {
 const GameContext = createContext<GameContextType | null>(null);
 
 export function GameProvider({ children }: PropsWithChildren) {
-    const [gameMode, setGameMode] = useState<GameMode>("menu");
+    const { session } = useAuthContext();
+
+    const [gameMode, setGameMode] = useState<GameViewMode>("menu");
     const [gameState, setGameState] = useState<GameState>("playing");
     const [score, setScore] = useState(0);
-    const [record, setRecord] = useState(() =>
-        parseInt(localStorage.getItem("snake-record") || "0")
-    );
+    const [record, setRecord] = useState(0);
 
+    // Initial load
     useEffect(() => {
-        if (score > record) {
-            setRecord(score);
-            localStorage.setItem("snake-record", score.toString());
+        if (!session) {
+            return;
         }
-    }, [score, record]);
+
+        const fetchRecord = async () => {
+            const fetchedRecord = await getRecord(session.user.id);
+            setRecord(fetchedRecord || 0);
+        };
+        fetchRecord();
+    }, [session]);
+
+    // End-of-game
+    useEffect(() => {
+        if (gameState === "playing" || gameMode === "menu" || score <= 0) {
+            return; // TODO: double-check this. useEffect deps?
+        }
+
+        if (session) {
+            saveGame(session.user.id, gameMode, score); // only save games for authenticated users
+        }
+
+        if (score > record) {
+            if (session) {
+                saveRecord(session.user.id, score); // only save record for authenticated users
+            }
+            setRecord(score); // setRecord for everyone
+        }
+    }, [gameState, gameMode, score]);
 
     const resetGame = () => {
         setGameState("playing");

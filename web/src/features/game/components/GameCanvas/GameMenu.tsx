@@ -1,9 +1,9 @@
 import React from "react";
-import { GameMode } from "../../types";
+import { GameViewMode } from "../../types";
 import { Button } from "../../../../shared/components/Button";
 
 type Props = {
-    onSelectMode: (mode: GameMode) => void;
+    onSelectMode: (mode: GameViewMode) => void;
 };
 
 export function MainMenu({ onSelectMode }: Props) {

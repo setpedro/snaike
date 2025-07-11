@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Button } from "../../../../shared/components/Button";
 import { LabelBox } from "./LabelBox";
 import { useGameContext } from "../../context/GameProvider";
 
 export function GameEndModal() {
     const { gameState, score, record, onRestart } = useGameContext();
+    const displayRecord = Math.max(record, score);
 
-    if (gameState === "playing") return null;
-
+    // TODO: avoid treating record matching as new record
     const isNewRecord = score > 0 && score === record;
 
     const getTitle = () => {
@@ -42,7 +42,7 @@ export function GameEndModal() {
                     <LabelBox
                         icon="🏆"
                         label="Best:"
-                        value={record}
+                        value={displayRecord}
                         badge={
                             isNewRecord && (
                                 <span className="text-xs bg-gradient-to-r from-yellow-500 to-orange-500 text-white px-2 py-1 rounded-full animate-pulse">

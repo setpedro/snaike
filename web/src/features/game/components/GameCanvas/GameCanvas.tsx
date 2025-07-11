@@ -5,7 +5,7 @@ import { GameEndModal } from "../GameEndModal";
 import { MainMenu } from "./GameMenu";
 
 export function GameCanvas() {
-    const { gameMode, gameContainerRef, setGameMode } = useGameContext();
+    const { gameMode, gameState, gameContainerRef, setGameMode } = useGameContext();
     const [width, setWidth] = useState(0);
     const aspectRatio =
         (GRID.cols * GRID.cellSizePx) / (GRID.rows * GRID.cellSizePx);
@@ -39,7 +39,7 @@ export function GameCanvas() {
                     className="absolute inset-0 rounded-2xl overflow-hidden"
                 />
                 {gameMode === "menu" && <MainMenu onSelectMode={setGameMode} />}
-                <GameEndModal />
+                {gameState !== "playing" && <GameEndModal />}
             </div>
         </div>
     );

@@ -3,6 +3,7 @@ import { useGameContext } from "../context/GameProvider";
 
 export function GameHeader() {
     const { gameMode, score, record, onBackToMenu } = useGameContext();
+    const displayRecord = Math.max(record, score);
 
     return (
         <div className="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-2xl border border-white/10 backdrop-blur-sm">
@@ -32,7 +33,7 @@ export function GameHeader() {
 
             <div className="flex items-center gap-3 text-white font-bold text-lg">
                 <span className="text-2xl">🏆</span>
-                <span className="text-yellow-400">{record}</span>
+                <span className="text-yellow-400">{displayRecord}</span>
             </div>
         </div>
     );

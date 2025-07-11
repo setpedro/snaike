@@ -3,11 +3,11 @@ import Phaser from "phaser";
 import { GRID } from "../../../shared/consts";
 import GameSceneSolo from "../scenes/GameSceneSolo";
 import GameSceneVersus from "../scenes/GameSceneVersus";
-import { GameMode, GameState } from "../types";
+import { GameState, GameViewMode } from "../types";
 
 type Props = {
-    gameMode: GameMode;
-    setGameMode: (mode: GameMode) => void;
+    gameMode: GameViewMode;
+    setGameMode: (mode: GameViewMode) => void;
     setGameState: (state: GameState) => void;
     setScore: (score: number) => void;
     resetGame: () => void;
