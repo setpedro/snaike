@@ -6,7 +6,7 @@ import React, {
     createContext,
 } from "react";
 import { Session } from "@supabase/supabase-js";
-import { supabase } from "../../../shared/utils/supabaseClient";
+import { supabase } from "@/shared/utils/supabaseClient";
 
 type AuthContextType = {
     session: Session | null;

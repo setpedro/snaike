@@ -1,4 +1,4 @@
-import { supabase } from "../../../shared/utils/supabaseClient";
+import { supabase } from "@/shared/utils/supabaseClient";
 
 export async function getRecord(userId: string) {
     const { data, error } = await supabase

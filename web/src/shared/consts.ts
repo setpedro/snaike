@@ -1,4 +1,4 @@
-import { getGridConstants } from "../../public/pkg/snake_spark";
+import { getGridConstants } from "@/pkg/snake_spark";
 
 export const GRID = getGridConstants();
 

@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import wasm from "vite-plugin-wasm";
+import path from 'path';
 
 export default defineConfig({
     plugins: [react(), wasm()],
@@ -19,6 +20,11 @@ export default defineConfig({
         },
     },
     optimizeDeps: {
-        exclude: ["@/public/pkg/snake_spark"],
+        exclude: ["@/pkg/snake_spark"],
+    },
+    resolve: {
+        alias: {
+            "@": path.resolve(__dirname, "./src"),
+        },
     },
 });

@@ -1,6 +1,6 @@
 import React from "react";
 import { GameViewMode } from "../../types";
-import { Button } from "../../../../shared/components/Button";
+import { Button } from "@/shared/components/Button";
 
 type Props = {
     onSelectMode: (mode: GameViewMode) => void;

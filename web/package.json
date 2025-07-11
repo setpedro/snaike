@@ -7,7 +7,7 @@
         "dev": "vite",
         "build": "vite build",
         "build-with-wasm": "npm run build-wasm && vite build",
-        "build-wasm": "cargo fmt && wasm-pack build --target web --release --out-dir web/public/pkg",
+        "build-wasm": "cargo fmt && wasm-pack build --target web --release --out-dir web/src/pkg",
         "serve-prod": "npm run build && vite preview --port 4173"
     },
     "keywords": [],

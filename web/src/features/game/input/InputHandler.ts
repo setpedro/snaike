@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { GameState } from "../../../../public/pkg/snake_spark";
+import { GameState } from "@/pkg/snake_spark";
 
 export interface IInputHandler {
     destroy(): void;

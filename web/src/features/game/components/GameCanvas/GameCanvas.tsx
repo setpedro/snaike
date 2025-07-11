@@ -1,5 +1,5 @@
 import React from "react";
-import { GRID } from "../../../../shared/consts";
+import { GRID } from "@/shared/consts";
 import { useGameContext } from "../../context/GameProvider";
 import { GameEndModal } from "../GameEndModal";
 import { MainMenu } from "./GameMenu";

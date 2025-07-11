@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { COLORS } from "../../../shared/consts";
+import { COLORS } from "@/shared/consts";
 import { createRectangle } from "../utils/snakeRenderer";
 
 export class Food {

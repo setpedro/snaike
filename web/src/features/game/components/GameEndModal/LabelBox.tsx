@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "../../../../shared/utils";
+import { cn } from "@/shared/utils";
 
 type Props = {
     icon: React.ReactNode;

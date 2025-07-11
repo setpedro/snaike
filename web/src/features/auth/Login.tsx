@@ -1,5 +1,5 @@
 import React from "react";
-import { supabase } from "../../shared/utils/supabaseClient";
+import { supabase } from "@/shared/utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
 
 const providers = [
