@@ -1,0 +1,15 @@
+{
+  "name": "snake-spark",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "snake_spark_bg.wasm",
+    "snake_spark.js",
+    "snake_spark.d.ts"
+  ],
+  "main": "snake_spark.js",
+  "types": "snake_spark.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
