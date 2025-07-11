@@ -10,9 +10,7 @@ export function GameContainer() {
             <div className="flex flex-col items-center gap-4 p-6 bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 shadow-2xl w-full max-w-4xl">
                 <GameProvider>
                     <GameHeader />
-                    <div className="w-full flex justify-center">
                         <GameCanvas />
-                    </div>
                     <GameControls />
                 </GameProvider>
             </div>

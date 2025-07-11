@@ -1,29 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { GRID } from "../../../../shared/consts";
 import { useGameContext } from "../../context/GameProvider";
 import { GameEndModal } from "../GameEndModal";
 import { MainMenu } from "./GameMenu";
+import { useResizeCanvas } from "../../hooks/useResizeCanvas";
 
 export function GameCanvas() {
-    const { gameMode, gameState, gameContainerRef, setGameMode } = useGameContext();
-    const [width, setWidth] = useState(0);
+    const { gameMode, gameState, gameContainerRef, setGameMode } =
+        useGameContext();
     const aspectRatio =
         (GRID.cols * GRID.cellSizePx) / (GRID.rows * GRID.cellSizePx);
-
-    useEffect(() => {
-        function updateWidth() {
-            const maxWidth = Math.min(
-                window.innerWidth * 0.95,
-                window.innerHeight * 0.7 * aspectRatio
-            );
-            setWidth(maxWidth);
-        }
-
-        window.addEventListener("resize", updateWidth);
-        updateWidth();
-
-        return () => window.removeEventListener("resize", updateWidth);
-    }, [aspectRatio]);
+    const width = useResizeCanvas(aspectRatio);
 
     return (
         <div className="flex justify-center items-center w-full">
