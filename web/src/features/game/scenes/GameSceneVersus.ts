@@ -1,4 +1,4 @@
-import init, { VersusGameState } from "@/pkg/snake_spark";
+import init, { VersusGameState } from "@/pkg/snaike";
 import { BaseGameScene } from "./BaseGameScene";
 import { Snake } from "../entities/Snake";
 import { COLORS } from "@/shared/consts";

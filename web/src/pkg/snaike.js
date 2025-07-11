@@ -670,16 +670,16 @@ function __wbg_get_imports() {
         const ret = arg0.node;
         return ret;
     };
-    imports.wbg.__wbg_onGameDraw_0615392405ac5d6c = function() {
+    imports.wbg.__wbg_onGameDraw_c2e42a52d7494b0b = function() {
         onGameDraw();
     };
-    imports.wbg.__wbg_onGameOver_b5e5ef6c9c2c2ce7 = function() {
+    imports.wbg.__wbg_onGameOver_ec3f3a4563e7e372 = function() {
         onGameOver();
     };
-    imports.wbg.__wbg_onGameWin_bc1f6e6dd19b3652 = function() {
+    imports.wbg.__wbg_onGameWin_41b5ced9854110be = function() {
         onGameWin();
     };
-    imports.wbg.__wbg_onScoreUpdate_f718dbdbec4a7b87 = function(arg0) {
+    imports.wbg.__wbg_onScoreUpdate_d23818de21c69b0a = function(arg0) {
         onScoreUpdate(arg0);
     };
     imports.wbg.__wbg_process_5c1d670bc53614b8 = function(arg0) {
@@ -816,7 +816,7 @@ async function __wbg_init(module_or_path) {
     }
 
     if (typeof module_or_path === 'undefined') {
-        module_or_path = new URL('snake_spark_bg.wasm', import.meta.url);
+        module_or_path = new URL('snaike_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
