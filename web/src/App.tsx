@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
-import { GameContainer } from "./features/game/components/GameContainer";
-import { Login } from "./features/auth/Login";
+import { Game } from "./features/game/pages/Game";
+import { Login } from "./features/auth/pages/Login";
 import { useAuthContext } from "./features/auth/context/AuthProvider";
 import { GameProvider } from "./features/game/context/GameProvider";
 
@@ -21,7 +21,7 @@ export function App() {
                 path="/"
                 element={
                     <GameProvider>
-                        <GameContainer />
+                        <Game />
                     </GameProvider>
                 }
             />

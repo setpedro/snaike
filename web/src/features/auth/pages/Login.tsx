@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { providers } from "./consts";
-import { authWithOAuth } from "./services/authWithOAuth";
+import { providers } from "../consts";
+import { authWithOAuth } from "../services/authWithOAuth";
 
 export function Login() {
     const navigate = useNavigate();

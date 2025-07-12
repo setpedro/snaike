@@ -1,4 +1,3 @@
-import { useMemo } from "react";
 import { Button } from "@/features/shared/components/Button";
 import { LabelBox } from "./LabelBox";
 import { useGameContext } from "../../context/GameProvider";
@@ -6,6 +5,7 @@ import { useGameContext } from "../../context/GameProvider";
 export function GameEndModal() {
     const { gameState, score, record, isNewRecord, onRestart } =
         useGameContext();
+
     const displayRecord = Math.max(record, score);
 
     const getTitle = () => {

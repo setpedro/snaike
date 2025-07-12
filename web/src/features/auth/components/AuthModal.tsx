@@ -1,41 +1,29 @@
 import { providers } from "@/features/auth/consts";
-import { authWithOAuth } from "@/features/auth/services/authWithOAuth";
-import { useGameContext } from "../context/GameProvider";
 import { Provider } from "@supabase/supabase-js";
-import { usePendingSave } from "../store/pendingSave";
 
 type Props = {
-    displayRecord: number;
+    record: number;
+    onSignIn: (providerName: Provider) => void;
     onClose: () => void;
 };
 
-export default function FirstGameEndAuthModal({
-    displayRecord,
+export function AuthModal({
+    record,
+    onSignIn,
     onClose,
 }: Props) {
-    const { gameMode, gameState, score, isNewRecord } = useGameContext();
-
-    const handleSignIn = (providerName: Provider) => {
-        usePendingSave.setGameState(gameState);
-        usePendingSave.setGameMode(gameMode);
-        usePendingSave.setScore(score);
-
-        authWithOAuth(providerName);
-        onClose();
-    };
-
     return (
         <div className="rounded-3xl absolute top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm text-white flex justify-center items-center z-20 p-4">
             <div className="flex flex-col items-center w-full max-w-md gap-4 p-6 bg-black/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl">
                 <div className="flex flex-col items-center gap-2 text-center">
                     <div className="text-4xl">🎉</div>
                     <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
-                        {isNewRecord ? "New Record!" : "Great Game!"}
+                        Great Game!
                     </h2>
                     <p className="text-lg text-white/90">
                         You scored{" "}
                         <span className="text-emerald-400 font-bold">
-                            {displayRecord}
+                            {record}
                         </span>{" "}
                         points
                     </p>
@@ -57,7 +45,10 @@ export default function FirstGameEndAuthModal({
                     {providers.map((provider) => (
                         <button
                             key={provider.name}
-                            onClick={() => handleSignIn(provider.name)}
+                            onClick={() => {
+                                onSignIn(provider.name);
+                                onClose();
+                            }}
                             className={`w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r ${provider.color} rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-white font-medium hover:scale-[1.02] active:scale-[0.98]`}
                         >
                             <span className="text-xl">{provider.icon}</span>
