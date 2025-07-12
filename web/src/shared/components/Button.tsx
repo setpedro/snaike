@@ -1,7 +1,7 @@
-import React from "react";
+import { ButtonHTMLAttributes } from "react";
 import { cn } from "../utils";
 
-type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
     className?: string;
     variant?: "primary" | "secondary" | "ghost";
 };

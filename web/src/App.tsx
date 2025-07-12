@@ -1,4 +1,3 @@
-import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { GameContainer } from "./features/game/components/GameContainer";
 import { Login } from "./features/auth/Login";

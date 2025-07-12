@@ -1,4 +1,3 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { providers } from "./consts";
 import { authWithOAuth } from "./services/authWithOAuth";

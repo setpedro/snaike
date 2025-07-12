@@ -1,5 +1,3 @@
-import React from "react";
-
 export function GameControls() {
     return (
         <div className="text-center text-white/70 text-sm max-w-md">

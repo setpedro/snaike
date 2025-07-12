@@ -1,9 +1,10 @@
-import React, {
+import {
     createContext,
     useContext,
     useEffect,
     useState,
     PropsWithChildren,
+    RefObject,
 } from "react";
 import type { GameViewMode, GameState } from "../types";
 import { usePhaserGame } from "../hooks/usePhaserGame";
@@ -18,13 +19,13 @@ type GameContextType = {
     score: number;
     record: number;
     isNewRecord: boolean;
+    gameContainerRef: RefObject<HTMLDivElement | null>;
     setGameMode: (mode: GameViewMode) => void;
     setGameState: (state: GameState) => void;
     setScore: (score: number) => void;
     resetGame: () => void;
     onRestart: () => void;
     onBackToMenu: () => void;
-    gameContainerRef: React.RefObject<HTMLDivElement | null>;
 };
 
 const GameContext = createContext<GameContextType | null>(null);
@@ -36,10 +37,9 @@ export function GameProvider({ children }: PropsWithChildren) {
     const [gameState, setGameState] = useState<GameState>("playing");
     const [score, setScore] = useState(0);
     const [record, setRecord] = useState(0);
-    const [isNewRecord, setIsNewRecord] = useState(false)
+    const [isNewRecord, setIsNewRecord] = useState(false);
     const [isRecordLoaded, setIsRecordLoaded] = useState(false);
 
-    // Initial load
     useEffect(() => {
         if (!session) {
             setRecord(0);
@@ -47,7 +47,6 @@ export function GameProvider({ children }: PropsWithChildren) {
             return;
         }
 
-        // If there's a pending OAuth save, skip fetching the old record that would overwrite the new one
         if (sessionStorage.getItem("pendingOAuthSave")) {
             setIsRecordLoaded(true);
             return;
@@ -92,11 +91,11 @@ export function GameProvider({ children }: PropsWithChildren) {
                 const fetchedRecord = await getRecord(session.user.id);
                 if (score > (fetchedRecord || 0)) {
                     await saveRecord(session.user.id, score);
-                    setRecord(score); // Only set if it really beats existing
-                    setIsNewRecord(true)
+                    setRecord(score);
+                    setIsNewRecord(true);
                 } else {
-                    setRecord(fetchedRecord || 0); // restore accurate record
-                    setIsNewRecord(false)
+                    setRecord(fetchedRecord || 0);
+                    setIsNewRecord(false);
                 }
             } catch (err) {
                 console.error("Error handling pending save:", err);
@@ -106,24 +105,23 @@ export function GameProvider({ children }: PropsWithChildren) {
         handlePendingSave();
     }, [session, isRecordLoaded]);
 
-    // End-of-game
     useEffect(() => {
         if (gameState === "playing" || gameMode === "menu" || score <= 0) {
-            return; // TODO: double-check this. useEffect deps?
+            return;
         }
 
         if (session) {
-            saveGame(session.user.id, gameMode, score); // only save games for authenticated users
+            saveGame(session.user.id, gameMode, score);
         }
 
         if (score > record) {
             if (session) {
-                saveRecord(session.user.id, score); // only save record for authenticated users
+                saveRecord(session.user.id, score);
             }
-            setRecord(score); // setRecord for everyone
-            setIsNewRecord(true)
+            setRecord(score);
+            setIsNewRecord(true);
         } else {
-            setIsNewRecord(false)
+            setIsNewRecord(false);
         }
     }, [gameState, gameMode, score]);
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { GameHeader } from "./GameHeader";
 import { GameCanvas } from "./GameCanvas";
 import { GameControls } from "./GameControls";

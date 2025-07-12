@@ -1,11 +1,11 @@
-import React from "react";
 import { cn } from "@/shared/utils";
+import { ReactNode } from "react";
 
 type Props = {
-    icon: React.ReactNode;
+    icon: ReactNode;
     label: string;
     value: number | string;
-    badge?: React.ReactNode;
+    badge?: ReactNode;
     gradient: string;
     valueColor: string;
     className?: string;

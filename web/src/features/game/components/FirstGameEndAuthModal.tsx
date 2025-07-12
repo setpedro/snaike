@@ -1,6 +1,5 @@
 import { providers } from "@/features/auth/consts";
 import { authWithOAuth } from "@/features/auth/services/authWithOAuth";
-import React from "react";
 import { useGameContext } from "../context/GameProvider";
 import { Provider } from "@supabase/supabase-js";
 

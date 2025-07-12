@@ -1,4 +1,3 @@
-import React from "react";
 import { GameViewMode } from "../../types";
 import { Button } from "@/shared/components/Button";
 
