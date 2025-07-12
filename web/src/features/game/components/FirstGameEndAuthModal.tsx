@@ -5,17 +5,15 @@ import { useGameContext } from "../context/GameProvider";
 import { Provider } from "@supabase/supabase-js";
 
 type Props = {
-    isNewRecord: boolean;
     displayRecord: number;
     onClose: () => void;
 };
 
 export default function FirstGameEndAuthModal({
-    isNewRecord,
     displayRecord,
     onClose,
 }: Props) {
-    const { gameMode, gameState, score } = useGameContext();
+    const { gameMode, gameState, score, isNewRecord } = useGameContext();
 
     const handleSignIn = (providerName: Provider) => {
         sessionStorage.setItem(

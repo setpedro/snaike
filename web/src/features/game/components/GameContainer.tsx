@@ -12,8 +12,6 @@ export function GameContainer() {
 
     const displayRecord = Math.max(record, score);
 
-    const isNewRecord = score > 0 && score === record;
-
     const [isFirstGameEnd, setIsFirstGameEnd] = useState(true);
 
     return (
@@ -27,7 +25,6 @@ export function GameContainer() {
                     !session &&
                     score && (
                         <FirstGameEndAuthModal
-                            isNewRecord={isNewRecord}
                             displayRecord={displayRecord}
                             onClose={() => setIsFirstGameEnd(false)}
                         />

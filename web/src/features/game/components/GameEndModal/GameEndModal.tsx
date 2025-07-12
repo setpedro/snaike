@@ -4,12 +4,8 @@ import { LabelBox } from "./LabelBox";
 import { useGameContext } from "../../context/GameProvider";
 
 export function GameEndModal() {
-    const { gameState, score, record, onRestart } = useGameContext();
+    const { gameState, score, record, isNewRecord, onRestart } = useGameContext();
     const displayRecord = Math.max(record, score);
-
-    // TODO: avoid treating record matching as new record
-    // TODO: delegate this state to the context.
-    const isNewRecord = score > 0 && score === record;
 
     const getTitle = () => {
         switch (gameState) {

@@ -17,6 +17,7 @@ type GameContextType = {
     gameState: GameState;
     score: number;
     record: number;
+    isNewRecord: boolean;
     setGameMode: (mode: GameViewMode) => void;
     setGameState: (state: GameState) => void;
     setScore: (score: number) => void;
@@ -35,6 +36,7 @@ export function GameProvider({ children }: PropsWithChildren) {
     const [gameState, setGameState] = useState<GameState>("playing");
     const [score, setScore] = useState(0);
     const [record, setRecord] = useState(0);
+    const [isNewRecord, setIsNewRecord] = useState(false)
     const [isRecordLoaded, setIsRecordLoaded] = useState(false);
 
     // Initial load
@@ -91,8 +93,10 @@ export function GameProvider({ children }: PropsWithChildren) {
                 if (score > (fetchedRecord || 0)) {
                     await saveRecord(session.user.id, score);
                     setRecord(score); // Only set if it really beats existing
+                    setIsNewRecord(true)
                 } else {
                     setRecord(fetchedRecord || 0); // restore accurate record
+                    setIsNewRecord(false)
                 }
             } catch (err) {
                 console.error("Error handling pending save:", err);
@@ -117,6 +121,9 @@ export function GameProvider({ children }: PropsWithChildren) {
                 saveRecord(session.user.id, score); // only save record for authenticated users
             }
             setRecord(score); // setRecord for everyone
+            setIsNewRecord(true)
+        } else {
+            setIsNewRecord(false)
         }
     }, [gameState, gameMode, score]);
 
@@ -142,6 +149,7 @@ export function GameProvider({ children }: PropsWithChildren) {
                 gameState,
                 score,
                 record,
+                isNewRecord,
                 setGameMode,
                 setGameState,
                 setScore,
