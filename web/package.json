@@ -6,9 +6,9 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "vite",
         "build": "vite build",
+        "start": "vite preview",
         "build-with-wasm": "npm run build-wasm && vite build",
-        "build-wasm": "cargo fmt && wasm-pack build --target web --release --out-dir web/src/pkg && rm src/pkg/.gitignore",
-        "serve-prod": "npm run build && vite preview --port 4173"
+        "build-wasm": "cargo fmt && wasm-pack build --target web --release --out-dir web/src/pkg && rm src/pkg/.gitignore"
     },
     "keywords": [],
     "author": "",
@@ -30,7 +30,6 @@
         "@types/react": "^19.1.1",
         "@types/react-dom": "^19.1.2",
         "@vitejs/plugin-react": "^4.3.4",
-        "autoprefixer": "^10.4.21",
         "postcss": "^8.5.3",
         "tailwindcss": "^4.0.16",
         "typescript": "^5.8.2"

@@ -9,7 +9,6 @@ export default defineConfig({
         port: 3000,
     },
     build: {
-        outDir: "dist",
         target: "esnext",
         rollupOptions: {
             output: {
@@ -19,6 +18,7 @@ export default defineConfig({
             },
         },
     },
+    // TODO: externalize package
     optimizeDeps: {
         exclude: ["@/pkg/snaike"],
     },
