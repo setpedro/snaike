@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { providers } from "./consts";
-import { authWithOAuth } from "./services/authWithOauth";
+import { authWithOAuth } from "./services/authWithOAuth";
 
 export function Login() {
     const navigate = useNavigate();
