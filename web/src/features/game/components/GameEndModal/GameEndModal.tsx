@@ -8,6 +8,7 @@ export function GameEndModal() {
     const displayRecord = Math.max(record, score);
 
     // TODO: avoid treating record matching as new record
+    // TODO: delegate this state to the context.
     const isNewRecord = score > 0 && score === record;
 
     const getTitle = () => {

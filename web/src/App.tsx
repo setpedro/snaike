@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { GameContainer } from "./features/game/components/GameContainer";
 import { Login } from "./features/auth/Login";
 import { useAuthContext } from "./features/auth/context/AuthProvider";
+import { GameProvider } from "./features/game/context/GameProvider";
 
 export function App() {
     const { session, isLoading } = useAuthContext();
@@ -17,7 +18,14 @@ export function App() {
 
     return (
         <Routes>
-            <Route path="/" element={<GameContainer />} />
+            <Route
+                path="/"
+                element={
+                    <GameProvider>
+                        <GameContainer />
+                    </GameProvider>
+                }
+            />
             <Route
                 path="/login"
                 element={session ? <Navigate to="/" /> : <Login />}
