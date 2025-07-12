@@ -5,13 +5,16 @@ import {
     useState,
     PropsWithChildren,
     RefObject,
+    useCallback,
 } from "react";
-import type { GameViewMode, GameState } from "../types";
+import type { GameViewMode, GameState, GameMode } from "../types";
 import { usePhaserGame } from "../hooks/usePhaserGame";
 import { useAuthContext } from "../../auth/context/AuthProvider";
 import { saveGame } from "../services/saveGame";
 import { getRecord } from "../services/getRecord";
 import { saveRecord } from "../services/saveRecord";
+import { usePendingSave } from "../store/pendingSave";
+import { Session } from "@supabase/supabase-js";
 
 type GameContextType = {
     gameMode: GameViewMode;
@@ -40,6 +43,12 @@ export function GameProvider({ children }: PropsWithChildren) {
     const [isNewRecord, setIsNewRecord] = useState(false);
     const [isRecordLoaded, setIsRecordLoaded] = useState(false);
 
+    const fetchRecord = useCallback(async (session: Session) => {
+        const fetchedRecord = await getRecord(session.user.id);
+        setRecord(fetchedRecord);
+        setIsRecordLoaded(true);
+    }, []);
+
     useEffect(() => {
         if (!session) {
             setRecord(0);
@@ -47,66 +56,49 @@ export function GameProvider({ children }: PropsWithChildren) {
             return;
         }
 
-        if (sessionStorage.getItem("pendingOAuthSave")) {
-            setIsRecordLoaded(true);
+        fetchRecord(session);
+    }, [session, fetchRecord]);
+
+    const handlePendingSave = useCallback(async (session: Session) => {
+        const pendingGameMode = usePendingSave.getGameMode();
+        const pendingScore = usePendingSave.getScore();
+
+        if (pendingScore === 0) {
             return;
         }
 
-        const fetchRecord = async () => {
-            try {
-                const fetchedRecord = await getRecord(session.user.id);
-                setRecord(fetchedRecord || 0);
-            } catch (error) {
-                console.error("Error fetching record:", error);
-                setRecord(0);
-            } finally {
-                setIsRecordLoaded(true);
-            }
-        };
+        await saveGame(
+            session.user.id,
+            pendingGameMode as GameMode,
+            pendingScore
+        );
+        usePendingSave.reset();
 
-        fetchRecord();
-    }, [session]);
+        const fetchedRecord = await getRecord(session.user.id);
+
+        // TODO: abstract to function
+        const isNewRecord = pendingScore > fetchedRecord;
+
+        if (isNewRecord) {
+            await saveRecord(session.user.id, pendingScore);
+            setRecord(pendingScore);
+        } else {
+            setRecord(fetchedRecord);
+        }
+
+        setIsNewRecord(isNewRecord);
+    }, []);
 
     useEffect(() => {
-        if (!isRecordLoaded) {
+        if (!isRecordLoaded || !session) {
             return;
         }
 
-        const pendingSave = sessionStorage.getItem("pendingOAuthSave");
-        if (!pendingSave || !session) {
-            return;
-        }
-        sessionStorage.removeItem("pendingOAuthSave");
-
-        const { gameState, gameMode, score } = JSON.parse(pendingSave);
-
-        if (gameState === "playing" || gameMode === "menu" || score <= 0) {
-            return;
-        }
-
-        const handlePendingSave = async () => {
-            try {
-                await saveGame(session.user.id, gameMode, score);
-
-                const fetchedRecord = await getRecord(session.user.id);
-                if (score > (fetchedRecord || 0)) {
-                    await saveRecord(session.user.id, score);
-                    setRecord(score);
-                    setIsNewRecord(true);
-                } else {
-                    setRecord(fetchedRecord || 0);
-                    setIsNewRecord(false);
-                }
-            } catch (err) {
-                console.error("Error handling pending save:", err);
-            }
-        };
-
-        handlePendingSave();
-    }, [session, isRecordLoaded]);
+        handlePendingSave(session);
+    }, [session, isRecordLoaded, handlePendingSave]);
 
     useEffect(() => {
-        if (gameState === "playing" || gameMode === "menu" || score <= 0) {
+        if (gameState === "playing" || gameMode === "menu" || score === 0) {
             return;
         }
 
@@ -114,6 +106,7 @@ export function GameProvider({ children }: PropsWithChildren) {
             saveGame(session.user.id, gameMode, score);
         }
 
+        // TODO: abstract to function
         if (score > record) {
             if (session) {
                 saveRecord(session.user.id, score);
@@ -164,8 +157,10 @@ export function GameProvider({ children }: PropsWithChildren) {
 
 export function useGameContext() {
     const ctx = useContext(GameContext);
+
     if (!ctx) {
         throw new Error("useGameContext must be used within GameProvider");
     }
+
     return ctx;
 }

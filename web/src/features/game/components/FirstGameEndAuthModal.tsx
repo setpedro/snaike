@@ -2,6 +2,7 @@ import { providers } from "@/features/auth/consts";
 import { authWithOAuth } from "@/features/auth/services/authWithOAuth";
 import { useGameContext } from "../context/GameProvider";
 import { Provider } from "@supabase/supabase-js";
+import { usePendingSave } from "../store/pendingSave";
 
 type Props = {
     displayRecord: number;
@@ -15,10 +16,10 @@ export default function FirstGameEndAuthModal({
     const { gameMode, gameState, score, isNewRecord } = useGameContext();
 
     const handleSignIn = (providerName: Provider) => {
-        sessionStorage.setItem(
-            "pendingOAuthSave",
-            JSON.stringify({ gameState, gameMode, score })
-        );
+        usePendingSave.setGameState(gameState);
+        usePendingSave.setGameMode(gameMode);
+        usePendingSave.setScore(score);
+
         authWithOAuth(providerName);
         onClose();
     };

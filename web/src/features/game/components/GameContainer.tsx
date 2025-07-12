@@ -10,9 +10,10 @@ export function GameContainer() {
     const { session } = useAuthContext();
     const { gameState, score, record } = useGameContext();
 
+    // TODO: remove this
     const displayRecord = Math.max(record, score);
 
-    const [isFirstGameEnd, setIsFirstGameEnd] = useState(true);
+    const [isFirstGameEnd, setIsFirstGameEnd] = useState(!Boolean(session));
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
