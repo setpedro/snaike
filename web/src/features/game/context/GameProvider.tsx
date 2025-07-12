@@ -75,30 +75,31 @@ export function GameProvider({ children }: PropsWithChildren) {
         if (!pendingSave || !session) {
             return;
         }
+        sessionStorage.removeItem("pendingOAuthSave");
 
         const { gameState, gameMode, score } = JSON.parse(pendingSave);
 
-        if (gameState !== "playing" && gameMode !== "menu" && score > 0) {
-            const handlePendingSave = async () => {
-                try {
-                    await saveGame(session.user.id, gameMode, score);
-
-                    const fetchedRecord = await getRecord(session.user.id);
-                    if (score > (fetchedRecord || 0)) {
-                        await saveRecord(session.user.id, score);
-                        setRecord(score); // Only set if it really beats existing
-                    } else {
-                        setRecord(fetchedRecord || 0); // restore accurate record
-                    }
-                } catch (err) {
-                    console.error("Error handling pending save:", err);
-                } finally {
-                    sessionStorage.removeItem("pendingOAuthSave");
-                }
-            };
-
-            handlePendingSave();
+        if (gameState === "playing" || gameMode === "menu" || score <= 0) {
+            return;
         }
+
+        const handlePendingSave = async () => {
+            try {
+                await saveGame(session.user.id, gameMode, score);
+
+                const fetchedRecord = await getRecord(session.user.id);
+                if (score > (fetchedRecord || 0)) {
+                    await saveRecord(session.user.id, score);
+                    setRecord(score); // Only set if it really beats existing
+                } else {
+                    setRecord(fetchedRecord || 0); // restore accurate record
+                }
+            } catch (err) {
+                console.error("Error handling pending save:", err);
+            }
+        };
+
+        handlePendingSave();
     }, [session, isRecordLoaded]);
 
     // End-of-game
