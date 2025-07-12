@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { Button } from "@/shared/components/Button";
+import { Button } from "@/features/shared/components/Button";
 import { LabelBox } from "./LabelBox";
 import { useGameContext } from "../../context/GameProvider";
 

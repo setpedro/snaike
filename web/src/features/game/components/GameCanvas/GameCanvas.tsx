@@ -1,4 +1,4 @@
-import { GRID } from "@/shared/consts";
+import { GRID } from "@/features/shared/consts";
 import { useGameContext } from "../../context/GameProvider";
 import { GameEndModal } from "../GameEndModal";
 import { MainMenu } from "./GameMenu";

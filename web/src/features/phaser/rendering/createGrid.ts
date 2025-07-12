@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { COLORS, GRID } from "@/shared/consts";
+import { COLORS, GRID } from "@/features/shared/consts";
 
 export function createGrid(scene: Phaser.Scene): void {
     const gap = 1;

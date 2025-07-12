@@ -1,7 +1,7 @@
 import init, { VersusGameState } from "@/pkg/snaike";
 import { BaseGameScene } from "./BaseGameScene";
 import { Snake } from "../entities/Snake";
-import { COLORS } from "@/shared/consts";
+import { COLORS } from "@/features/shared/consts";
 
 export default class GameSceneVersus extends BaseGameScene {
     private gameState!: VersusGameState;

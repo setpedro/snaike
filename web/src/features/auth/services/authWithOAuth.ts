@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/utils/supabaseClient";
+import { supabase } from "@/features/auth/services/supabaseClient";
 import { Provider } from "@supabase/supabase-js";
 
 export async function authWithOAuth(provider: Provider) {

@@ -1,4 +1,4 @@
-import { supabase } from "@/shared/utils/supabaseClient";
+import { supabase } from "@/features/auth/services/supabaseClient";
 import { GameMode } from "../types";
 
 export async function saveGame(

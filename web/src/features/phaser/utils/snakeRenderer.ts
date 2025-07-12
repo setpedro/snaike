@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { GRID, VISUAL } from "@/shared/consts";
+import { GRID, VISUAL } from "@/features/shared/consts";
 
 export const updateConnectors = (
     scene: Phaser.Scene,

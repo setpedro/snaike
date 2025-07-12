@@ -1,4 +1,4 @@
-import { cn } from "@/shared/utils";
+import { cn } from "@/features/shared/utils";
 import { ReactNode } from "react";
 
 type Props = {
