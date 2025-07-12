@@ -35,18 +35,53 @@ export function GameProvider({ children }: PropsWithChildren) {
     const [gameState, setGameState] = useState<GameState>("playing");
     const [score, setScore] = useState(0);
     const [record, setRecord] = useState(0);
+    const [isRecordLoaded, setIsRecordLoaded] = useState(false);
 
     // Initial load
     useEffect(() => {
         if (!session) {
+            setRecord(0);
+            setIsRecordLoaded(true);
             return;
         }
 
         const fetchRecord = async () => {
-            const fetchedRecord = await getRecord(session.user.id);
-            setRecord(fetchedRecord || 0);
+            try {
+                const fetchedRecord = await getRecord(session.user.id);
+                setRecord(fetchedRecord || 0);
+            } catch (error) {
+                console.error("Error fetching record:", error);
+                setRecord(0);
+            } finally {
+                setIsRecordLoaded(true);
+            }
         };
+
         fetchRecord();
+    }, [session]);
+
+    useEffect(() => {
+        if (!isRecordLoaded) {
+            return;
+        }
+
+        const pendingSave = sessionStorage.getItem("pendingOAuthSave");
+        if (!pendingSave || !session) {
+            return;
+        }
+
+        const { gameState, gameMode, score } = JSON.parse(pendingSave);
+
+        if (gameState !== "playing" && gameMode !== "menu" && score > 0) {
+            if (score > record) {
+                saveRecord(session.user.id, score);
+                setRecord(score);
+            }
+
+            saveGame(session.user.id, gameMode, score);
+        }
+
+        sessionStorage.removeItem("pendingOAuthSave");
     }, [session]);
 
     // End-of-game

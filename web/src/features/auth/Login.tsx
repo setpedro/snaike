@@ -1,27 +1,10 @@
 import React from "react";
-import { supabase } from "@/shared/utils/supabaseClient";
 import { useNavigate } from "react-router-dom";
-
-const providers = [
-    { name: "google", icon: "🔍", color: "from-red-500/20 to-orange-500/20" },
-    { name: "github", icon: "🐱", color: "from-gray-500/20 to-slate-500/20" },
-    { name: "twitter", icon: "🐦", color: "from-blue-500/20 to-cyan-500/20" },
-] as const;
+import { providers } from "./consts";
+import { authWithOAuth } from "./services/authWithOauth";
 
 export function Login() {
     const navigate = useNavigate();
-
-    const handleOAuthLogin = async (
-        provider: (typeof providers)[number]["name"]
-    ) => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider,
-        });
-
-        if (error) {
-            console.error("OAuth error:", error);
-        }
-    };
 
     const handleGuestPlay = () => {
         navigate("/");
@@ -45,7 +28,7 @@ export function Login() {
                     {providers.map((provider) => (
                         <button
                             key={provider.name}
-                            onClick={() => handleOAuthLogin(provider.name)}
+                            onClick={() => authWithOAuth(provider.name)}
                             className={`w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r ${provider.color} rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-white font-medium hover:scale-[1.02] active:scale-[0.98]`}
                         >
                             <span className="text-xl">{provider.icon}</span>
