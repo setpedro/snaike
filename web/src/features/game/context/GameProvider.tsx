@@ -45,6 +45,12 @@ export function GameProvider({ children }: PropsWithChildren) {
             return;
         }
 
+        // If there's a pending OAuth save, skip fetching the old record that would overwrite the new one
+        if (sessionStorage.getItem("pendingOAuthSave")) {
+            setIsRecordLoaded(true);
+            return;
+        }
+
         const fetchRecord = async () => {
             try {
                 const fetchedRecord = await getRecord(session.user.id);
@@ -73,16 +79,27 @@ export function GameProvider({ children }: PropsWithChildren) {
         const { gameState, gameMode, score } = JSON.parse(pendingSave);
 
         if (gameState !== "playing" && gameMode !== "menu" && score > 0) {
-            if (score > record) {
-                saveRecord(session.user.id, score);
-                setRecord(score);
-            }
+            const handlePendingSave = async () => {
+                try {
+                    await saveGame(session.user.id, gameMode, score);
 
-            saveGame(session.user.id, gameMode, score);
+                    const fetchedRecord = await getRecord(session.user.id);
+                    if (score > (fetchedRecord || 0)) {
+                        await saveRecord(session.user.id, score);
+                        setRecord(score); // Only set if it really beats existing
+                    } else {
+                        setRecord(fetchedRecord || 0); // restore accurate record
+                    }
+                } catch (err) {
+                    console.error("Error handling pending save:", err);
+                } finally {
+                    sessionStorage.removeItem("pendingOAuthSave");
+                }
+            };
+
+            handlePendingSave();
         }
-
-        sessionStorage.removeItem("pendingOAuthSave");
-    }, [session]);
+    }, [session, isRecordLoaded]);
 
     // End-of-game
     useEffect(() => {
