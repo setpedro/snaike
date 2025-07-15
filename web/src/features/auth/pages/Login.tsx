@@ -1,13 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { providers } from "../consts";
-import { authWithOAuth } from "../services/authWithOAuth";
+import { OrSeparator } from "@/features/shared/components/OrSeparator";
+import { Button } from "@/features/shared/components/Button";
+import { ProviderButton } from "../components/ProviderButton";
 
 export function Login() {
     const navigate = useNavigate();
-
-    const handleGuestPlay = () => {
-        navigate("/");
-    };
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -23,36 +21,27 @@ export function Login() {
                     </p>
                 </div>
 
-                <div className="w-full flex flex-col gap-3">
+                <div className="w-full flex flex-col gap-2">
                     {providers.map((provider) => (
-                        <button
+                        <ProviderButton
                             key={provider.name}
-                            onClick={() => authWithOAuth(provider.name)}
-                            className={`w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r ${provider.color} rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-white font-medium hover:scale-[1.02] active:scale-[0.98]`}
-                        >
-                            <span className="text-xl">{provider.icon}</span>
-                            <span className="capitalize">
-                                Continue with {provider.name}
-                            </span>
-                        </button>
+                            provider={provider}
+                        />
                     ))}
                 </div>
 
-                <div className="w-full flex items-center gap-4">
-                    <div className="flex-1 h-px bg-white/10"></div>
-                    <span className="text-white/50 text-sm">or</span>
-                    <div className="flex-1 h-px bg-white/10"></div>
-                </div>
+                <OrSeparator />
 
-                <button
-                    onClick={handleGuestPlay}
-                    className="w-full flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-white font-medium hover:scale-[1.02] active:scale-[0.98]"
+                <Button
+                    onClick={() => navigate("/")}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 hover:scale-[1.02] active:scale-[0.98]"
+                    size="md"
+                    color="ghost"
                 >
-                    <span className="text-xl">🎮</span>
-                    <span>Play as Guest</span>
-                </button>
+                    Play as Guest
+                </Button>
 
-                <p className="text-white/50 text-sm text-center">
+                <p className="text-white/40 text-xs text-center leading-relaxed">
                     Guest scores are saved locally only.
                     <br />
                     Sign in to compete on global leaderboards!

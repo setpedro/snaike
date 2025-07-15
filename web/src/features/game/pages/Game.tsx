@@ -6,8 +6,6 @@ import { useGameContext } from "../context/GameProvider";
 import { useAuthContext } from "@/features/auth/context/AuthProvider";
 import { AuthModal } from "../../auth/components/AuthModal";
 import { usePendingSave } from "../store/pendingSave";
-import { Provider } from "@supabase/supabase-js";
-import { authWithOAuth } from "@/features/auth/services/authWithOAuth";
 import { AuthFooter } from "@/features/auth/components/AuthFooter";
 
 export function Game() {
@@ -16,12 +14,10 @@ export function Game() {
 
     const [isFirstGameEnd, setIsFirstGameEnd] = useState(!Boolean(session));
 
-    const handleSignIn = (providerName: Provider) => {
+    const handleSignIn = () => {
         usePendingSave.setGameState(gameState);
         usePendingSave.setGameMode(gameMode);
         usePendingSave.setScore(score);
-
-        authWithOAuth(providerName);
     };
 
     return (

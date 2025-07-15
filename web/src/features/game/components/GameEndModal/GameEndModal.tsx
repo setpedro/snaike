@@ -22,7 +22,7 @@ export function GameEndModal() {
     };
 
     return (
-        <div className="absolute top-0 left-0 w-full h-full bg-black/20 backdrop-blur-sm text-white flex justify-center items-center z-20 p-4">
+        <div className="absolute top-0 left-0 w-full h-full bg-black/20 backdrop-blur-sm text-white flex justify-center items-center z-2 p-4">
             <div className="flex flex-col items-center w-full max-w-sm sm:max-w-md gap-2 p-2 sm:p-6 md:p-8 bg-black/50 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl">
                 <h2 className="text-center text-2xl sm:text-3xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">
                     {getTitle()}

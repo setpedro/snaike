@@ -1,6 +1,6 @@
 import type { Provider } from "@supabase/supabase-js";
 
-type OAuthProvider = {
+export type OAuthProvider = {
     name: Provider;
     icon: string;
     color: string;

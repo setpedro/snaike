@@ -1,19 +1,17 @@
 import { providers } from "@/features/auth/consts";
-import { Provider } from "@supabase/supabase-js";
+import { Button } from "@/features/shared/components/Button";
+import { OrSeparator } from "@/features/shared/components/OrSeparator";
+import { ProviderButton } from "./ProviderButton";
 
 type Props = {
     record: number;
-    onSignIn: (providerName: Provider) => void;
+    onSignIn: () => void;
     onClose: () => void;
 };
 
-export function AuthModal({
-    record,
-    onSignIn,
-    onClose,
-}: Props) {
+export function AuthModal({ record, onClose }: Props) {
     return (
-        <div className="absolute top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm text-white flex justify-center items-center z-20 p-4">
+        <div className="absolute top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm text-white flex justify-center items-center z-3 p-4">
             <div className="flex flex-col items-center w-full max-w-md gap-4 p-6 bg-black/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl">
                 <div className="flex flex-col items-center gap-2 text-center">
                     <div className="text-4xl">🎉</div>
@@ -43,38 +41,28 @@ export function AuthModal({
 
                 <div className="w-full flex flex-col gap-2">
                     {providers.map((provider) => (
-                        <button
+                        <ProviderButton
                             key={provider.name}
-                            onClick={() => {
-                                onSignIn(provider.name);
-                                onClose();
-                            }}
-                            className={`w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r ${provider.color} rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-white font-medium hover:scale-[1.02] active:scale-[0.98]`}
-                        >
-                            <span className="text-xl">{provider.icon}</span>
-                            <span className="capitalize">
-                                Continue with {provider.name}
-                            </span>
-                        </button>
+                            provider={provider}
+                        />
                     ))}
                 </div>
 
-                <div className="w-full flex items-center gap-3">
-                    <div className="flex-1 h-px bg-white/10"></div>
-                    <span className="text-white/50 text-sm">or</span>
-                    <div className="flex-1 h-px bg-white/10"></div>
-                </div>
+                <OrSeparator />
 
-                <button
+                <Button
                     onClick={onClose}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/5 rounded-xl border border-white/10 hover:border-white/20 transition-all duration-200 text-white/80 hover:text-white font-medium hover:scale-[1.02] active:scale-[0.98]"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 hover:scale-[1.02] active:scale-[0.98]"
+                    size="md"
+                    color="ghost"
                 >
-                    <span>Continue as Guest</span>
-                </button>
+                    Continue as Guest
+                </Button>
 
                 <p className="text-white/40 text-xs text-center leading-relaxed">
-                    Guest scores are saved locally only and will be lost if you
-                    clear your browser data.
+                    Guest scores are saved locally only.
+                    <br />
+                    Sign in to compete on global leaderboards!
                 </p>
             </div>
         </div>
