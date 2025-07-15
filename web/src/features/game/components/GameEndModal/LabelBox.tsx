@@ -1,14 +1,14 @@
-import { cn } from "@/features/shared/utils";
+import { WithClassName } from "@/features/shared/types";
+import { cn } from "@/features/shared/utils/cn";
 import { ReactNode } from "react";
 
-type Props = {
+type Props = WithClassName & {
     icon: ReactNode;
     label: string;
     value: number | string;
     badge?: ReactNode;
     gradient: string;
     valueColor: string;
-    className?: string;
 };
 
 export function LabelBox({

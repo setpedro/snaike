@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuthContext } from "../context/AuthProvider";
-import { cn } from "@/features/shared/utils";
+import { cn } from "@/features/shared/utils/cn";
 
 export function Profile() {
     const { signOut } = useAuthContext();

@@ -1,34 +1,34 @@
 import { useAuthContext } from "@/features/auth/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { Button } from "./Button";
 
 export function Header() {
     const { session } = useAuthContext();
     const navigate = useNavigate();
 
     return (
-        <div className="w-full flex justify-end items-center px-6 py-2 fixed top-0 left-0 z-50">
-            <div className="flex items-center gap-6 transition-colors duration-200 [&:has(button:hover)]:border-emerald-400">
-                <button
+        <div className="w-full flex justify-end items-center px-6 py-3 fixed top-0 left-0 z-50">
+            <div className="flex items-center gap-2">
+                <Button
                     onClick={() => navigate("/leaderboard")}
-                    className="flex items-center gap-2 text-white/80 hover:text-emerald-400 transition-colors duration-200 font-medium px-4 py-2 rounded-lg"
+                    size="sm"
+                    color="link"
                 >
                     <span>Leaderboard</span>
-                </button>
+                </Button>
 
                 {session ? (
-                    <button
+                    <Button
                         onClick={() => navigate("/profile")}
-                        className="flex items-center gap-2 text-white/80 hover:text-emerald-400 transition-colors duration-200 font-medium px-4 py-2 rounded-lg"
+                        size="sm"
+                        color="link"
                     >
                         <span>Profile</span>
-                    </button>
+                    </Button>
                 ) : (
-                    <button
-                        onClick={() => navigate("/login")}
-                        className="flex items-center gap-2 text-white/80 hover:text-emerald-400 transition-colors duration-200 font-medium px-4 py-2 rounded-lg"
-                    >
-                        <span>Log in</span>
-                    </button>
+                    <Button onClick={() => navigate("/login")} size="sm">
+                        Log In
+                    </Button>
                 )}
             </div>
         </div>
