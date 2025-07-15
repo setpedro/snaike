@@ -3,6 +3,7 @@ import { Game } from "./features/game/pages/Game";
 import { Login } from "./features/auth/pages/Login";
 import { useAuthContext } from "./features/auth/context/AuthProvider";
 import { GameProvider } from "./features/game/context/GameProvider";
+import { Header } from "./features/shared/components/Header";
 
 export function App() {
     const { session, isLoading } = useAuthContext();
@@ -16,32 +17,39 @@ export function App() {
     }
 
     return (
-        <Routes>
-            <Route
-                path="/"
-                element={
-                    <GameProvider>
-                        <Game />
-                    </GameProvider>
-                }
-            />
-            <Route
-                path="/login"
-                element={session ? <Navigate to="/" /> : <Login />}
-            />
-            <Route
-                path="/leaderboard"
-                element={
-                    session ? <div>Leaderboard</div> : <Navigate to="/login" />
-                }
-            />
-            <Route
-                path="/profile"
-                element={
-                    session ? <div>Profile</div> : <Navigate to="/login" />
-                }
-            />
-            <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
+        <>
+            {/* <Header /> */}
+            <Routes>
+                <Route
+                    path="/"
+                    element={
+                        <GameProvider>
+                            <Game />
+                        </GameProvider>
+                    }
+                />
+                <Route
+                    path="/login"
+                    element={session ? <Navigate to="/" /> : <Login />}
+                />
+                <Route
+                    path="/leaderboard"
+                    element={
+                        session ? (
+                            <div>Leaderboard</div>
+                        ) : (
+                            <Navigate to="/login" />
+                        )
+                    }
+                />
+                <Route
+                    path="/profile"
+                    element={
+                        session ? <div>Profile </div> : <Navigate to="/login" />
+                    }
+                />
+                <Route path="*" element={<Navigate to="/" />} />
+            </Routes>
+        </>
     );
 }

@@ -14,7 +14,7 @@ export function GameCanvas() {
     return (
         <div className="flex justify-center items-center w-full">
             <div
-                className="relative rounded-2xl overflow-hidden border-2 border-white/20 shadow-xl bg-black/20"
+                className="relative rounded-b-2xl overflow-hidden border-2 border-t-0 border-white/20 bg-black/20"
                 style={{
                     width: `${width}px`,
                     aspectRatio: aspectRatio,
@@ -22,7 +22,7 @@ export function GameCanvas() {
             >
                 <div
                     ref={gameContainerRef}
-                    className="absolute inset-0 rounded-2xl overflow-hidden"
+                    className="absolute inset-0 rounded-b-2xl overflow-hidden"
                 />
                 {gameMode === "menu" && <MainMenu onSelectMode={setGameMode} />}
                 {gameState !== "playing" && <GameEndModal />}

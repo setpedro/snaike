@@ -25,9 +25,11 @@ export function Game() {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-            <div className="flex flex-col items-center gap-4 p-6 bg-black/40 backdrop-blur-sm rounded-3xl border border-white/10 shadow-2xl w-full max-w-4xl">
-                <GameHeader />
-                <GameCanvas />
+            <div className="flex flex-col items-center gap-4 w-full max-w-4xl">
+                <div className="rounded-2xl shadow-2xl">
+                    <GameHeader />
+                    <GameCanvas />
+                </div>
                 <GameControls />
                 {gameState !== "playing" &&
                 isFirstGameEnd &&
