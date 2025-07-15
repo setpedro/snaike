@@ -8,6 +8,7 @@ import { AuthModal } from "../../auth/components/AuthModal";
 import { usePendingSave } from "../store/pendingSave";
 import { Provider } from "@supabase/supabase-js";
 import { authWithOAuth } from "@/features/auth/services/authWithOAuth";
+import { AuthFooter } from "@/features/auth/components/AuthFooter";
 
 export function Game() {
     const { session } = useAuthContext();
@@ -25,7 +26,7 @@ export function Game() {
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
-            <div className="flex flex-col items-center gap-4 w-full max-w-4xl">
+            <div className="flex flex-col items-center w-full max-w-4xl">
                 <div className="rounded-2xl shadow-2xl">
                     <GameHeader />
                     <GameCanvas />
@@ -42,6 +43,7 @@ export function Game() {
                     />
                 ) : null}
             </div>
+            {!session && <AuthFooter />}
         </div>
     );
 }

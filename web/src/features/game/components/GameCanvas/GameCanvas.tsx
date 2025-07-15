@@ -12,7 +12,7 @@ export function GameCanvas() {
     const width = useResizeCanvas(aspectRatio);
 
     return (
-        <div className="flex justify-center items-center w-full">
+        <div className="flex justify-center items-center w-full shadow-2xl">
             <div
                 className="relative rounded-b-2xl overflow-hidden border-2 border-t-0 border-white/20 bg-black/20"
                 style={{

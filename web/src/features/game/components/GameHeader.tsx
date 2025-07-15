@@ -5,7 +5,7 @@ export function GameHeader() {
     const displayRecord = Math.max(record, score);
 
     return (
-        <div className="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-t-2xl border-2 border-white/10 backdrop-blur-sm">
+        <div className="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-t-2xl border-2 border-white/10 backdrop-blur-sm shadow-2xl">
             {gameMode !== "menu" && (
                 <button
                     onClick={onBackToMenu}
