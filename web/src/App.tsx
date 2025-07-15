@@ -19,28 +19,25 @@ export function App() {
     }
 
     return (
-        <>
-            <Header />
-            <Routes>
-                <Route
-                    path="/"
-                    element={
-                        <GameProvider>
-                            <Game />
-                        </GameProvider>
-                    }
-                />
-                <Route
-                    path="/login"
-                    element={session ? <Navigate to="/" /> : <Login />}
-                />
-                <Route path="/leaderboard" element={<Leaderboard />} />
-                <Route
-                    path="/profile"
-                    element={session ? <Profile /> : <Navigate to="/login" />}
-                />
-                <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-        </>
+        <Routes>
+            <Route
+                path="/"
+                element={
+                    <GameProvider>
+                        <Game />
+                    </GameProvider>
+                }
+            />
+            <Route
+                path="/login"
+                element={session ? <Navigate to="/" /> : <Login />}
+            />
+            <Route path="/leaderboard" element={<Leaderboard />} />
+            <Route
+                path="/profile"
+                element={session ? <Profile /> : <Navigate to="/login" />}
+            />
+            <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
     );
 }

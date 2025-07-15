@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuthContext } from "../context/AuthProvider";
 import { cn } from "@/features/shared/utils/cn";
+import { Header } from "@/features/shared/components/Header";
 
 export function Profile() {
     const { signOut } = useAuthContext();
@@ -49,6 +50,7 @@ export function Profile() {
                     : "bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
             )}
         >
+            <Header />
             <div
                 className={cn(
                     "bg-black/40 backdrop-blur-sm border border-white/20 rounded-xl",
