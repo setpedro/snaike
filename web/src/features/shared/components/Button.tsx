@@ -8,6 +8,9 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> &
         color?: "primary" | "secondary" | "ghost" | "link" | "custom";
     };
 
+const sharedScale = "hover:scale-[1.02] active:scale-[0.98]";
+const sharedShadow = "shadow-lg";
+
 const classes = {
     base: "w-full inline-flex items-center justify-center gap-2 font-bold text-white transition-all duration-200 transform",
     variants: {
@@ -17,13 +20,27 @@ const classes = {
             lg: "px-6 py-3 sm:px-8 sm:py-4 rounded-2xl text-lg sm:text-xl",
         },
         colors: {
-            primary:
-                "bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 active:from-emerald-700 active:to-emerald-800 shadow-lg border border-emerald-400/20 hover:scale-[1.02] active:scale-[0.98]",
-            secondary:
-                "bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 shadow-lg border border-blue-400/20 hover:scale-[1.02] active:scale-[0.98]",
-            ghost: "bg-white/5 border border-white/10 hover:border-white/20 text-white/80 hover:text-white font-medium hover:scale-[1.02] active:scale-[0.98]",
+            primary: cn(
+                "bg-gradient-to-r from-emerald-500 to-emerald-600",
+                "hover:from-emerald-600 hover:to-emerald-700",
+                "active:from-emerald-700 active:to-emerald-800",
+                "border border-emerald-400/20",
+                sharedShadow,
+                sharedScale
+            ),
+            secondary: cn(
+                "bg-gradient-to-r from-blue-500 to-blue-600",
+                "hover:from-blue-600 hover:to-blue-700",
+                "border border-blue-400/20",
+                sharedShadow,
+                sharedScale
+            ),
+            ghost: cn(
+                "bg-white/5 border border-white/10 hover:border-white/20 text-white/80 hover:text-white font-medium",
+                sharedScale
+            ),
             link: "bg-transparent border-0 shadow-none hover:text-emerald-400 underline-offset-2 hover:underline",
-            custom: "shadow-lg",
+            custom: sharedShadow,
         },
     },
 } as const;
