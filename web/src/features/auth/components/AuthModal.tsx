@@ -13,7 +13,7 @@ export function AuthModal({
     onClose,
 }: Props) {
     return (
-        <div className="rounded-3xl absolute top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm text-white flex justify-center items-center z-20 p-4">
+        <div className="absolute top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm text-white flex justify-center items-center z-20 p-4">
             <div className="flex flex-col items-center w-full max-w-md gap-4 p-6 bg-black/60 backdrop-blur-sm rounded-3xl border border-white/20 shadow-2xl">
                 <div className="flex flex-col items-center gap-2 text-center">
                     <div className="text-4xl">🎉</div>

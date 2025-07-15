@@ -4,6 +4,8 @@ import { Login } from "./features/auth/pages/Login";
 import { useAuthContext } from "./features/auth/context/AuthProvider";
 import { GameProvider } from "./features/game/context/GameProvider";
 import { Header } from "./features/shared/components/Header";
+import { Profile } from "./features/auth/pages/Profile";
+import { Leaderboard } from "./features/leaderboard/pages/Leaderboard";
 
 export function App() {
     const { session, isLoading } = useAuthContext();
@@ -32,21 +34,10 @@ export function App() {
                     path="/login"
                     element={session ? <Navigate to="/" /> : <Login />}
                 />
-                <Route
-                    path="/leaderboard"
-                    element={
-                        session ? (
-                            <div>Leaderboard</div>
-                        ) : (
-                            <Navigate to="/login" />
-                        )
-                    }
-                />
+                <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route
                     path="/profile"
-                    element={
-                        session ? <div>Profile </div> : <Navigate to="/login" />
-                    }
+                    element={session ? <Profile /> : <Navigate to="/login" />}
                 />
                 <Route path="*" element={<Navigate to="/" />} />
             </Routes>
