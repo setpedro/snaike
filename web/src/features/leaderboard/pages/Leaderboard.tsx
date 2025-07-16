@@ -1,4 +1,5 @@
 import { Header } from "@/features/shared/components/Header";
+import { PageWrapper } from "@/features/shared/components/PageWrapper";
 import { useEffect, useState } from "react";
 
 export function Leaderboard() {
@@ -12,9 +13,9 @@ export function Leaderboard() {
     }, []);
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <PageWrapper>
             <Header />
-            <div className="text-white text-xl ">Coming Soon{dots}</div>
-        </div>
+            <div className="text-white text-xl">Coming Soon{dots}</div>
+        </PageWrapper>
     );
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuthContext } from "../context/AuthProvider";
 import { cn } from "@/features/shared/utils/cn";
 import { Header } from "@/features/shared/components/Header";
+import { PageWrapper } from "@/features/shared/components/PageWrapper";
 
 export function Profile() {
     const { signOut } = useAuthContext();
@@ -42,15 +43,11 @@ export function Profile() {
     const boxSize = getBoxSize();
 
     return (
-        <div
-            className={cn(
-                "flex justify-center items-center min-h-screen transition-colors duration-700 p-4",
-                isLastLevel
-                    ? "bg-gradient-to-br from-red-900 via-red-700 to-red-800"
-                    : "bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900"
-            )}
+        <PageWrapper
+            className={isLastLevel ? "bg-gradient-red" : "bg-gradient-default"}
         >
             <Header />
+
             <div
                 className={cn(
                     "bg-black/40 backdrop-blur-sm border border-white/20 rounded-xl",
@@ -74,6 +71,6 @@ export function Profile() {
                     {messages[level]}
                 </p>
             </div>
-        </div>
+        </PageWrapper>
     );
 }

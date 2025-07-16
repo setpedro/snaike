@@ -4,12 +4,13 @@ import { OrSeparator } from "@/features/shared/components/OrSeparator";
 import { Button } from "@/features/shared/components/Button";
 import { ProviderButton } from "../components/ProviderButton";
 import { Header } from "@/features/shared/components/Header";
+import { PageWrapper } from "@/features/shared/components/PageWrapper";
 
 export function Login() {
     const navigate = useNavigate();
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <PageWrapper>
             <div className="hidden sm:block">
                 <Header />
             </div>
@@ -51,6 +52,6 @@ export function Login() {
                     Sign in to compete on global leaderboards!
                 </p>
             </div>
-        </div>
+        </PageWrapper>
     );
 }

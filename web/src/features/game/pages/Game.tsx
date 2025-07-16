@@ -8,6 +8,7 @@ import { AuthModal } from "../../auth/components/AuthModal";
 import { usePendingSave } from "../store/pendingSave";
 import { AuthFooter } from "@/features/auth/components/AuthFooter";
 import { Header } from "@/features/shared/components/Header";
+import { PageWrapper } from "@/features/shared/components/PageWrapper";
 
 export function Game() {
     const { session } = useAuthContext();
@@ -22,7 +23,7 @@ export function Game() {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+        <PageWrapper>
             <Header />
             <div className="flex flex-col items-center w-full max-w-4xl">
                 <div className="rounded-2xl shadow-2xl">
@@ -42,6 +43,6 @@ export function Game() {
                 ) : null}
             </div>
             {!session && <AuthFooter />}
-        </div>
+        </PageWrapper>
     );
 }

@@ -1,6 +1,29 @@
 @import "tailwindcss";
 
-body {
-    margin: 0;
-    background: #f0f4f6;
+:root {
+    --bg-start: #0f172a;
+    --bg-mid: #6b21a8;
+    --bg-end: #0f172a;
+
+    --bg-red-start: #7f1d1d;
+    --bg-red-mid: #b91c1c;
+    --bg-red-end: #7f1d1d;
+}
+
+.bg-gradient-default {
+    background-image: linear-gradient(
+        to bottom right,
+        var(--bg-start),
+        var(--bg-mid),
+        var(--bg-end)
+    );
+}
+
+.bg-gradient-red {
+    background-image: linear-gradient(
+        to bottom right,
+        var(--bg-red-start),
+        var(--bg-red-mid),
+        var(--bg-red-end)
+    );
 }
