@@ -9,7 +9,7 @@ type Props = {
     onClose: () => void;
 };
 
-export function AuthModal({ record, onClose }: Props) {
+export function AuthModal({ record, onSignIn, onClose }: Props) {
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-black/30 backdrop-blur-sm text-white flex justify-center items-center z-3">
             <div className="flex items-center justify-center h-screen sm:h-fit w-screen sm:w-fit p-6 bg-black/60 backdrop-blur-sm sm:rounded-3xl border border-white/20 shadow-2xl">
@@ -44,6 +44,10 @@ export function AuthModal({ record, onClose }: Props) {
                         {providers.map((provider) => (
                             <ProviderButton
                                 key={provider.name}
+                                onClick={() => {
+                                    onSignIn();
+                                    onClose();
+                                }}
                                 provider={provider}
                             />
                         ))}

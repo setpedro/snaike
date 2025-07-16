@@ -12,8 +12,8 @@ export function ProviderButton({ provider, onClick }: Props) {
     return (
         <Button
             onClick={() => {
-                authWithOAuth(provider.name);
                 onClick?.();
+                authWithOAuth(provider.name);
             }}
             size="md"
             color="custom"
