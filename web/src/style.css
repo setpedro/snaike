@@ -27,3 +27,33 @@
         var(--bg-red-end)
     );
 }
+
+@keyframes jumpTwice {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    10% {
+        transform: translateY(-6px);
+    }
+    20% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-4px);
+    }
+    40% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.emoji-jump {
+    display: inline-block;
+}
+
+.group:hover .emoji-jump {
+    animation: jumpTwice 1.2s ease-in-out infinite;
+}

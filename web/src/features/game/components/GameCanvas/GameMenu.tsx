@@ -16,9 +16,9 @@ export function MainMenu({ onSelectMode }: Props) {
                 <div className="flex flex-col w-full gap-2 px-2 sm:px-0 mt-2">
                     <Button
                         onClick={() => onSelectMode("solo")}
-                        className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 border-emerald-400/20"
+                        className="group bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 border-emerald-400/20"
                     >
-                        🎮 Solo Play
+                        <span className="emoji-jump">🎮</span> Solo Play
                     </Button>
 
                     <Button
