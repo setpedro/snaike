@@ -26,9 +26,6 @@ export function Leaderboard() {
                     <p className="text-white/70 text-sm group-hover:text-white transition-colors">
                         Return to main page
                     </p>
-                    <p className="text-2xl sm:text-3xl group-hover:animate-pulse">
-                        🐍
-                    </p>
                 </div>
             </div>
         </PageWrapper>

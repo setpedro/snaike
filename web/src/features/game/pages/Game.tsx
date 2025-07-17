@@ -25,7 +25,7 @@ export function Game() {
     return (
         <PageWrapper>
             <Header />
-            <div className="flex flex-col items-center w-full max-w-4xl">
+            <div className="flex flex-col items-center w-full max-w-4xl sm:mt-8">
                 <div className="rounded-2xl shadow-2xl">
                     <GameHeader />
                     <GameCanvas />

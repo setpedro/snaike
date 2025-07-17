@@ -1,5 +1,6 @@
 import { Button } from "@/features/shared/components/Button";
 import { useGameContext } from "../context/GameProvider";
+import { Apple, ArrowLeft, LayoutGrid, Trophy } from "lucide-react";
 
 export function GameHeader() {
     const { gameMode, score, record, onBackToMenu } = useGameContext();
@@ -11,29 +12,33 @@ export function GameHeader() {
                 <Button
                     onClick={onBackToMenu}
                     size="custom"
-                    color="custom"
-                    className="bg-white bg-clip-text text-transparent hover:bg-red-600"
+                    color="ghost"
+                    className="rounded-md p-1 border-0"
                 >
-                    <span className="text-2xl">🔙</span>
+                    <ArrowLeft />
                 </Button>
             )}
 
             {gameMode === "menu" && (
                 <div className="flex items-center gap-3 text-white font-bold text-lg">
-                    <span className="text-2xl">📋</span>
+                    <LayoutGrid />
                     <span>Menu</span>
                 </div>
             )}
 
             {gameMode !== "menu" && (
                 <div className="flex items-center gap-3 text-white font-bold text-lg">
-                    <span className="text-2xl">🍎</span>
+                    <span className="text-2xl">
+                        <Apple className="text-emerald-400" />
+                    </span>
                     <span className="text-emerald-400">{score}</span>
                 </div>
             )}
 
             <div className="flex items-center gap-3 text-white font-bold text-lg">
-                <span className="text-2xl">🏆</span>
+                <span className="text-2xl">
+                    <Trophy className="text-yellow-400" />
+                </span>
                 <span className="text-yellow-400">{displayRecord}</span>
             </div>
         </div>

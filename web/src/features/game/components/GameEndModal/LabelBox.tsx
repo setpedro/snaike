@@ -31,7 +31,7 @@ export function LabelBox({
             <div className="flex justify-between items-center">
                 <div className="flex items-center gap-2">
                     <span className="text-xl sm:text-2xl">{icon}</span>
-                    <span className="text-sm sm:text-base text-white/80">
+                    <span className="text-sm sm:text-base font-medium">
                         {label}
                     </span>
                 </div>

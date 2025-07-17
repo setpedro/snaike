@@ -7,15 +7,26 @@ export function Header() {
     const navigate = useNavigate();
 
     return (
-        <div className="w-full flex justify-between items-center px-6 py-3 fixed top-0 left-0">
-            <div className="text-center text-3xl">
-                <button
-                    onClick={() => navigate("/")}
-                    className="hover:scale-[1.02] active:scale-[0.98]"
-                >
-                    🐍
-                </button>
-            </div>
+        <div className="w-full flex justify-between items-center px-8 py-4 fixed top-0 left-0">
+            <button
+                onClick={() => navigate("/")}
+                className="group relative w-10 h-10 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+                <img
+                    src="/logo.png"
+                    alt="Default"
+                    className="absolute inset-0 w-full h-full object-contain transition-opacity duration-200 group-hover:opacity-0 rounded-md"
+                />
+
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <img
+                        src="/white-logo.png"
+                        alt="Hover"
+                        className="w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-md ring-2 ring-white"
+                    />
+                </div>
+            </button>
+
             <div className="flex items-center gap-2">
                 <Button
                     onClick={() => navigate("/leaderboard")}
