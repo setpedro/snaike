@@ -1,7 +1,8 @@
 import { cn } from "@/features/shared/utils";
 import { Button } from "@/features/shared/components/Button";
 import { useGameContext } from "../../context/GameProvider";
-import { Bot, Gamepad2 } from "lucide-react";
+import { LuGamepad2 } from "react-icons/lu";
+import { GoDependabot } from "react-icons/go";
 
 export function MainMenu() {
     const { setGameMode, onRestart } = useGameContext();
@@ -32,7 +33,7 @@ export function MainMenu() {
                         color="primary"
                     >
                         <span className="emoji-jump">
-                            <Gamepad2 />
+                            <LuGamepad2 size={24} />
                         </span>{" "}
                         Solo Play
                     </Button>
@@ -45,7 +46,7 @@ export function MainMenu() {
                         title="Coming soon..."
                     >
                         <span>
-                            <Bot />
+                            <GoDependabot size={24} />
                         </span>
                         Versus AI (Coming Soon)
                     </Button>

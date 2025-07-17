@@ -9,6 +9,7 @@ type Props = {
 };
 
 export function ProviderButton({ provider, onClick }: Props) {
+    const Icon = provider.icon;
     return (
         <Button
             onClick={() => {
@@ -23,7 +24,7 @@ export function ProviderButton({ provider, onClick }: Props) {
                 "border border-white/10 hover:border-white/20"
             )}
         >
-            <span className="text-xl">{provider.icon}</span>
+            <Icon size={24} />
             <span className="capitalize">Continue with {provider.name}</span>
         </Button>
     );

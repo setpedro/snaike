@@ -1,6 +1,9 @@
 import { Button } from "@/features/shared/components/Button";
 import { useGameContext } from "../context/GameProvider";
-import { Apple, ArrowLeft, LayoutGrid, Trophy } from "lucide-react";
+import { FiGrid } from "react-icons/fi";
+import { TbApple } from "react-icons/tb";
+import { FaArrowLeft } from "react-icons/fa";
+import { GoTrophy } from "react-icons/go";
 
 export function GameHeader() {
     const { gameMode, score, record, onBackToMenu } = useGameContext();
@@ -13,15 +16,15 @@ export function GameHeader() {
                     onClick={onBackToMenu}
                     size="custom"
                     color="ghost"
-                    className="rounded-md p-1 border-0"
+                    className="rounded-md p-1.5 border-0"
                 >
-                    <ArrowLeft />
+                    <FaArrowLeft size={20} />
                 </Button>
             )}
 
             {gameMode === "menu" && (
                 <div className="flex items-center gap-3 text-white font-bold text-lg">
-                    <LayoutGrid />
+                    <FiGrid size={24} />
                     <span>Menu</span>
                 </div>
             )}
@@ -29,7 +32,10 @@ export function GameHeader() {
             {gameMode !== "menu" && (
                 <div className="flex items-center gap-3 text-white font-bold text-lg">
                     <span className="text-2xl">
-                        <Apple className="text-emerald-400" />
+                        <TbApple
+                            size={24}
+                            className="text-emerald-400 scale-115"
+                        />
                     </span>
                     <span className="text-emerald-400">{score}</span>
                 </div>
@@ -37,7 +43,7 @@ export function GameHeader() {
 
             <div className="flex items-center gap-3 text-white font-bold text-lg">
                 <span className="text-2xl">
-                    <Trophy className="text-yellow-400" />
+                    <GoTrophy size={24} className="text-yellow-400 scale-115" />
                 </span>
                 <span className="text-yellow-400">{displayRecord}</span>
             </div>

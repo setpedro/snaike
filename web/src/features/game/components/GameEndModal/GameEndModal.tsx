@@ -2,7 +2,9 @@ import { Button } from "@/features/shared/components/Button";
 import { LabelBox } from "./LabelBox";
 import { useGameContext } from "../../context/GameProvider";
 import { cn } from "@/features/shared/utils";
-import { Apple, Gamepad2, Trophy } from "lucide-react";
+import { TbApple } from "react-icons/tb";
+import { AiOutlineTrophy } from "react-icons/ai";
+import { LuGamepad2 } from "react-icons/lu";
 
 export function GameEndModal() {
     const { gameState, score, record, isNewRecord, onRestart } =
@@ -37,7 +39,7 @@ export function GameEndModal() {
 
                 <div className="flex flex-col items-center w-full gap-2 px-2 sm:px-0 mb-2">
                     <LabelBox
-                        icon={<Apple />}
+                        icon={<TbApple size={24} />}
                         label="Score:"
                         value={score}
                         gradient="bg-gradient-to-r from-emerald-500/40 to-blue-500/40"
@@ -45,7 +47,7 @@ export function GameEndModal() {
                     />
 
                     <LabelBox
-                        icon={<Trophy />}
+                        icon={<AiOutlineTrophy size={24} />}
                         label="Best:"
                         value={displayRecord}
                         badge={
@@ -70,7 +72,7 @@ export function GameEndModal() {
                         size="lg"
                         color="primary"
                     >
-                        <Gamepad2 /> Play Again
+                        <LuGamepad2 size={24} /> Play Again
                     </Button>
                 </div>
             </div>

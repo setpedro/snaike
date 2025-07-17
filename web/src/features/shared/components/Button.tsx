@@ -44,7 +44,7 @@ const classes = {
                 sharedScale
             ),
             link: "bg-transparent border-0 shadow-none hover:text-emerald-400",
-            custom: cn(sharedShadow, sharedScale),
+            custom: cn(sharedLayout, sharedShadow, sharedScale),
         },
     },
 } as const;
