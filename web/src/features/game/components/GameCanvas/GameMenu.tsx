@@ -1,12 +1,15 @@
 import { cn } from "@/features/shared/utils";
-import { GameViewMode } from "../../types";
 import { Button } from "@/features/shared/components/Button";
+import { useGameContext } from "../../context/GameProvider";
 
-type Props = {
-    onSelectMode: (mode: GameViewMode) => void;
-};
+export function MainMenu() {
+    const { setGameMode, onRestart } = useGameContext();
 
-export function MainMenu({ onSelectMode }: Props) {
+    const startGame = (mode: "solo" | "versus") => {
+        onRestart();
+        setGameMode(mode);
+    };
+
     return (
         <div className="absolute top-0 left-0 w-full h-full bg-black/70 backdrop-blur-sm text-white flex justify-center items-center z-10 sm:p-4">
             <div
@@ -22,7 +25,7 @@ export function MainMenu({ onSelectMode }: Props) {
 
                 <div className="flex flex-col w-full gap-2 px-2 sm:px-0">
                     <Button
-                        onClick={() => onSelectMode("solo")}
+                        onClick={() => startGame("solo")}
                         className="group"
                         size="lg"
                         color="primary"
@@ -31,7 +34,7 @@ export function MainMenu({ onSelectMode }: Props) {
                     </Button>
 
                     <Button
-                        onClick={() => onSelectMode("versus")}
+                        onClick={() => startGame("versus")}
                         size="lg"
                         color="secondary"
                         disabled={true}

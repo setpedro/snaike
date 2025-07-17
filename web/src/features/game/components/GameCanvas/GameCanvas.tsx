@@ -5,8 +5,7 @@ import { MainMenu } from "./GameMenu";
 import { useResizeCanvas } from "../../hooks/useResizeCanvas";
 
 export function GameCanvas() {
-    const { gameMode, gameState, gameContainerRef, setGameMode } =
-        useGameContext();
+    const { gameMode, gameState, gameContainerRef } = useGameContext();
     const aspectRatio =
         (GRID.cols * GRID.cellSizePx) / (GRID.rows * GRID.cellSizePx);
     const width = useResizeCanvas(aspectRatio);
@@ -24,7 +23,7 @@ export function GameCanvas() {
                     ref={gameContainerRef}
                     className="absolute inset-0 rounded-b-2xl overflow-hidden"
                 />
-                {gameMode === "menu" && <MainMenu onSelectMode={setGameMode} />}
+                {gameMode === "menu" && <MainMenu />}
                 {gameState !== "playing" && <GameEndModal />}
             </div>
         </div>

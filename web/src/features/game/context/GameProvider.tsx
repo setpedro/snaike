@@ -141,13 +141,13 @@ export function GameProvider({ children }: PropsWithChildren) {
                 score,
                 record,
                 isNewRecord,
+                gameContainerRef,
                 setGameMode,
                 setGameState,
                 setScore,
                 resetGame,
                 onRestart: handleRestart,
                 onBackToMenu: handleBackToMenu,
-                gameContainerRef,
             }}
         >
             {children}
