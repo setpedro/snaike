@@ -34,7 +34,11 @@ export function Header() {
                         <span>Profile</span>
                     </Button>
                 ) : (
-                    <Button onClick={() => navigate("/login")} size="sm">
+                    <Button
+                        onClick={() => navigate("/login")}
+                        size="sm"
+                        color="primary"
+                    >
                         Log In
                     </Button>
                 )}

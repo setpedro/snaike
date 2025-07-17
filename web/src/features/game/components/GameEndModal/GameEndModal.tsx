@@ -60,6 +60,8 @@ export function GameEndModal() {
                             onRestart();
                         }}
                         className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 border-emerald-400/20"
+                        size="lg"
+                        color="primary"
                     >
                         🎮 Play Again
                     </Button>

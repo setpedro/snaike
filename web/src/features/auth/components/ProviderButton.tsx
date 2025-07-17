@@ -20,8 +20,7 @@ export function ProviderButton({ provider, onClick }: Props) {
             className={cn(
                 "bg-gradient-to-r",
                 provider.color,
-                "border border-white/10 hover:border-white/20",
-                "hover:scale-[1.02] active:scale-[0.98]"
+                "border border-white/10 hover:border-white/20"
             )}
         >
             <span className="text-xl">{provider.icon}</span>

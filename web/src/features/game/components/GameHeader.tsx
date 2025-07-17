@@ -1,3 +1,4 @@
+import { Button } from "@/features/shared/components/Button";
 import { useGameContext } from "../context/GameProvider";
 
 export function GameHeader() {
@@ -7,19 +8,20 @@ export function GameHeader() {
     return (
         <div className="w-full flex justify-between items-center px-6 py-4 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-t-2xl border-2 border-white/10 backdrop-blur-sm shadow-2xl">
             {gameMode !== "menu" && (
-                <button
+                <Button
                     onClick={onBackToMenu}
-                    className="flex items-center gap-2 text-white/80 hover:text-white transition-colors duration-200 font-medium"
+                    size="custom"
+                    color="custom"
+                    className="bg-white bg-clip-text text-transparent hover:bg-red-600"
                 >
-                    <span className="text-lg">←</span>
-                    <span>Menu</span>
-                </button>
+                    <span className="text-2xl">🔙</span>
+                </Button>
             )}
 
             {gameMode === "menu" && (
                 <div className="flex items-center gap-3 text-white font-bold text-lg">
-                    <span className="text-2xl">🐍</span>
-                    <span className="text-emerald-400">Snake Game</span>
+                    <span className="text-2xl">📋</span>
+                    <span>Menu</span>
                 </div>
             )}
 
