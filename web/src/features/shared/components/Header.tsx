@@ -22,7 +22,7 @@ export function Header() {
                     <img
                         src="/white-logo.png"
                         alt="Hover"
-                        className="w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-md ring-2 ring-white"
+                        className="w-full h-full object-contain opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-md"
                     />
                 </div>
             </button>
