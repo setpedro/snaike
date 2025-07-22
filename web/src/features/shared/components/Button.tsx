@@ -13,7 +13,7 @@ const sharedScale = "hover:scale-[1.02] active:scale-[0.98]";
 const sharedShadow = "shadow-lg";
 
 const classes = {
-    base: "font-bold text-white transition-all duration-200 transform",
+    base: "font-bold text-white transition-all duration-200 transform hover:cursor-pointer",
     variants: {
         sizes: {
             sm: "px-3 py-1.5 sm:px-4 sm:py-2 rounded-md text-sm sm:text-base",
