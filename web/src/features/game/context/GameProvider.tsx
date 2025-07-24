@@ -36,10 +36,7 @@ const GameContext = createContext<GameContextType | null>(null);
 
 export function GameProvider({ children }: PropsWithChildren) {
     const { session } = useAuthContext();
-    // TODO: I can improve this. 
-    // the problem is the wrapper being conditionally applied in AuthProvider.tsx - this works but isn't consistent
-    const profileContext = session ? useProfileContext() : null;
-    const profile = profileContext?.profile;
+    const { profile } = useProfileContext();
 
     const [gameMode, setGameMode] = useState<GameViewMode>("menu");
     const [gameState, setGameState] = useState<GameState>("playing");

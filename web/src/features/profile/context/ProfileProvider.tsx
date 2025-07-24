@@ -52,6 +52,7 @@ export function ProfileProvider({ children }: PropsWithChildren) {
             return;
         }
 
+        setIsLoading(true);
         loadProfile(session);
     }, [session, loadProfile]);
 

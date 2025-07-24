@@ -51,7 +51,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     return (
         <AuthContext.Provider value={{ session, isLoading, signOut }}>
-            {session ? <ProfileProvider>{children}</ProfileProvider> : children}
+            <ProfileProvider>{children}</ProfileProvider>
         </AuthContext.Provider>
     );
 }
