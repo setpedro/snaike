@@ -9,17 +9,24 @@ import { usePendingSave } from "../store/pendingSave";
 import { AuthFooter } from "@/features/auth/components/AuthFooter";
 import { Header } from "@/features/shared/components/Header";
 import { PageWrapper } from "@/features/shared/components/PageWrapper";
+import { GameResult } from "../types";
+import { usePlatform } from "@/features/shared/hooks/useIsMobile";
 
 export function Game() {
     const { session } = useAuthContext();
     const { gameMode, gameState, score, record } = useGameContext();
+    const platform = usePlatform();
 
     const [isFirstGameEnd, setIsFirstGameEnd] = useState(!Boolean(session));
 
     const handleSignIn = () => {
-        usePendingSave.setGameState(gameState);
         usePendingSave.setGameMode(gameMode);
         usePendingSave.setScore(score);
+        usePendingSave.setResult(gameState as GameResult);
+        usePendingSave.setDuration(0);
+        usePendingSave.setPlatform(platform);
+        usePendingSave.setDeathCause(null);
+        usePendingSave.setReplayData(null);
     };
 
     return (

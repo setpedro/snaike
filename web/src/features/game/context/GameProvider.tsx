@@ -7,7 +7,13 @@ import {
     RefObject,
     useCallback,
 } from "react";
-import type { GameViewMode, GameState, GameMode } from "../types";
+import type {
+    GameViewMode,
+    GameState,
+    GameMode,
+    GameData,
+    GameResult,
+} from "../types";
 import { usePhaserGame } from "../hooks/usePhaserGame";
 import { useAuthContext } from "../../auth/context/AuthProvider";
 import { saveGame } from "../services/saveGame";
@@ -16,6 +22,7 @@ import { usePendingSave } from "../store/pendingSave";
 import { Session } from "@supabase/supabase-js";
 import { updateProfile } from "@/features/profile/services/updateProfile";
 import { useProfileContext } from "@/features/profile/context/ProfileProvider";
+import { useIsMobile, usePlatform } from "@/features/shared/hooks/useIsMobile";
 
 type GameContextType = {
     gameMode: GameViewMode;
@@ -37,6 +44,7 @@ const GameContext = createContext<GameContextType | null>(null);
 export function GameProvider({ children }: PropsWithChildren) {
     const { session } = useAuthContext();
     const { profile } = useProfileContext();
+    const platform = usePlatform();
 
     const [gameMode, setGameMode] = useState<GameViewMode>("menu");
     const [gameState, setGameState] = useState<GameState>("playing");
@@ -65,16 +73,28 @@ export function GameProvider({ children }: PropsWithChildren) {
     const handlePendingSave = useCallback(async (session: Session) => {
         const pendingGameMode = usePendingSave.getGameMode();
         const pendingScore = usePendingSave.getScore();
+        const pendingResult = usePendingSave.getResult();
+        const pendingDuration = usePendingSave.getDuration();
+        const pendingPlatform = usePendingSave.getPlatform();
+        const pendingDeathCause = usePendingSave.getDeathCause();
+        const pendingReplayData = usePendingSave.getReplayData();
 
         if (pendingScore === 0) {
             return;
         }
 
-        await saveGame(
-            session.user.id,
-            pendingGameMode as GameMode,
-            pendingScore
-        );
+        const game: GameData = {
+            userId: session.user.id,
+            gameMode: pendingGameMode as GameMode,
+            score: pendingScore,
+            result: pendingResult,
+            duration: pendingDuration,
+            platform: pendingPlatform,
+            deathCause: pendingDeathCause,
+            replayData: pendingReplayData,
+        };
+
+        await saveGame(game);
         usePendingSave.reset();
 
         const fetchedRecord = await getRecord(session.user.id);
@@ -113,7 +133,18 @@ export function GameProvider({ children }: PropsWithChildren) {
         }
 
         if (session) {
-            saveGame(session.user.id, gameMode, score);
+            const game: GameData = {
+                userId: session.user.id,
+                gameMode: gameMode as GameMode,
+                score,
+                result: gameState as GameResult,
+                duration: 0,
+                platform,
+                deathCause: null,
+                replayData: null,
+            };
+
+            saveGame(game);
             updateProfile({ games_played: (profile?.games_played ?? 0) + 1 });
         }
 

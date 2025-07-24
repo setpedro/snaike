@@ -1,3 +1,4 @@
+import { Platform } from "@/features/game/types";
 import { useState, useEffect } from "react";
 
 export function useIsMobile() {
@@ -25,3 +26,8 @@ export function useIsMobile() {
 
     return isMobile;
 }
+
+export const usePlatform = (): Platform => {
+    const isMobile = useIsMobile();
+    return isMobile ? "mobile" : "desktop";
+};

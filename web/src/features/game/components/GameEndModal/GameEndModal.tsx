@@ -14,7 +14,7 @@ export function GameEndModal() {
 
     const getTitle = () => {
         switch (gameState) {
-            case "over":
+            case "lose":
                 return "Game Over!";
             case "win":
                 return "Victory!";
