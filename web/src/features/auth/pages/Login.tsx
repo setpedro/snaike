@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { providers } from "../consts";
 import { OrSeparator } from "@/features/shared/components/OrSeparator";
 import { Button } from "@/features/shared/components/Button";
-import { ProviderButton } from "../components/Login/ProviderButton";
+import { ProviderButton } from "../components/ProviderButton";
 import { Header } from "@/features/shared/components/Header";
 import { PageWrapper } from "@/features/shared/components/PageWrapper";
 

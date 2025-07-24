@@ -3,8 +3,7 @@ import { Game } from "./features/game/pages/Game";
 import { Login } from "./features/auth/pages/Login";
 import { useAuthContext } from "./features/auth/context/AuthProvider";
 import { GameProvider } from "./features/game/context/GameProvider";
-import { Header } from "./features/shared/components/Header";
-import { Profile } from "./features/auth/pages/Profile";
+import { Profile } from "./features/profile/pages/Profile";
 import { Leaderboard } from "./features/leaderboard/pages/Leaderboard";
 
 export function App() {

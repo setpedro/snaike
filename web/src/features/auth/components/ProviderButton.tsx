@@ -1,7 +1,7 @@
 import { Button } from "@/features/shared/components/Button";
-import { OAuthProvider } from "../../consts";
+import { OAuthProvider } from "../consts";
 import { cn } from "@/features/shared/utils";
-import { authWithOAuth } from "../../services/authWithOAuth";
+import { authWithOAuth } from "../services/authWithOAuth";
 
 type Props = {
     provider: OAuthProvider;
