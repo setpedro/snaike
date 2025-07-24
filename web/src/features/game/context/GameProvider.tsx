@@ -12,9 +12,10 @@ import { usePhaserGame } from "../hooks/usePhaserGame";
 import { useAuthContext } from "../../auth/context/AuthProvider";
 import { saveGame } from "../services/saveGame";
 import { getRecord } from "../services/getRecord";
-import { saveRecord } from "../services/saveRecord";
 import { usePendingSave } from "../store/pendingSave";
 import { Session } from "@supabase/supabase-js";
+import { updateProfile } from "@/features/profile/services/updateProfile";
+import { useProfileContext } from "@/features/profile/context/ProfileProvider";
 
 type GameContextType = {
     gameMode: GameViewMode;
@@ -35,6 +36,10 @@ const GameContext = createContext<GameContextType | null>(null);
 
 export function GameProvider({ children }: PropsWithChildren) {
     const { session } = useAuthContext();
+    // TODO: I can improve this. 
+    // the problem is the wrapper being conditionally applied in AuthProvider.tsx - this works but isn't consistent
+    const profileContext = session ? useProfileContext() : null;
+    const profile = profileContext?.profile;
 
     const [gameMode, setGameMode] = useState<GameViewMode>("menu");
     const [gameState, setGameState] = useState<GameState>("playing");
@@ -43,9 +48,10 @@ export function GameProvider({ children }: PropsWithChildren) {
     const [isNewRecord, setIsNewRecord] = useState(false);
     const [isRecordLoaded, setIsRecordLoaded] = useState(false);
 
-    const fetchRecord = useCallback(async (session: Session) => {
-        const fetchedRecord = await getRecord(session.user.id);
-        setRecord(fetchedRecord);
+    // TODO: record state will be abstracted to ProfileContext since it exists.
+    const loadRecord = useCallback(async (session: Session) => {
+        const _record = await getRecord(session.user.id);
+        setRecord(_record);
         setIsRecordLoaded(true);
     }, []);
 
@@ -56,8 +62,8 @@ export function GameProvider({ children }: PropsWithChildren) {
             return;
         }
 
-        fetchRecord(session);
-    }, [session, fetchRecord]);
+        loadRecord(session);
+    }, [session, loadRecord]);
 
     const handlePendingSave = useCallback(async (session: Session) => {
         const pendingGameMode = usePendingSave.getGameMode();
@@ -80,7 +86,14 @@ export function GameProvider({ children }: PropsWithChildren) {
         const isNewRecord = pendingScore > fetchedRecord;
 
         if (isNewRecord) {
-            await saveRecord(session.user.id, pendingScore);
+            await updateProfile({
+                record: pendingScore,
+                display_name:
+                    session.user.user_metadata.user_name ||
+                    session.user.user_metadata.full_name ||
+                    "Unknown Player",
+                games_played: 1,
+            });
             setRecord(pendingScore);
         } else {
             setRecord(fetchedRecord);
@@ -104,12 +117,15 @@ export function GameProvider({ children }: PropsWithChildren) {
 
         if (session) {
             saveGame(session.user.id, gameMode, score);
+            updateProfile({ games_played: (profile?.games_played ?? 0) + 1 });
         }
 
         // TODO: abstract to function
         if (score > record) {
             if (session) {
-                saveRecord(session.user.id, score);
+                updateProfile({
+                    record: score,
+                });
             }
             setRecord(score);
             setIsNewRecord(true);

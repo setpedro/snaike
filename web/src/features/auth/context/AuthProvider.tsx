@@ -7,6 +7,7 @@ import {
 } from "react";
 import { Session } from "@supabase/supabase-js";
 import { supabase } from "@/features/auth/services/supabaseClient";
+import { ProfileProvider } from "@/features/profile/context/ProfileProvider";
 
 type AuthContextType = {
     session: Session | null;
@@ -50,14 +51,15 @@ export function AuthProvider({ children }: PropsWithChildren) {
 
     return (
         <AuthContext.Provider value={{ session, isLoading, signOut }}>
-            {children}
+            {session ? <ProfileProvider>{children}</ProfileProvider> : children}
         </AuthContext.Provider>
     );
 }
 
 export function useAuthContext() {
     const ctx = useContext(AuthContext);
-    if (!ctx)
+    if (!ctx) {
         throw new Error("useAuthContext must be used within AuthProvider");
+    }
     return ctx;
 }

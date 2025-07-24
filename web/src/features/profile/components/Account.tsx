@@ -3,13 +3,16 @@ import { Button } from "@/features/shared/components/Button";
 import { FiEdit3, FiCheck, FiX, FiLogOut } from "react-icons/fi";
 import { useAuthContext } from "@/features/auth/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { useProfileContext } from "../context/ProfileProvider";
 
 export function Account() {
     const { signOut } = useAuthContext();
     const navigate = useNavigate();
 
-    let displayName = "user123456789";
-    const onDisplayNameUpdate = async (name: string) => {};
+    const { profile, updateDisplayName } = useProfileContext();
+
+    const displayName =
+        profile?.display_name !== "" ? profile?.display_name : "from_metadata";
 
     const [isEditing, setIsEditing] = useState(false);
     const [newDisplayName, setNewDisplayName] = useState(displayName);
@@ -18,6 +21,11 @@ export function Account() {
     const [settingsOpen, setSettingsOpen] = useState(false);
 
     const handleSave = async () => {
+        // TODO: please.
+        if (!newDisplayName) {
+            return;
+        }
+
         if (!newDisplayName.trim()) {
             setError("Display name cannot be empty");
             return;
@@ -32,7 +40,7 @@ export function Account() {
         setError(null);
 
         try {
-            await onDisplayNameUpdate(newDisplayName.trim());
+            await updateDisplayName(newDisplayName);
             setIsEditing(false);
         } catch (err) {
             setError(

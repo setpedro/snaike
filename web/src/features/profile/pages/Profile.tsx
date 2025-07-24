@@ -1,21 +1,15 @@
 import { Header } from "@/features/shared/components/Header";
 import { PageWrapper } from "@/features/shared/components/PageWrapper";
-import { Button } from "@/features/shared/components/Button";
-import { useAuthContext } from "@/features/auth/context/AuthProvider";
+import { Account } from "../components/Account";
 
 export function Profile() {
-    const { signOut } = useAuthContext();
     return (
         <PageWrapper>
             <Header />
 
-            <Button
-                onClick={signOut}
-                color="ghost"
-                className="fixed bottom-0 right-0"
-            >
-                sign out
-            </Button>
+            <div className="flex flex-col gap-4 max-w-lg mx-auto w-full px-4 mt-8">
+                <Account />
+            </div>
         </PageWrapper>
     );
 }
