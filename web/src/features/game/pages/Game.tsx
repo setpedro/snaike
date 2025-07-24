@@ -4,9 +4,9 @@ import { GameCanvas } from "../components/GameCanvas";
 import { GameControls } from "../components/GameControls";
 import { useGameContext } from "../context/GameProvider";
 import { useAuthContext } from "@/features/auth/context/AuthProvider";
-import { AuthModal } from "../../auth/components/AuthModal";
+import { AuthModal } from "../../auth/components/Login/AuthModal";
 import { usePendingSave } from "../store/pendingSave";
-import { AuthFooter } from "@/features/auth/components/AuthFooter";
+import { AuthFooter } from "@/features/auth/components/Login/AuthFooter";
 import { Header } from "@/features/shared/components/Header";
 import { PageWrapper } from "@/features/shared/components/PageWrapper";
 
