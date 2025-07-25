@@ -22,7 +22,7 @@ import { usePendingSave } from "../store/pendingSave";
 import { Session } from "@supabase/supabase-js";
 import { updateProfile } from "@/features/profile/services/updateProfile";
 import { useProfileContext } from "@/features/profile/context/ProfileProvider";
-import { useIsMobile, usePlatform } from "@/features/shared/hooks/useIsMobile";
+import { usePlatform } from "@/features/shared/hooks/useIsMobile";
 
 type GameContextType = {
     gameMode: GameViewMode;

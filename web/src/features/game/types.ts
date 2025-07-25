@@ -18,16 +18,3 @@ export type GameData = {
     duration: number;
     replayData: any;
 };
-
-function toSnakeCase(gameData: GameData) {
-    return {
-        user_id: gameData.userId,
-        game_mode: gameData.gameMode,
-        score: gameData.score,
-        platform: gameData.platform,
-        result: gameData.result,
-        death_cause: gameData.deathCause,
-        duration: gameData.duration,
-        replay_data: gameData.replayData,
-    };
-}

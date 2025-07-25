@@ -10,7 +10,7 @@ import { Profile } from "../types";
 import { updateProfile } from "../services/updateProfile";
 import { getProfile } from "../services/getProfile";
 import { useAuthContext } from "@/features/auth/context/AuthProvider";
-import { Session, User } from "@supabase/supabase-js";
+import { Session } from "@supabase/supabase-js";
 
 type ProfileContextType = {
     profile: Profile | null;
