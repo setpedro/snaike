@@ -31,7 +31,9 @@ impl VersusGameState {
     }
 
     #[wasm_bindgen]
-    pub fn update(&mut self, delta_time: f64) {
+    pub fn update(&mut self, delta_time: f64, current_time: f64) {
+        self.common.check_and_start_timer(current_time);
+
         self.common.human.update(delta_time);
         self.ai.update(delta_time, self.common.food);
 
@@ -79,7 +81,7 @@ impl VersusGameState {
                     Winner::None => {}
                 }
 
-                self.common.handle_human_collision(collision);
+                self.common.handle_human_collision(collision, current_time);
                 return;
             }
         }

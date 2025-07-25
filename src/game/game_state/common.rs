@@ -18,6 +18,7 @@ pub struct GameStateCommon {
     pub(crate) human: HumanSnake,
     pub(crate) food: (i32, i32),
     occupied_grid: [[bool; GRID_ROWS as usize]; GRID_COLS as usize],
+    game_start_time: Option<f64>,
 }
 
 #[wasm_bindgen]
@@ -31,7 +32,18 @@ impl GameStateCommon {
             human,
             food: (0, 0),
             occupied_grid: [[false; GRID_ROWS as usize]; GRID_COLS as usize],
+            game_start_time: None,
         }
+    }
+
+    pub(crate) fn check_and_start_timer(&mut self, current_time: f64) {
+        if self.game_start_time.is_none() && self.human.core.direction != (0, 0) {
+            self.game_start_time = Some(current_time);
+        }
+    }
+
+    pub(crate) fn get_game_duration(&self, current_time: f64) -> Option<f64> {
+        self.game_start_time.map(|start| current_time - start)
     }
 
     fn update_grid(&mut self, ai: Option<&AISnake>) {
@@ -56,9 +68,12 @@ impl GameStateCommon {
         }
     }
 
-    pub(crate) fn handle_human_collision(&mut self, collision: Collision) {
+    pub(crate) fn handle_human_collision(&mut self, collision: Collision, current_time: f64) {
         match collision {
-            Collision::Wall => game_end(GameEndCause::Wall),
+            Collision::Wall => {
+                let duration = self.get_game_duration(current_time);
+                game_end(GameEndCause::Wall)
+            }
             Collision::OwnBody => game_end(GameEndCause::SelfCollision),
             Collision::Food => {
                 self.human.core.grow();

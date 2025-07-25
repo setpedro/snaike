@@ -24,7 +24,9 @@ impl SoloGameState {
     }
 
     #[wasm_bindgen]
-    pub fn update(&mut self, delta_time: f64) {
+    pub fn update(&mut self, delta_time: f64, current_time: f64) {
+        self.common.check_and_start_timer(current_time);
+
         self.common.human.update(delta_time);
 
         let human_head_position = self.common.human.core.get_head_pixel_position();
@@ -47,7 +49,7 @@ impl SoloGameState {
                     game_end(GameEndCause::Filled);
                 }
 
-                self.common.handle_human_collision(collision);
+                self.common.handle_human_collision(collision, current_time);
                 return;
             }
         }

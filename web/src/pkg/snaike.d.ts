@@ -52,7 +52,7 @@ export class SoloGameState {
   get_human_snake_body_positions(): Float64Array;
   set_input_key(key: string, is_pressed: boolean): void;
   constructor();
-  update(delta_time: number): void;
+  update(delta_time: number, current_time: number): void;
   readonly food: Int32Array;
 }
 export class VersusGameState {
@@ -61,7 +61,7 @@ export class VersusGameState {
   get_human_snake_body_positions(): Float64Array;
   set_input_key(key: string, is_pressed: boolean): void;
   constructor();
-  update(delta_time: number): void;
+  update(delta_time: number, current_time: number): void;
   get_ai_snake_position(): Float64Array;
   get_ai_snake_body_positions(): Float64Array;
   readonly food: Int32Array;
@@ -97,7 +97,7 @@ export interface InitOutput {
   readonly sologamestate_get_human_snake_body_positions: (a: number) => [number, number];
   readonly sologamestate_set_input_key: (a: number, b: number, c: number, d: number) => void;
   readonly sologamestate_new: () => number;
-  readonly sologamestate_update: (a: number, b: number) => void;
+  readonly sologamestate_update: (a: number, b: number, c: number) => void;
   readonly __wbg_gridconstants_free: (a: number, b: number) => void;
   readonly __wbg_get_gridconstants_cols: (a: number) => number;
   readonly __wbg_get_gridconstants_rows: (a: number) => number;
@@ -109,7 +109,7 @@ export interface InitOutput {
   readonly versusgamestate_get_human_snake_body_positions: (a: number) => [number, number];
   readonly versusgamestate_set_input_key: (a: number, b: number, c: number, d: number) => void;
   readonly versusgamestate_new: () => number;
-  readonly versusgamestate_update: (a: number, b: number) => void;
+  readonly versusgamestate_update: (a: number, b: number, c: number) => void;
   readonly versusgamestate_get_ai_snake_position: (a: number) => [number, number];
   readonly versusgamestate_get_ai_snake_body_positions: (a: number) => [number, number];
   readonly __wbg_gamestatecommon_free: (a: number, b: number) => void;

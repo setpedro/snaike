@@ -502,9 +502,10 @@ export class SoloGameState {
     }
     /**
      * @param {number} delta_time
+     * @param {number} current_time
      */
-    update(delta_time) {
-        wasm.sologamestate_update(this.__wbg_ptr, delta_time);
+    update(delta_time, current_time) {
+        wasm.sologamestate_update(this.__wbg_ptr, delta_time, current_time);
     }
 }
 
@@ -569,9 +570,10 @@ export class VersusGameState {
     }
     /**
      * @param {number} delta_time
+     * @param {number} current_time
      */
-    update(delta_time) {
-        wasm.versusgamestate_update(this.__wbg_ptr, delta_time);
+    update(delta_time, current_time) {
+        wasm.versusgamestate_update(this.__wbg_ptr, delta_time, current_time);
     }
     /**
      * @returns {Float64Array}

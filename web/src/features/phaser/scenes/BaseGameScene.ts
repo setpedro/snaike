@@ -56,7 +56,7 @@ export abstract class BaseGameScene extends Phaser.Scene {
         const deltaTime = (time - this.lastTime) / 1000;
         this.lastTime = time;
 
-        this.getGameState().update(deltaTime);
+        this.getGameState().update(deltaTime, time);
         this.updateEntities();
     }
 

@@ -17,7 +17,7 @@ const getDefaultState = (): PendingSave => ({
     score: 0,
     platform: "desktop",
     result: "lose",
-    endCause: "wall",
+    endCause: null,
     duration: 0,
     replayData: null,
 });
