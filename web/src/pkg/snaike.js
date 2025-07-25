@@ -670,14 +670,8 @@ function __wbg_get_imports() {
         const ret = arg0.node;
         return ret;
     };
-    imports.wbg.__wbg_onGameDraw_c2e42a52d7494b0b = function() {
-        onGameDraw();
-    };
-    imports.wbg.__wbg_onGameOver_ec3f3a4563e7e372 = function() {
-        onGameOver();
-    };
-    imports.wbg.__wbg_onGameWin_41b5ced9854110be = function() {
-        onGameWin();
+    imports.wbg.__wbg_onGameEnd_6ebcb05a6801efb5 = function(arg0, arg1) {
+        onGameEnd(getStringFromWasm0(arg0, arg1));
     };
     imports.wbg.__wbg_onScoreUpdate_d23818de21c69b0a = function(arg0) {
         onScoreUpdate(arg0);

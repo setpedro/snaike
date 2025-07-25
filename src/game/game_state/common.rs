@@ -1,9 +1,9 @@
 use crate::{
     game::{
         constants::{CELL_SIZE_PX, GRID_COLS, GRID_ROWS},
-        enums::Collision,
+        enums::{Collision, GameEndCause, Winner},
         game_state::{
-            callbacks::{on_game_over, on_score_update},
+            callbacks::{game_end, on_score_update},
             utils::is_out_of_bounds,
         },
         snake::ai::ai::AISnake,
@@ -58,7 +58,8 @@ impl GameStateCommon {
 
     pub(crate) fn handle_human_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::Wall | Collision::OwnBody => on_game_over(),
+            Collision::Wall => game_end(GameEndCause::Wall),
+            Collision::OwnBody => game_end(GameEndCause::SelfCollision),
             Collision::Food => {
                 self.human.core.grow();
                 self.regenerate_food(None);
@@ -108,7 +109,7 @@ impl GameStateCommon {
         }
     }
 
-    pub(crate) fn is_win(&self, ai: Option<&AISnake>) -> bool {
+    pub(crate) fn check_winner(&self, ai: Option<&AISnake>) -> Winner {
         let total_cells = (GRID_COLS * GRID_ROWS) as usize;
         let human_snake_cells = (self.human.core.get_body_positions().len() / 2) + 1;
 
@@ -120,7 +121,22 @@ impl GameStateCommon {
 
         let snake_cells = human_snake_cells + ai_snake_cells;
 
-        snake_cells >= total_cells
+        if snake_cells < total_cells {
+            return Winner::None;
+        }
+
+        match ai {
+            None => Winner::Human,
+            Some(_) => {
+                if human_snake_cells > ai_snake_cells {
+                    Winner::Human
+                } else if ai_snake_cells > human_snake_cells {
+                    Winner::Ai
+                } else {
+                    Winner::Draw
+                }
+            }
+        }
     }
 
     pub fn food(&self) -> Vec<i32> {

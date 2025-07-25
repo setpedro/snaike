@@ -76,6 +76,9 @@ export interface InitOutput {
   readonly __wbg_set_inputstate_pressed: (a: number, b: number) => void;
   readonly inputstate_new: () => number;
   readonly inputstate_set_key: (a: number, b: number, c: number, d: number) => void;
+  readonly __wbg_humansnake_free: (a: number, b: number) => void;
+  readonly humansnake_new: () => number;
+  readonly humansnake_update: (a: number, b: number) => void;
   readonly __wbg_snakecore_free: (a: number, b: number) => void;
   readonly __wbg_get_snakecore_grow_counter: (a: number) => number;
   readonly __wbg_set_snakecore_grow_counter: (a: number, b: number) => void;
@@ -88,9 +91,6 @@ export interface InitOutput {
   readonly snakecore_get_head_pixel_position: (a: number) => [number, number];
   readonly snakecore_check_self_collision: (a: number) => number;
   readonly snakecore_direction: (a: number) => [number, number];
-  readonly __wbg_humansnake_free: (a: number, b: number) => void;
-  readonly humansnake_new: () => number;
-  readonly humansnake_update: (a: number, b: number) => void;
   readonly __wbg_sologamestate_free: (a: number, b: number) => void;
   readonly sologamestate_food: (a: number) => [number, number];
   readonly sologamestate_get_human_snake_position: (a: number) => [number, number];

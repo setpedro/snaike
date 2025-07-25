@@ -13,11 +13,11 @@ export async function saveGame(gameData: GameData) {
 function toSnakeCase(gameData: GameData) {
     return {
         user_id: gameData.userId,
-        game_mode: gameData.gameMode,
+        game_mode: gameData.mode,
         score: gameData.score,
         platform: gameData.platform,
         result: gameData.result,
-        death_cause: gameData.deathCause,
+        game_end_cause: gameData.endCause,
         duration: gameData.duration,
         replay_data: gameData.replayData,
     };

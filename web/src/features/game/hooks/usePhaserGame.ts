@@ -3,12 +3,13 @@ import Phaser from "phaser";
 import { GRID } from "@/features/shared/consts";
 import GameSceneSolo from "@/features/phaser/scenes/GameSceneSolo";
 import GameSceneVersus from "@/features/phaser/scenes/GameSceneVersus";
-import { GameState, GameViewMode } from "../types";
+import { GameEndCause, GameResult, GameState, GameViewMode } from "../types";
 
 type Props = {
     gameMode: GameViewMode;
     setGameMode: (mode: GameViewMode) => void;
     setGameState: (state: GameState) => void;
+    setGameEndCause: (cause: GameEndCause) => void;
     setScore: (score: number) => void;
     resetGame: () => void;
 };
@@ -17,6 +18,7 @@ export function usePhaserGame({
     gameMode,
     setGameMode,
     setGameState,
+    setGameEndCause,
     setScore,
     resetGame,
 }: Props) {
@@ -52,17 +54,27 @@ export function usePhaserGame({
                 setScore(newScore);
             };
 
-            window.onGameOver = () => {
-                scene.handleEndGameFromWasm();
-                setGameState("lose");
+            const gameEndResultMap: Record<
+                Exclude<GameEndCause, null>,
+                GameResult
+            > = {
+                wall: "lose",
+                self: "lose",
+                filled: "win",
+                aiHitWall: "win",
+                aiHitSelf: "win",
+                aiFilled: "lose",
+                humanHitAi: "lose",
+                aiHitHuman: "win",
+                headOnCollision: "draw",
+                bothFilled: "draw",
             };
-            window.onGameWin = () => {
+
+            window.onGameEnd = (cause: GameEndCause) => {
                 scene.handleEndGameFromWasm();
-                setGameState("win");
-            };
-            window.onGameDraw = () => {
-                scene.handleEndGameFromWasm();
-                setGameState("draw");
+
+                setGameEndCause(cause);
+                setGameState(gameEndResultMap[cause!]);
             };
         });
 

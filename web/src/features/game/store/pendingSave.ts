@@ -1,13 +1,13 @@
 import { create, useStore } from "zustand";
 import { persist } from "zustand/middleware";
-import { DeathCause, GameResult, GameViewMode, Platform } from "../types";
+import { GameEndCause, GameResult, GameViewMode, Platform } from "../types";
 
 type PendingSave = {
     gameMode: GameViewMode;
     score: number;
     platform: Platform;
     result: GameResult;
-    deathCause: DeathCause; // TODO: get from wasm?
+    endCause: GameEndCause;
     duration: number; // TODO: get from wasm?
     replayData: any; // TODO
 };
@@ -17,7 +17,7 @@ const getDefaultState = (): PendingSave => ({
     score: 0,
     platform: "desktop",
     result: "lose",
-    deathCause: "wall",
+    endCause: "wall",
     duration: 0,
     replayData: null,
 });
@@ -51,8 +51,8 @@ usePendingSave.getResult = () => {
     return internalStore.getState().result;
 };
 
-usePendingSave.getDeathCause = () => {
-    return internalStore.getState().deathCause;
+usePendingSave.getGameEndCause = () => {
+    return internalStore.getState().endCause;
 };
 
 usePendingSave.getDuration = () => {
@@ -80,8 +80,8 @@ usePendingSave.setResult = (result: GameResult) => {
     internalStore.setState({ result });
 };
 
-usePendingSave.setDeathCause = (deathCause: DeathCause) => {
-    internalStore.setState({ deathCause });
+usePendingSave.setGameEndCause = (endCause: GameEndCause) => {
+    internalStore.setState({ endCause });
 };
 
 usePendingSave.setDuration = (duration: number) => {

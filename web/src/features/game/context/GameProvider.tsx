@@ -7,12 +7,13 @@ import {
     RefObject,
     useCallback,
 } from "react";
-import type {
-    GameViewMode,
-    GameState,
-    GameMode,
-    GameData,
-    GameResult,
+import {
+    type GameViewMode,
+    type GameState,
+    type GameMode,
+    type GameData,
+    type GameResult,
+    GameEndCause,
 } from "../types";
 import { usePhaserGame } from "../hooks/usePhaserGame";
 import { useAuthContext } from "../../auth/context/AuthProvider";
@@ -27,6 +28,7 @@ import { usePlatform } from "@/features/shared/hooks/useIsMobile";
 type GameContextType = {
     gameMode: GameViewMode;
     gameState: GameState;
+    gameEndCause: GameEndCause
     score: number;
     record: number;
     isNewRecord: boolean;
@@ -48,6 +50,7 @@ export function GameProvider({ children }: PropsWithChildren) {
 
     const [gameMode, setGameMode] = useState<GameViewMode>("menu");
     const [gameState, setGameState] = useState<GameState>("playing");
+    const [gameEndCause, setGameEndCause] = useState<GameEndCause>(null);
     const [score, setScore] = useState(0);
     const [record, setRecord] = useState(0);
     const [isNewRecord, setIsNewRecord] = useState(false);
@@ -76,7 +79,7 @@ export function GameProvider({ children }: PropsWithChildren) {
         const pendingResult = usePendingSave.getResult();
         const pendingDuration = usePendingSave.getDuration();
         const pendingPlatform = usePendingSave.getPlatform();
-        const pendingDeathCause = usePendingSave.getDeathCause();
+        const pendingEndCause = usePendingSave.getGameEndCause();
         const pendingReplayData = usePendingSave.getReplayData();
 
         if (pendingScore === 0) {
@@ -85,12 +88,12 @@ export function GameProvider({ children }: PropsWithChildren) {
 
         const game: GameData = {
             userId: session.user.id,
-            gameMode: pendingGameMode as GameMode,
+            mode: pendingGameMode as GameMode,
             score: pendingScore,
             result: pendingResult,
             duration: pendingDuration,
             platform: pendingPlatform,
-            deathCause: pendingDeathCause,
+            endCause: pendingEndCause,
             replayData: pendingReplayData,
         };
 
@@ -135,12 +138,12 @@ export function GameProvider({ children }: PropsWithChildren) {
         if (session) {
             const game: GameData = {
                 userId: session.user.id,
-                gameMode: gameMode as GameMode,
+                mode: gameMode as GameMode,
                 score,
                 result: gameState as GameResult,
                 duration: 0,
                 platform,
-                deathCause: null,
+                endCause: gameEndCause,
                 replayData: null,
             };
 
@@ -172,6 +175,7 @@ export function GameProvider({ children }: PropsWithChildren) {
             gameMode,
             setGameMode,
             setGameState,
+            setGameEndCause,
             setScore,
             resetGame,
         }
@@ -182,6 +186,7 @@ export function GameProvider({ children }: PropsWithChildren) {
             value={{
                 gameMode,
                 gameState,
+                gameEndCause,
                 score,
                 record,
                 isNewRecord,

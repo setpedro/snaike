@@ -1,12 +1,8 @@
 use crate::{
     game::{
         constants::CELL_SIZE_PX,
-        enums::Collision,
-        game_state::{
-            callbacks::{on_game_draw, on_game_over, on_game_win},
-            common::GameStateCommon,
-            utils::is_at_node,
-        },
+        enums::{Collision, GameEndCause, Winner},
+        game_state::{callbacks::game_end, common::GameStateCommon, utils::is_at_node},
         snake::ai::ai::AISnake,
     },
     grid_to_pixel_position,
@@ -76,10 +72,13 @@ impl VersusGameState {
                 .common
                 .check_static_collision(&self.common.human.core, human_head_pixel_position)
             {
-                if self.common.is_win(Some(&self.ai)) {
-                    on_game_win();
-                    return;
+                match self.common.check_winner(Some(&self.ai)) {
+                    Winner::Human => game_end(GameEndCause::Filled),
+                    Winner::Ai => game_end(GameEndCause::AiFilled),
+                    Winner::Draw => game_end(GameEndCause::BothFilled),
+                    Winner::None => {}
                 }
+
                 self.common.handle_human_collision(collision);
                 return;
             }
@@ -96,6 +95,13 @@ impl VersusGameState {
                 .common
                 .check_static_collision(&self.ai.core, ai_head_pixel_position)
             {
+                match self.common.check_winner(Some(&self.ai)) {
+                    Winner::Human => game_end(GameEndCause::Filled),
+                    Winner::Ai => game_end(GameEndCause::AiFilled),
+                    Winner::Draw => game_end(GameEndCause::BothFilled),
+                    Winner::None => {}
+                }
+
                 self.handle_ai_collision(collision);
                 return;
             }
@@ -104,7 +110,8 @@ impl VersusGameState {
 
     fn handle_ai_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::Wall | Collision::OwnBody => on_game_win(),
+            Collision::Wall => game_end(GameEndCause::AiHitWall),
+            Collision::OwnBody => game_end(GameEndCause::AiHitSelf),
             Collision::Food => {
                 self.ai.core.grow();
                 self.common.regenerate_food(Some(&self.ai));
@@ -115,11 +122,11 @@ impl VersusGameState {
 
     fn handle_snake_collision(&mut self, collision: Collision) {
         match collision {
-            Collision::HumanHeadToAiHead => on_game_over(),
-            Collision::AiHeadToHumanHead => on_game_win(),
-            Collision::HumanHeadToAiBody => on_game_over(),
-            Collision::AiHeadToHumanBody => on_game_win(),
-            Collision::HeadSwap => on_game_draw(),
+            Collision::HumanHeadToAiHead => game_end(GameEndCause::HumanHitAi),
+            Collision::AiHeadToHumanHead => game_end(GameEndCause::AiHitHuman),
+            Collision::HumanHeadToAiBody => game_end(GameEndCause::HumanHitAi),
+            Collision::AiHeadToHumanBody => game_end(GameEndCause::AiHitHuman),
+            Collision::HeadSwap => game_end(GameEndCause::HeadOnCollision),
             _ => unreachable!(),
         }
     }

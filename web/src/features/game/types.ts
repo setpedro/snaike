@@ -6,15 +6,24 @@ export type GameViewMode = GameMode | "menu";
 
 export type Platform = "mobile" | "desktop";
 
-export type DeathCause = "wall" | "self" | null;
+export type SoloEndCause = "wall" | "self" | "filled";
+export type VersusEndCause =
+    | "aiHitWall"
+    | "aiHitSelf"
+    | "aiFilled"
+    | "humanHitAi"
+    | "aiHitHuman"
+    | "headOnCollision"
+    | "bothFilled";
+export type GameEndCause = SoloEndCause | VersusEndCause | null;
 
 export type GameData = {
     userId: string;
-    gameMode: GameMode;
+    mode: GameMode;
     score: number;
     platform: Platform;
     result: GameResult;
-    deathCause: DeathCause;
+    endCause: GameEndCause;
     duration: number;
     replayData: any;
 };

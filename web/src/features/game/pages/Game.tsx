@@ -14,7 +14,7 @@ import { usePlatform } from "@/features/shared/hooks/useIsMobile";
 
 export function Game() {
     const { session } = useAuthContext();
-    const { gameMode, gameState, score, record } = useGameContext();
+    const { gameMode, gameState, gameEndCause, score, record } = useGameContext();
     const platform = usePlatform();
 
     const [isFirstGameEnd, setIsFirstGameEnd] = useState(!Boolean(session));
@@ -25,7 +25,7 @@ export function Game() {
         usePendingSave.setResult(gameState as GameResult);
         usePendingSave.setDuration(0);
         usePendingSave.setPlatform(platform);
-        usePendingSave.setDeathCause(null);
+        usePendingSave.setGameEndCause(gameEndCause);
         usePendingSave.setReplayData(null);
     };
 
