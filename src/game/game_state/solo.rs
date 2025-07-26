@@ -1,7 +1,7 @@
 use crate::game::constants::CELL_SIZE_PX;
 use crate::game::enums::{GameEndCause, Winner};
 use crate::{
-    game::game_state::{callbacks::game_end, common::GameStateCommon, utils::is_at_node},
+    game::game_state::{common::GameStateCommon, utils::is_at_node},
     grid_to_pixel_position,
 };
 
@@ -46,7 +46,8 @@ impl SoloGameState {
                 .check_static_collision(&self.common.human.core, human_head_pixel_position)
             {
                 if let Winner::Human = self.common.check_winner(None) {
-                    game_end(GameEndCause::Filled);
+                    self.common
+                        .game_end_with_timer(GameEndCause::Filled, current_time);
                 }
 
                 self.common.handle_human_collision(collision, current_time);

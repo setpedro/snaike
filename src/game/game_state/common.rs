@@ -18,7 +18,7 @@ pub struct GameStateCommon {
     pub(crate) human: HumanSnake,
     pub(crate) food: (i32, i32),
     occupied_grid: [[bool; GRID_ROWS as usize]; GRID_COLS as usize],
-    game_start_time: Option<f64>,
+    game_start_time: f64,
 }
 
 #[wasm_bindgen]
@@ -32,18 +32,23 @@ impl GameStateCommon {
             human,
             food: (0, 0),
             occupied_grid: [[false; GRID_ROWS as usize]; GRID_COLS as usize],
-            game_start_time: None,
+            game_start_time: 0.0,
         }
     }
 
     pub(crate) fn check_and_start_timer(&mut self, current_time: f64) {
-        if self.game_start_time.is_none() && self.human.core.direction != (0, 0) {
-            self.game_start_time = Some(current_time);
+        if self.game_start_time == 0.0 && self.human.core.direction != (0, 0) {
+            self.game_start_time = current_time;
         }
     }
 
-    pub(crate) fn get_game_duration(&self, current_time: f64) -> Option<f64> {
-        self.game_start_time.map(|start| current_time - start)
+    pub(crate) fn game_end_with_timer(&self, cause: GameEndCause, current_time: f64) {
+        let duration = self.get_game_duration(current_time);
+        game_end(cause, duration);
+    }
+
+    pub(crate) fn get_game_duration(&self, current_time: f64) -> i32 {
+        (current_time - self.game_start_time).round() as i32
     }
 
     fn update_grid(&mut self, ai: Option<&AISnake>) {
@@ -70,11 +75,10 @@ impl GameStateCommon {
 
     pub(crate) fn handle_human_collision(&mut self, collision: Collision, current_time: f64) {
         match collision {
-            Collision::Wall => {
-                let duration = self.get_game_duration(current_time);
-                game_end(GameEndCause::Wall)
+            Collision::Wall => self.game_end_with_timer(GameEndCause::Wall, current_time),
+            Collision::OwnBody => {
+                self.game_end_with_timer(GameEndCause::SelfCollision, current_time)
             }
-            Collision::OwnBody => game_end(GameEndCause::SelfCollision),
             Collision::Food => {
                 self.human.core.grow();
                 self.regenerate_food(None);

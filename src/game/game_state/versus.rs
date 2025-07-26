@@ -2,7 +2,7 @@ use crate::{
     game::{
         constants::CELL_SIZE_PX,
         enums::{Collision, GameEndCause, Winner},
-        game_state::{callbacks::game_end, common::GameStateCommon, utils::is_at_node},
+        game_state::{common::GameStateCommon, utils::is_at_node},
         snake::ai::ai::AISnake,
     },
     grid_to_pixel_position,
@@ -47,18 +47,18 @@ impl VersusGameState {
         if let Some(collision) =
             self.check_head_to_head_collision(human_head_pixel_position, ai_head_pixel_position)
         {
-            self.handle_snake_collision(collision);
+            self.handle_snake_collision(collision, current_time);
             return;
         }
 
         // Check body collisions continuously (but using grid positions)
         if let Some(collision) = self.check_human_ai_body_collision_grid() {
-            self.handle_snake_collision(collision);
+            self.handle_snake_collision(collision, current_time);
             return;
         }
 
         if let Some(collision) = self.check_ai_human_body_collision_grid() {
-            self.handle_snake_collision(collision);
+            self.handle_snake_collision(collision, current_time);
             return;
         }
 
@@ -75,9 +75,15 @@ impl VersusGameState {
                 .check_static_collision(&self.common.human.core, human_head_pixel_position)
             {
                 match self.common.check_winner(Some(&self.ai)) {
-                    Winner::Human => game_end(GameEndCause::Filled),
-                    Winner::Ai => game_end(GameEndCause::AiFilled),
-                    Winner::Draw => game_end(GameEndCause::BothFilled),
+                    Winner::Human => self
+                        .common
+                        .game_end_with_timer(GameEndCause::Filled, current_time),
+                    Winner::Ai => self
+                        .common
+                        .game_end_with_timer(GameEndCause::AiFilled, current_time),
+                    Winner::Draw => self
+                        .common
+                        .game_end_with_timer(GameEndCause::BothFilled, current_time),
                     Winner::None => {}
                 }
 
@@ -98,22 +104,32 @@ impl VersusGameState {
                 .check_static_collision(&self.ai.core, ai_head_pixel_position)
             {
                 match self.common.check_winner(Some(&self.ai)) {
-                    Winner::Human => game_end(GameEndCause::Filled),
-                    Winner::Ai => game_end(GameEndCause::AiFilled),
-                    Winner::Draw => game_end(GameEndCause::BothFilled),
+                    Winner::Human => self
+                        .common
+                        .game_end_with_timer(GameEndCause::Filled, current_time),
+                    Winner::Ai => self
+                        .common
+                        .game_end_with_timer(GameEndCause::AiFilled, current_time),
+                    Winner::Draw => self
+                        .common
+                        .game_end_with_timer(GameEndCause::BothFilled, current_time),
                     Winner::None => {}
                 }
 
-                self.handle_ai_collision(collision);
+                self.handle_ai_collision(collision, current_time);
                 return;
             }
         }
     }
 
-    fn handle_ai_collision(&mut self, collision: Collision) {
+    fn handle_ai_collision(&mut self, collision: Collision, current_time: f64) {
         match collision {
-            Collision::Wall => game_end(GameEndCause::AiHitWall),
-            Collision::OwnBody => game_end(GameEndCause::AiHitSelf),
+            Collision::Wall => self
+                .common
+                .game_end_with_timer(GameEndCause::AiHitWall, current_time),
+            Collision::OwnBody => self
+                .common
+                .game_end_with_timer(GameEndCause::AiHitSelf, current_time),
             Collision::Food => {
                 self.ai.core.grow();
                 self.common.regenerate_food(Some(&self.ai));
@@ -122,13 +138,23 @@ impl VersusGameState {
         }
     }
 
-    fn handle_snake_collision(&mut self, collision: Collision) {
+    fn handle_snake_collision(&mut self, collision: Collision, current_time: f64) {
         match collision {
-            Collision::HumanHeadToAiHead => game_end(GameEndCause::HumanHitAi),
-            Collision::AiHeadToHumanHead => game_end(GameEndCause::AiHitHuman),
-            Collision::HumanHeadToAiBody => game_end(GameEndCause::HumanHitAi),
-            Collision::AiHeadToHumanBody => game_end(GameEndCause::AiHitHuman),
-            Collision::HeadSwap => game_end(GameEndCause::HeadOnCollision),
+            Collision::HumanHeadToAiHead => self
+                .common
+                .game_end_with_timer(GameEndCause::HumanHitAi, current_time),
+            Collision::AiHeadToHumanHead => self
+                .common
+                .game_end_with_timer(GameEndCause::AiHitHuman, current_time),
+            Collision::HumanHeadToAiBody => self
+                .common
+                .game_end_with_timer(GameEndCause::HumanHitAi, current_time),
+            Collision::AiHeadToHumanBody => self
+                .common
+                .game_end_with_timer(GameEndCause::AiHitHuman, current_time),
+            Collision::HeadSwap => self
+                .common
+                .game_end_with_timer(GameEndCause::HeadOnCollision, current_time),
             _ => unreachable!(),
         }
     }

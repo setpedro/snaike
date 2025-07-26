@@ -10,6 +10,7 @@ type Props = {
     setGameMode: (mode: GameViewMode) => void;
     setGameState: (state: GameState) => void;
     setGameEndCause: (cause: GameEndCause) => void;
+    setGameDuration: (duration: number) => void;
     setScore: (score: number) => void;
     resetGame: () => void;
 };
@@ -19,6 +20,7 @@ export function usePhaserGame({
     setGameMode,
     setGameState,
     setGameEndCause,
+    setGameDuration,
     setScore,
     resetGame,
 }: Props) {
@@ -70,11 +72,12 @@ export function usePhaserGame({
                 bothFilled: "draw",
             };
 
-            window.onGameEnd = (cause: GameEndCause) => {
+            window.onGameEnd = (cause: GameEndCause, duration: number) => {
                 scene.handleEndGameFromWasm();
 
                 setGameEndCause(cause);
                 setGameState(gameEndResultMap[cause!]);
+                setGameDuration(duration)
             };
         });
 

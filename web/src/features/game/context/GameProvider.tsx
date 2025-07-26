@@ -28,7 +28,8 @@ import { usePlatform } from "@/features/shared/hooks/useIsMobile";
 type GameContextType = {
     gameMode: GameViewMode;
     gameState: GameState;
-    gameEndCause: GameEndCause
+    gameEndCause: GameEndCause;
+    gameDuration: number;
     score: number;
     record: number;
     isNewRecord: boolean;
@@ -51,6 +52,7 @@ export function GameProvider({ children }: PropsWithChildren) {
     const [gameMode, setGameMode] = useState<GameViewMode>("menu");
     const [gameState, setGameState] = useState<GameState>("playing");
     const [gameEndCause, setGameEndCause] = useState<GameEndCause>(null);
+    const [gameDuration, setGameDuration] = useState<number>(0);
     const [score, setScore] = useState(0);
     const [record, setRecord] = useState(0);
     const [isNewRecord, setIsNewRecord] = useState(false);
@@ -141,7 +143,7 @@ export function GameProvider({ children }: PropsWithChildren) {
                 mode: gameMode as GameMode,
                 score,
                 result: gameState as GameResult,
-                duration: 0,
+                duration: gameDuration,
                 platform,
                 endCause: gameEndCause,
                 replayData: null,
@@ -176,6 +178,7 @@ export function GameProvider({ children }: PropsWithChildren) {
             setGameMode,
             setGameState,
             setGameEndCause,
+            setGameDuration,
             setScore,
             resetGame,
         }
@@ -187,6 +190,7 @@ export function GameProvider({ children }: PropsWithChildren) {
                 gameMode,
                 gameState,
                 gameEndCause,
+                gameDuration,
                 score,
                 record,
                 isNewRecord,

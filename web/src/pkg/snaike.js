@@ -672,8 +672,8 @@ function __wbg_get_imports() {
         const ret = arg0.node;
         return ret;
     };
-    imports.wbg.__wbg_onGameEnd_6ebcb05a6801efb5 = function(arg0, arg1) {
-        onGameEnd(getStringFromWasm0(arg0, arg1));
+    imports.wbg.__wbg_onGameEnd_e040cf291416f279 = function(arg0, arg1, arg2) {
+        onGameEnd(getStringFromWasm0(arg0, arg1), arg2);
     };
     imports.wbg.__wbg_onScoreUpdate_d23818de21c69b0a = function(arg0) {
         onScoreUpdate(arg0);
