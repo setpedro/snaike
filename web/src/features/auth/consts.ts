@@ -1,7 +1,8 @@
 import type { Provider } from "@supabase/supabase-js";
 import { IconType } from "react-icons";
 import { FcGoogle } from "react-icons/fc";
-import { FaGithub, FaTwitter } from "react-icons/fa";
+import { FaGithub } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export type OAuthProvider = {
     name: Provider;
@@ -22,7 +23,7 @@ export const providers: readonly OAuthProvider[] = [
     },
     {
         name: "twitter",
-        icon: FaTwitter,
+        icon: FaXTwitter,
         color: "from-blue-500/20 to-cyan-500/20",
     },
 ] as const;
