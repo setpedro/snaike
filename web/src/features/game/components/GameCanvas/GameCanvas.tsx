@@ -1,7 +1,7 @@
 import { GRID } from "@/features/shared/consts";
 import { useGameContext } from "../../context/GameProvider";
 import { GameEndModal } from "../GameEndModal";
-import { MainMenu } from "./GameMenu";
+import { GameMenu } from "./GameMenu";
 import { useResizeCanvas } from "../../hooks/useResizeCanvas";
 
 export function GameCanvas() {
@@ -23,7 +23,7 @@ export function GameCanvas() {
                     ref={gameContainerRef}
                     className="absolute inset-0 rounded-b-2xl overflow-hidden"
                 />
-                {gameMode === "menu" && <MainMenu />}
+                {gameMode === "menu" && <GameMenu />}
                 {gameState !== "playing" && <GameEndModal />}
             </div>
         </div>

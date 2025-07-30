@@ -83,7 +83,7 @@ export function PodiumPlayer({ player, rank }: LeaderboardProps) {
                         <span className="text-white font-bold">
                             {player.highest_score}
                         </span>
-                        <span className="text-white/60 text-sm">/117</span>
+                        <span className="text-white/60 text-sm">/116</span>
                         <span className="text-white/60 text-sm">best</span>
                     </div>
                 )}

@@ -3,11 +3,12 @@ import { Button } from "@/features/shared/components/Button";
 import { useGameContext } from "../../context/GameProvider";
 import { LuGamepad2 } from "react-icons/lu";
 import { GoDependabot } from "react-icons/go";
+import { GameMode } from "../../types";
 
-export function MainMenu() {
+export function GameMenu() {
     const { setGameMode, onRestart } = useGameContext();
 
-    const startGame = (mode: "solo" | "versus") => {
+    const startGame = (mode: GameMode) => {
         onRestart();
         setGameMode(mode);
     };

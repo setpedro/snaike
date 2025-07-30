@@ -1,7 +1,7 @@
 import { Button } from "@/features/shared/components/Button";
 import { OAuthProvider } from "../consts";
 import { cn } from "@/features/shared/utils";
-import { authWithOAuth } from "../services/authWithOAuth";
+import { signInWithOAuth } from "../services/signInWithOAuth";
 
 type Props = {
     provider: OAuthProvider;
@@ -14,7 +14,7 @@ export function ProviderButton({ provider, onClick }: Props) {
         <Button
             onClick={() => {
                 onClick?.();
-                authWithOAuth(provider.name);
+                signInWithOAuth(provider.name);
             }}
             size="md"
             color="custom"

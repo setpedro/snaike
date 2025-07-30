@@ -85,7 +85,7 @@ export function ChampionCard({ player, rank }: LeaderboardProps) {
                                     <span className="text-white font-bold">
                                         {player.highest_score}
                                         <span className="text-white/70 font-normal">
-                                            /117
+                                            /116
                                         </span>
                                     </span>
                                     <span className="text-white/60 text-sm">
@@ -169,7 +169,7 @@ export function ChampionCard({ player, rank }: LeaderboardProps) {
                                     {player.highest_score}
                                 </span>
                                 <span className="text-white/60 text-sm">
-                                    /117
+                                    /116
                                 </span>
                                 <span className="text-white/60 text-sm">
                                     best
