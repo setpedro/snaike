@@ -1,28 +1,118 @@
-import { Header } from "@/features/shared/components/Header";
+import { useEffect, useState } from "react";
 import { PageWrapper } from "@/features/shared/components/PageWrapper";
-import { useNavigate } from "react-router-dom";
+import { Header } from "@/features/shared/components/Header";
+import { Button } from "@/features/shared/components/Button";
+import { GoTrophy, GoFlame } from "react-icons/go";
+import { Podium } from "../components/Podium";
+import { RegularPlayer } from "../components/RegularPlayer";
+import { ChampionCard } from "../components/ChampionCard";
+import { LeaderboardPlayer } from "../types";
+import { getLeaderboard } from "../services/getLeaderboard";
+import { cn } from "@/features/shared/utils";
 
 export function Leaderboard() {
-    const navigate = useNavigate();
+    const [players, setPlayers] = useState<LeaderboardPlayer[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const loadLeaderboard = async (isRefresh = false) => {
+        isRefresh ? setRefreshing(true) : setLoading(true);
+
+        const data = await getLeaderboard();
+        setPlayers(data);
+        setLoading(false);
+        setRefreshing(false);
+    };
+
+    useEffect(() => {
+        loadLeaderboard();
+    }, []);
+
+    const topThree = players.slice(0, 3);
+    const rest = players.slice(3);
 
     return (
         <PageWrapper>
             <Header />
-            <div className="relative flex flex-col justify-center items-center h-screen min-h-[70vh] text-white py-10">
-                <div className="flex flex-col items-center gap-4">
-                    <div className="text-lg sm:text-xl">
-                        Page under construction
-                    </div>
-                    <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-                </div>
+            <div
+                className={cn(
+                    rest.length && "mt-16",
+                    "w-full flex justify-center max-w-3xl"
+                )}
+            >
+                <div className="w-full p-4 sm:px-8 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-t-2xl border-2 border-white/10 backdrop-blur-sm shadow-2xl">
+                    <div className="flex flex-col items-center gap-8">
+                        {loading ? (
+                            <div className="flex justify-center py-20">
+                                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-emerald-400"></div>
+                            </div>
+                        ) : players.length === 0 ? (
+                            <div className="flex flex-col items-center gap-2 py-20">
+                                <GoTrophy className="text-white/30" size={64} />
+                                <p className="text-white/60 text-xl">
+                                    No champions yet
+                                </p>
+                                <p className="text-white/40">
+                                    Be the first to claim the throne!
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="w-full flex flex-col gap-8">
+                                <div className="flex flex-col items-center gap-4">
+                                    <Podium players={topThree} />
+                                    <p className="text-white/60 text-center">
+                                        The elite few who've mastered the game
+                                    </p>
 
-                <div
-                    onClick={() => navigate("/")}
-                    className="absolute bottom-10 flex flex-col items-center gap-1 px-4 py-2 border rounded-lg cursor-pointer hover:bg-white/10 hover:border-white/50 hover:scale-105 active:scale-95 transition-all duration-200 ease-in-out border-white/20 group"
-                >
-                    <p className="text-white/70 text-sm group-hover:text-white transition-colors">
-                        Return to main page
-                    </p>
+                                    <div className="md:hidden flex flex-col gap-4 w-full">
+                                        {topThree.map((p, i) => (
+                                            <ChampionCard
+                                                key={p.id}
+                                                player={p}
+                                                rank={(i + 1) as 1 | 2 | 3}
+                                            />
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {rest.length > 0 && (
+                                    <div className="w-full flex flex-col gap-4 max-w-4xl">
+                                        <div className="flex items-center justify-end">
+                                            <Button
+                                                onClick={() =>
+                                                    loadLeaderboard(true)
+                                                }
+                                                size="sm"
+                                                color="ghost"
+                                                disabled={refreshing}
+                                                className="border border-white/20"
+                                            >
+                                                <GoFlame
+                                                    size={24}
+                                                    className={cn(
+                                                        refreshing &&
+                                                            "animate-spin"
+                                                    )}
+                                                />
+                                            </Button>
+                                        </div>
+
+                                        <div className="max-h-96 overflow-y-auto">
+                                            <div className="flex flex-col gap-3">
+                                                {rest.map((player, i) => (
+                                                    <RegularPlayer
+                                                        key={player.id}
+                                                        player={player}
+                                                        rank={i + 4}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
         </PageWrapper>
