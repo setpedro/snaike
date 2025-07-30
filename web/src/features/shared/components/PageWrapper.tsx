@@ -10,7 +10,7 @@ export function PageWrapper({ children, className }: Props) {
     return (
         <div
             className={cn(
-                "flex justify-center items-center min-h-screen p-4 bg-gradient-default",
+                "h-screen flex flex-col items-center justify-center bg-gradient-default",
                 className
             )}
         >

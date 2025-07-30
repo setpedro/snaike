@@ -1,13 +1,20 @@
 import { useAuthContext } from "@/features/auth/context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { Button } from "./Button";
+import { WithClassName } from "../types";
+import { cn } from "../utils";
 
-export function Header() {
+export function Header({ className }: WithClassName) {
     const { session } = useAuthContext();
     const navigate = useNavigate();
 
     return (
-        <div className="w-full flex justify-between items-center px-8 py-4 fixed top-0 left-0">
+        <div
+            className={cn(
+                "w-full flex justify-between items-center px-8 py-4 fixed top-0 left-0",
+                className
+            )}
+        >
             <button
                 onClick={() => navigate("/")}
                 className="group relative w-10 h-10 transition-all hover:scale-[1.02] active:scale-[0.98] hover:cursor-pointer"

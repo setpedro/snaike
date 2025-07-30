@@ -33,14 +33,9 @@ export function Leaderboard() {
 
     return (
         <PageWrapper>
-            <Header />
-            <div
-                className={cn(
-                    rest.length && "mt-16",
-                    "w-full flex justify-center max-w-3xl"
-                )}
-            >
-                <div className="w-full p-4 sm:px-8 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-t-2xl border-2 border-white/10 backdrop-blur-sm shadow-2xl">
+            <Header className="relative" />
+            <div className="w-full flex-grow flex justify-center max-w-3xl px-8 mt-6">
+                <div className="w-full p-4 sm:px-8 bg-gradient-to-r from-emerald-500/20 to-blue-500/20 rounded-t-2xl border-2 border-b-0 border-white/10 backdrop-blur-sm shadow-2xl">
                     <div className="flex flex-col items-center gap-8">
                         {loading ? (
                             <div className="flex justify-center py-20">

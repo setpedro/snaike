@@ -7,7 +7,7 @@ export function Profile() {
         <PageWrapper>
             <Header />
 
-            <div className="flex flex-col gap-4 max-w-lg mx-auto w-full px-4 mt-8">
+            <div className="max-w-lg w-full px-8">
                 <Account />
             </div>
         </PageWrapper>
