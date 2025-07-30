@@ -5,15 +5,17 @@ import { useAuthContext } from "./features/auth/context/AuthProvider";
 import { GameProvider } from "./features/game/context/GameProvider";
 import { Profile } from "./features/profile/pages/Profile";
 import { Leaderboard } from "./features/leaderboard/pages/Leaderboard";
+import { PageWrapper } from "./features/shared/components/PageWrapper";
+import { Loading } from "./features/shared/components/Loading";
 
 export function App() {
     const { session, isLoading } = useAuthContext();
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-                <div className="text-white text-xl">Loading...</div>
-            </div>
+            <PageWrapper>
+                <Loading />
+            </PageWrapper>
         );
     }
 
