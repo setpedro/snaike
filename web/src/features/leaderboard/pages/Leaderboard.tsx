@@ -58,7 +58,7 @@ export function Leaderboard() {
                                 <div className="w-full flex flex-col gap-8">
                                     <div className="flex flex-col items-center gap-4">
                                         <Podium players={topThree} />
-                                        <p className="text-white/60 text-center">
+                                        <p className="text-white/70 text-center">
                                             The elite few who've mastered the
                                             game
                                         </p>

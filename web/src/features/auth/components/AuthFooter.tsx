@@ -6,7 +6,7 @@ export function AuthFooter() {
 
     return (
         <div className="fixed bottom-0 right-0 left-0 text-center py-3">
-            <div className="text-white/60 text-xs">
+            <div className="text-white/70 text-xs">
                 You're logged out,{" "}
                 <Button
                     onClick={() => navigate("/login")}

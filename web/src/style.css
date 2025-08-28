@@ -1,9 +1,12 @@
 @import "tailwindcss";
 
 :root {
-    --bg-start: #0f172a;
+    /* --bg-start: #0f172a;
     --bg-mid: #6b21a8;
-    --bg-end: #0f172a;
+    --bg-end: #0f172a; */
+    --bg-start: #0c0d0e;
+    --bg-mid: #29242c;
+    --bg-end: #0c0d0e;
 
     --bg-red-start: #7f1d1d;
     --bg-red-mid: #b91c1c;
