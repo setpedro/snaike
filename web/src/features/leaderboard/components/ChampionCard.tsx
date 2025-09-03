@@ -1,11 +1,12 @@
 import { GoClock, GoTrophy } from "react-icons/go";
 import { formatDuration, getProviderIcon } from "../utils";
 import { TbApple } from "react-icons/tb";
-import { LeaderboardProps } from "../types";
+import { ChampionCardProps } from "../types";
 import { cn } from "@/features/shared/utils";
 import { BG_GRADIENTS, TROPHY_COLORS } from "../consts";
+import { Avatar } from "./shared/Avatar";
 
-export function ChampionCard({ player, rank }: LeaderboardProps) {
+export function ChampionCard({ player, rank }: ChampionCardProps) {
     return (
         <div
             className={cn(
@@ -25,21 +26,11 @@ export function ChampionCard({ player, rank }: LeaderboardProps) {
                 </div>
 
                 <div className="flex gap-4 mt-1">
-                    {player.avatar_url ? (
-                        <img
-                            src={player.avatar_url}
-                            alt={player.username}
-                            className="w-16 h-16 rounded-full border-4 border-white/20"
-                        />
-                    ) : (
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center border-4 border-white/20">
-                            <span className="text-white font-bold text-xl">
-                                {player.username
-                                    ? player.username
-                                    : "Unknown user"}
-                            </span>
-                        </div>
-                    )}
+                    <Avatar
+                        avatarUrl={player.avatar_url}
+                        username={player.username}
+                        size="md"
+                    />
 
                     <div className="flex-1 min-w-0 flex flex-col justify-center gap-1">
                         <div className="text-white/70 text-sm">
@@ -109,21 +100,11 @@ export function ChampionCard({ player, rank }: LeaderboardProps) {
                 </div>
 
                 <div className="flex-shrink-0">
-                    {player.avatar_url ? (
-                        <img
-                            src={player.avatar_url}
-                            alt={player.username}
-                            className="w-16 h-16 rounded-full border-4 border-white/20"
-                        />
-                    ) : (
-                        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center border-4 border-white/20">
-                            <span className="text-white font-bold text-xl">
-                                {player.username
-                                    ? player.username
-                                    : "Unknown user"}
-                            </span>
-                        </div>
-                    )}
+                    <Avatar
+                        avatarUrl={player.avatar_url}
+                        username={player.username}
+                        size="md"
+                    />
                 </div>
 
                 <div className="flex flex-col gap-1 min-w-0">
