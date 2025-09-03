@@ -1,12 +1,11 @@
 import { GoTrophy, GoClock } from "react-icons/go";
 import { getProviderIcon, formatDuration } from "../utils";
-import { ChampionCardProps } from "../types";
+import { LeaderboardPlayer, LeaderboardProps } from "../types";
 import { cn } from "@/features/shared/utils";
 import { BG_GRADIENTS, TROPHY_COLORS } from "../consts";
 import { TbApple } from "react-icons/tb";
-import { Avatar } from "./shared/Avatar";
 
-export function PodiumPlayer({ player, rank }: ChampionCardProps) {
+export function PodiumPlayer({ player, rank }: LeaderboardProps) {
     const heights = { 1: "h-64", 2: "h-56", 3: "h-48" };
     const avatarSizes = { 1: "w-28 h-28", 2: "w-24 h-24", 3: "w-20 h-20" };
 
@@ -18,11 +17,27 @@ export function PodiumPlayer({ player, rank }: ChampionCardProps) {
             )}
         >
             <div className="relative">
-                <Avatar
-                    avatarUrl={player.avatar_url}
-                    username={player.username}
-                    className={cn(avatarSizes[rank], "shadow-lg")}
-                />
+                {player.avatar_url ? (
+                    <img
+                        src={player.avatar_url}
+                        alt={player.username}
+                        className={cn(
+                            avatarSizes[rank],
+                            "rounded-full border-4 border-white/20 shadow-lg"
+                        )}
+                    />
+                ) : (
+                    <div
+                        className={cn(
+                            avatarSizes[rank],
+                            "rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center border-4 border-white/20 shadow-lg"
+                        )}
+                    >
+                        <span className="text-white font-bold text-2xl">
+                            {player.username ? player.username : "Unknown user"}
+                        </span>
+                    </div>
+                )}
                 <div className="absolute -top-2 -right-2 bg-black/80 rounded-full p-2 border-2 border-white/20">
                     <GoTrophy
                         className={TROPHY_COLORS[rank]}

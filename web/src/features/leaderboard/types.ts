@@ -12,11 +12,7 @@ export type LeaderboardPlayer = {
     win_rate: number;
 };
 
-export type BasePlayerCardProps = {
+export type LeaderboardProps = {
     player: LeaderboardPlayer;
-    rank: number;
-};
-
-export type ChampionCardProps = BasePlayerCardProps & {
     rank: 1 | 2 | 3;
-};
+}

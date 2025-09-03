@@ -1,10 +1,14 @@
 import { GoTrophy, GoClock } from "react-icons/go";
 import { TbApple } from "react-icons/tb";
 import { getProviderIcon, formatDuration } from "../utils";
-import { BasePlayerCardProps } from "../types";
-import { Avatar } from "./shared/Avatar";
+import { LeaderboardPlayer } from "../types";
 
-export function RegularPlayer({ player, rank }: BasePlayerCardProps) {
+type Props = {
+    player: LeaderboardPlayer;
+    rank: number;
+};
+
+export function RegularPlayer({ player, rank }: Props) {
     return (
         <div className="bg-white/5 rounded-xl border border-white/10 p-4 hover:bg-white/10 transition-all duration-200 hover:scale-[1.01] cursor-pointer">
             <div className="flex items-center gap-4">
@@ -15,11 +19,21 @@ export function RegularPlayer({ player, rank }: BasePlayerCardProps) {
                 </div>
 
                 <div className="flex-shrink-0">
-                    <Avatar
-                        avatarUrl={player.avatar_url}
-                        username={player.username}
-                        size="sm"
-                    />
+                    {player.avatar_url ? (
+                        <img
+                            src={player.avatar_url}
+                            alt={player.username}
+                            className="w-10 h-10 rounded-full border-2 border-white/20"
+                        />
+                    ) : (
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-blue-500 flex items-center justify-center border-2 border-white/20">
+                            <span className="text-white font-bold text-sm">
+                                {player.username
+                                    ? player.username
+                                    : "Unknown user"}
+                            </span>
+                        </div>
+                    )}
                 </div>
 
                 <div className="flex-1 min-w-0">

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { PageWrapper } from "@/features/shared/components/PageWrapper";
 import { Header } from "@/features/shared/components/Header";
 import { Button } from "@/features/shared/components/Button";
-import { GoFlame } from "react-icons/go";
+import { GoTrophy, GoFlame } from "react-icons/go";
 import { Podium } from "../components/Podium";
 import { RegularPlayer } from "../components/RegularPlayer";
 import { ChampionCard } from "../components/ChampionCard";
@@ -10,7 +10,6 @@ import { LeaderboardPlayer } from "../types";
 import { getLeaderboard } from "../services/getLeaderboard";
 import { cn } from "@/features/shared/utils";
 import { Loading } from "@/features/shared/components/Loading";
-import { EmptyLeaderboard } from "../components/EmptyLeaderboard";
 
 export function Leaderboard() {
     const [players, setPlayers] = useState<LeaderboardPlayer[]>([]);
@@ -43,7 +42,18 @@ export function Leaderboard() {
                     ) : (
                         <div className="flex flex-col items-center gap-8">
                             {players.length === 0 ? (
-                                <EmptyLeaderboard />
+                                <div className="flex flex-col items-center gap-2 py-20">
+                                    <GoTrophy
+                                        className="text-white/30"
+                                        size={64}
+                                    />
+                                    <p className="text-white/60 text-xl">
+                                        No champions yet
+                                    </p>
+                                    <p className="text-white/40">
+                                        Be the first to claim the throne!
+                                    </p>
+                                </div>
                             ) : (
                                 <div className="w-full flex flex-col gap-8">
                                     <div className="flex flex-col items-center gap-4">
