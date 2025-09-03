@@ -6,7 +6,7 @@ A modern, high-performance implementation of the classic Snake game built with R
 
 ## Demo
 
-https://github.com/user-attachments/assets/d578de20-89d9-44f5-b1ab-4ac2bff51fc6
+https://github.com/user-attachments/assets/63fa40ac-72f9-4ae3-bcc3-d3af24f447ff
 
 _Smooth movement and responsive controls powered by Rust + WASM_
 
